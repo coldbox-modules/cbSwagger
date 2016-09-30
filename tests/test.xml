@@ -62,6 +62,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 		
 		<!-- Start Init -->
 		<delete dir="${report.dir}" />
+		<mkdir dir="${report.dir}" />
 		<mkdir dir="${junitreport.dir}" />
 		<!-- update permissions -->
 		<antcall target="update.permissions" /> 
