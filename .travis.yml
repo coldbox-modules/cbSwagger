@@ -20,6 +20,8 @@ install:
   - sudo apt-get update && sudo apt-get --assume-yes install commandbox
   # Test that the box binary is available and ready for our tests
   - sudo box version
+  - mkdir tests/results
+  - sudo chmod -R 775 tests/results
 
 script:
   - sudo ant -DisTravis=true -f workbench/build.xml
