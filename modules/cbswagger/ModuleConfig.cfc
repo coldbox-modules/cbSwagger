@@ -1,0 +1,118 @@
+/**
+*********************************************************************************
+* Your Copyright
+********************************************************************************
+*/
+component{
+
+	// Module Properties
+	this.title 				= "cbswagger";
+	this.author 			= "You";
+	this.webURL 			= "";
+	this.description 		= "A coldbox module to auto-generate Swagger API documentation from your configured routes";
+	this.version			= "@build.version@+@build.number@";
+	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
+	this.viewParentLookup 	= true;
+	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
+	this.layoutParentLookup = true;
+	// Module Entry Point
+	this.entryPoint			= "cbswagger";
+	// Model Namespace
+	this.modelNamespace		= "cbswagger";
+	// CF Mapping
+	this.cfmapping			= "cbswagger";
+	// Auto-map models
+	this.autoMapModels		= true;
+	// Module Dependencies That Must Be Loaded First, use internal names or aliases
+	this.dependencies		= [ ];
+
+	/**
+	* Configure module
+	*/
+	function configure(){
+		//ensure cbjavaloader is an activated module
+		if(!Wirebox.getColdbox().getModuleService().isModuleActive('swagger-sdk')){
+			Wirebox.getColdbox().getModuleService().reload('swagger-sdk');	
+		}
+		
+		// SES Routes
+		routes = [			
+			//Module Root Requests
+			{ pattern="", handler="Main", action="index" },
+			// Convention Route
+			{ pattern=":handler/:action?" }
+		];
+
+	}
+
+	/**
+	* Fired when the module is registered and activated.
+	*/
+	function onLoad(){
+		// parse parent settings
+		parseParentSettings();
+
+		//RelaxDSL Translator
+		binder.map( "RoutesParser@cbswagger" )
+			.to( "#moduleMapping#.models.RoutesParser" )
+			.mixins( '/SwaggerSDK/models/mixins/hashMap.cfm' );
+	}
+
+	/**
+	* Fired when the module is unregistered and unloaded
+	*/
+	function onUnload(){
+		
+	}
+
+	/**
+	* Prepare settings
+	*/
+	private function parseParentSettings(){
+		/**
+		Sample Config:
+		cbswagger = {
+			// The location of the cbswaggered APIs, defaults to /models/resources
+			routes = ["api"]
+		};
+		**/
+		// Read parent application config
+		var oConfig 		= controller.getSetting( "ColdBoxConfig" );
+		var cbswaggerDSL	= oConfig.getPropertyMixin( "cbswagger", "variables", structnew() );
+		var configStruct 	= controller.getConfigSettings();
+
+		// Default Config Structure
+		configStruct.cbswagger = {
+			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
+			"routes":["api"],
+			//A base path prefix for your API - leave blank if all routes are configured to the root of the site
+			"basePath":"",
+			//The API host
+			"host":"",
+			// Information about your API
+			"info":{
+				//The contact email address
+				"contact":"",
+				//A title for your API
+				"title":"",
+				//A descritpion of your API
+				"description":"",
+				//A url to the License of your API
+				"license":"",
+				//A terms of service URL for your API
+				"termsOfService":"",
+				//The version of your API
+				"version":""
+			},
+			//An array of all of the request body formats your your API is configured to consume 
+			"consumes": ["application/json","multipart/form-data","application/x-www-form-urlencoded"],
+			//An array of all of the response body formats your API delivers
+			"produces": ["application/json"]
+		};
+
+		// Append it
+		structAppend( configStruct.cbswagger, cbswaggerDSL, true );
+
+	}
+
+}

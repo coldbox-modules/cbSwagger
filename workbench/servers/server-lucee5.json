@@ -1,0 +1,16 @@
+{
+    "force":true,
+    "app":{
+        "cfengine":"lucee@5"
+    },
+    "openbrowser":"false",
+    "name":"lucee5",
+    "web":{
+        "http":{
+            "port":"50685"
+        }
+    },
+    "JVM":{
+        "heapSize":"1024"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "force":true,
+    "app":{
+        "cfengine":"adobe@11"
+    },
+    "openbrowser":"false",
+    "name":"acf11",
+    "web":{
+        "http":{
+            "port":"49611"
+        }
+    },
+    "JVM":{
+        "heapSize":"2048"
+    }
+}
