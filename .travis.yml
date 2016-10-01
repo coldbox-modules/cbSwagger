@@ -46,7 +46,10 @@ deploy:
   acl: public_read
 
 after_deploy:
-  - cd build && box forgebox login username=$FORGEBOX_USERNAME password=$FORGEBOX_PASSWORD && box forgebox publish
+  script: > 
+    cd ./build &&\ 
+    box forgebox login username=$FORGEBOX_USERNAME password=$FORGEBOX_PASSWORD &&\ 
+    box forgebox publish
 
 notifications:
   slack:

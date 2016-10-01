@@ -1,6 +1,7 @@
 # Coldbox cbSwagger
 ## A Coldbox module which automatically generates OpenAPI ( fka Swagger ) documenation from your configured routes
 
+This module utilizes the [v3.0 OpenAPI Specification]([https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md])
 
 ##LICENSE
 Apache License, Version 2.0.
