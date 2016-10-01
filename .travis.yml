@@ -45,11 +45,7 @@ deploy:
   upload-dir: ortussolutions/coldbox-modules/cbswagger
   acl: public_read
 
-after_deploy:
-  script: > 
-    cd ./build &&\ 
-    box forgebox login username=$FORGEBOX_USERNAME password=$FORGEBOX_PASSWORD &&\ 
-    box forgebox publish
+after_deploy: "cd ./build && box forgebox login username=$FORGEBOX_USERNAME password=$FORGEBOX_PASSWORD && box forgebox publish"
 
 notifications:
   slack:
