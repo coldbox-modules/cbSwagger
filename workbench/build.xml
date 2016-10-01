@@ -10,8 +10,6 @@
       <isset property="isTravis"/>
     </condition>
 
-    <echo>isTravis = ${isTravis}</echo>
-
 	<!-- Build Labels -->
 	<tstamp prefix="start"/>
 	<path id="cp">
@@ -114,7 +112,13 @@
 				  classifiers="apidocs"/>
 				  
 		<!-- Cleanup -->	
-		<delete dir="${dir.build}" />
+		<if>
+			<equals arg1="$isTravis" arg2="false" />
+			<then>
+				<delete dir="${dir.build}" />
+			</then>
+		</if>
+		
 	</target>
 
 	<!-- Build API Docs -->
@@ -158,11 +162,9 @@
 			<not><equals arg1="${environment}" arg2="auto" /></not>
 			<then>
 				<property name="test.target" value="run" />
-				<property name="isTravis" value="true" />
 			</then>
 			<else>
 				<property name="test.target" value="run-junit" />
-				<property name="isTravis" value="false" />
 			</else>
 		</if>
 
