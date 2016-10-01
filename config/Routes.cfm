@@ -35,46 +35,7 @@
 	/**
 	* Users API (v1)
 	**/
-
-
-	//User Posts
-
-	addRoute(
-		pattern='/api/v1/users/:id/posts/:PostId',
-		handler='api.v1.UserPosts',
-		action=defaultEntityActions
-	);
-
-	addRoute(
-		pattern='/api/v1/users/:id/posts',
-		handler='api.v1.UserPosts',
-		action=defaultAPIActions
-	);
-
-	addRoute(
-		pattern='/api/v1/users/:id/media/:mediaId',
-		handler='api.v1.UserMedia',
-		action=defaultEntityActions
-	);
-
-	addRoute(
-		pattern='/api/v1/users/:id/media',
-		handler='api.v1.UserMedia',
-		action=defaultAPIActions
-	);
-
-
-	/**
-	* Core Users API - api.v1.Users
-	**/
-
-	//User Settings
-	addRoute(
-		pattern='/api/v1/users/:id/settings',
-		handler='api.v1.UserSettings',
-		action={"GET":"get","PUT":"update","PATCH":"update","POST":"onInvalidHTTPMethod","DELETE":"onInvalidHTTPMethod"}
-	);
-
+	
 	//Login
 	addRoute(
 		pattern='/api/v1/users/login',
