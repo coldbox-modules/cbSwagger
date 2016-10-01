@@ -46,7 +46,7 @@ deploy:
   acl: public_read
 
 after_deploy:
-  - sudo $TRAVIS_BUILD_DIR/workbench/publish-forgebox.sh
+  - cd $TRAVIS_BUILD_DIR/build && box forgebox enable && box forgebox login username=$FORGEBOX_USERNAME password=$FORGEBOX_PASSWORD && box forgebox publish
 
 notifications:
   slack:
