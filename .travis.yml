@@ -45,12 +45,8 @@ deploy:
   upload-dir: ortussolutions/coldbox-modules/cbswagger
   acl: public_read
 
-after_deploy: 
-  on:
-    branch: 
-      - master
-  skip_cleanup: true
-  ./workbench/forgebox-publish.sh
+after_deploy:
+  - /workbench/forgebox-publish.sh
 
 notifications:
   slack:

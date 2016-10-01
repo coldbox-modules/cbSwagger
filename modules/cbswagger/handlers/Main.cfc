@@ -7,7 +7,6 @@ component extends="coldbox.system.EventHandler"{
 		event.noLayout();
 	}
 
-
 	/**
 	* CBSwagger Core Handler Method
 	*/
