@@ -7,8 +7,8 @@ component{
 
 	// Module Properties
 	this.title 				= "cbswagger";
-	this.author 			= "You";
-	this.webURL 			= "";
+	this.author 			= "Jon Clausen <jon_clausen@silowebworks.com>";
+	this.webURL 			= "https://github.com/coldbox-modules/cbSwagger";
 	this.description 		= "A coldbox module to auto-generate Swagger API documentation from your configured routes";
 	this.version			= "@build.version@+@build.number@";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
