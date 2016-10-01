@@ -35,7 +35,6 @@ deploy:
   on:
     branch: 
       - master
-      - development
   skip_cleanup: true
   provider: s3
   #AWS Credentials need to be set in Travis
