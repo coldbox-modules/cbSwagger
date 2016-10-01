@@ -6,9 +6,6 @@
 Apache License, Version 2.0.
 
 
-This module allows for software development using the Swagger/OpenAPI specification.
-
-
 ********************************************************************************
 Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
 www.coldbox.org | www.luismajano.com | www.ortussolutions.com
