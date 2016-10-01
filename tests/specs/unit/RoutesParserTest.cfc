@@ -64,8 +64,40 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 					for( var route in cbRoutes ){
 						if( left( route.pattern, len( routePrefix ) ) == routePrefix ){
 							var translatedPath = SwaggerUtil.translatePath( route.pattern );
-							expect( NormDoc[ "paths" ] ).toHaveKey( translatedPath );
+							if( !len( route.moduleRouting ) ){
+								expect( NormDoc[ "paths" ] ).toHaveKey( translatedPath );
+							}
 						}
+					}
+				}
+
+			});
+
+			it( "Tests the API Document for module introspection", function(){
+				var SwaggerUtil = Wirebox.getInstance( "OpenAPIUtil@SwaggerSDK" );
+				expect( VARIABLES ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+				var NormDoc = VARIABLES.APIDoc.getNormalizedDocument();
+				expect( NormDoc ).toHaveKey( "paths" );
+				var APIPaths = NormDoc[ "paths" ];
+				//pull our routing configuration
+				var apiPrefixes = cbSwaggerSettings.routes;
+				expect( apiPrefixes ).toBeArray();
+				var TLRoutes = getController().getInterceptorService().getInterceptor("SES").getRoutes();
+				expect( TLRoutes ).toBeArray();
+
+				for( var TLRoute in TLRoutes ){
+					if( len( TLRoute.moduleRouting ) ){
+						var CBRoutes = getController().getInterceptorService().getInterceptor("SES").getModuleRoutes( TLRoute.moduleRouting );
+						//Tests that all of our configured paths exist
+						for( var routePrefix in apiPrefixes ){
+							//recurse into the module routes
+							for( var route in CBRoutes ){
+								if( left( route.pattern, len( routePrefix ) ) == routePrefix ){
+									var translatedPath = SwaggerUtil.translatePath( route.pattern );
+									expect( NormDoc[ "paths" ] ).toHaveKey( translatedPath );
+								}
+							}
+						}	
 					}
 				}
 

@@ -44,10 +44,46 @@ component name="RouteParser" accessors="true"{
 	**/
 	private any function filterDesignatedRoutes(){
 		var routingPrefixes = getCBSwaggerSettings().routes;
-		var SESRoutes = getSESRoutes();
+		//make a copy of our routes array so we can append it
+		var SESRoutes = duplicate( getSESRoutes() );
+		var ModuleSESRoutes = [];
 		var designatedRoutes = {};
 
 		for( var route in SESRoutes ){
+			//if we have a module routing, retrieve those routes and append them to our loop
+			if( len( route.moduleRouting ) ){
+				var moduleRoutes = getInterceptorService().getInterceptor("SES").getModuleRoutes( route.moduleRouting );
+				arrayAppend( ModuleSESRoutes, duplicate( moduleRoutes ), true );
+				continue;
+			}
+			for( var prefix in routingPrefixes ){
+				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
+					designatedRoutes[ route.pattern ] = route;
+				}
+			}
+		}
+
+		//Now loop through our assembled module routes and append if designated
+		for( var route in ModuleSESRoutes ){
+			var moduleConfigCache = getController().getModuleService().getModuleConfigCache();
+			if( 
+				structKeyExists( moduleConfigCache, route.module ) 
+				&& 
+				structKeyExists( moduleConfigCache[route.module], "entrypoint" ) 
+			){
+				route.pattern = moduleConfigCache[route.module].entrypoint & '/' & route.pattern;
+
+				if( structKeyExists( moduleConfigCache[route.module], "cfmapping" ) ){
+					route[ "moduleInvocationPath" ] = moduleConfigCache[route.module].cfmapping;				
+				} else {
+					var moduleConventionPath = listToArray( getController().getColdboxSettings().modulesConvention, "/" );
+					arrayAppend( moduleConventionPath, route.module );
+					route[ "moduleInvocationPath" ] = listToArray(
+						moduleConventionPath
+					 ,"." 
+					)
+				}
+			}
 			for( var prefix in routingPrefixes ){
 				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
 					designatedRoutes[ route.pattern ] = route;
@@ -170,12 +206,13 @@ component name="RouteParser" accessors="true"{
 		var handlerRoute = Route.handler;
 		var module = Route.module;
 
-		if( len( module ) ){
-			handlerRoute = module & ":" & handlerRoute;
-		}
-
 		try{
-			var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;
+			if( len( module ) && structKeyExists( route, "moduleInvocationPath" ) ){
+				var invocationPath = route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
+			} else {			
+				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;	
+			}
+
 			var handler = createObject( "component", invocationPath );
 			return getMetadata( handler );	
 		} catch( any e ){

@@ -15,5 +15,6 @@ workbench/build.number
 build/*
 modules/*
 !modules/cbswagger
+!modules/test-api-module
 coldbox
 testbox

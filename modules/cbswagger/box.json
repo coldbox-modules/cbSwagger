@@ -6,6 +6,7 @@
     "type"      : "modules",
     "keywords"  : "Swagger,OpenAPI,API Docs",
     "homepage"          : "https://github.com/coldbox-modules/cbswagger",
+    "location"          : "https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbswagger/@build.version@/cbswagger-@build.version@.zip"
     "documentation"     : "https://github.com/coldbox-modules/cbswagger/wiki",
     "repository"        : { "type" : "git", "url" : "https://github.com/coldbox-modules/cbswagger" },
     "bugs"              : "https://github.com/coldbox-modules/cbswagger/issues",
