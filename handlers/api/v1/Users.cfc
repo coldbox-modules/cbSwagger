@@ -50,7 +50,12 @@ component displayname="API.v1.Users"{
 	}	
 
 	//(POST) /api/v1/users
-	function add(event,rc,prc){
+	function add(event,rc,prc)
+		description="Adds a new user"
+		x-parameters="/includes/resources/users.add.parameters.json##user"
+		responses="/includes/resources/users.add.responses.json"
+		x-SomeAdditionalInfo="Here is some additional information on this path"
+	{
 
 		var creation = UserService.createUser(rc);
 

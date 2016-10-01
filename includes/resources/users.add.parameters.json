@@ -1,0 +1,29 @@
+{
+  "user":[
+    {
+      "name": "user",
+      "in": "body",
+      "description": "New user specification",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "firstname",
+          "lastname",
+          "email"
+        ],
+        "properties": {
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

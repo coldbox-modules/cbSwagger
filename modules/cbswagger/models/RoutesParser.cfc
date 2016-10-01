@@ -5,7 +5,7 @@ component name="RouteParser" accessors="true"{
 	property name="HandlersInvocationPath" inject="coldbox:setting:HandlersInvocationPath";
 	property name="HandlersExternalLocationPath" inject="coldbox:setting:HandlersExternalLocationPath";
 	property name="OpenAPIUtil" inject="OpenAPIUtil@SwaggerSDK";
-	property name="OpenAPIDocument" inject="OpenAPIDocument@SwaggerSDK";
+	property name="OpenAPIParser" inject="OpenAPIParser@SwaggerSDK";
 	property name="HandlerService";
 	property name="InterceptorService";
 	property name="SESRoutes";
@@ -35,7 +35,7 @@ component name="RouteParser" accessors="true"{
 			template[ "paths" ].putAll( createPathsFromRouteConfig( apiRoutes[ path ] ) );
 		}
 
-		return getOpenAPIDocument().init( template );
+		return getOpenAPIParser().parse( template ).getDocumentObject();
 
 	}
 
@@ -245,12 +245,32 @@ component name="RouteParser" accessors="true"{
 					normalizedKey = replaceNoCase( infoKey, "x-", "" );
 					//evaluate whether we have an x- replacement or a standard x-attribute
 					if( arrayContains( defaultKeys, normalizedKey ) ){
-						method[ normalizedKey ] = functionMetaData[ infoKey ];
+						//check for $ref includes
+						if( 
+							right( functionMetaData[ infoKey ], 5 ) == '.json' 
+							|| 
+							left( functionMetaData[ infoKey ], 4 ) == 'http' 
+						){
+							method[ normalizedKey ] = {"$ref":functionMetaData[ infoKey ]};
+						} else {
+							method[ normalizedKey ] = functionMetaData[ infoKey ];	
+						}
+
+						
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
 				} else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
-					method[ infoKey ] = functionMetaData[ infoKey ]
+					//check for $ref includes
+					if( 
+						right( functionMetaData[ infoKey ], 5 ) == '.json' 
+						|| 
+						left( functionMetaData[ infoKey ], 4 ) == 'http' 
+					){
+						method[ infoKey ] = {"$ref":functionMetaData[ infoKey ]};
+					} else {
+						method[ infoKey ] = functionMetaData[ infoKey ];	
+					}
 				}
 			}
 		}
