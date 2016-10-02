@@ -41,15 +41,21 @@
 		<loadproperties srcFile="workbench/build.properties"/>
 
 		<!-- Build Number -->
-		<propertyfile file="workbench/build.number" comment="Build Number for ANT. Edit not!">
-			<entry key="build.number" 
-					type="int" 
-			     	operation="+"
-					pattern="00000"
-			     	default="1" />
-		</propertyfile>
-		<property file="workbench/build.number"/>
-		
+		<if>
+			<not><isset property="build.number" /></not>
+			<then>
+				<propertyfile file="workbench/build.number" comment="Build Number for ANT. Edit not!">
+					<entry key="build.number" 
+							type="int" 
+					     	operation="+"
+							pattern="00000"
+					     	default="1" />
+				</propertyfile>
+
+				<property file="workbench/build.number"/>
+			</then>
+		</if>
+				
 		<!-- Build Label -->
 		<property name="build.label" value="${project.name}-${project.version}.${build.number}-${start.DSTAMP}${start.TSTAMP}"/>
 		<!-- Get Build Dependencies -->

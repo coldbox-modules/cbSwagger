@@ -24,7 +24,7 @@ install:
   - sudo chmod -R 775 tests/results
 
 script:
-  - sudo ant -DisTravis=true -f workbench/build.xml
+  - sudo ant -DisTravis=true -Dbuild.number=$TRAVIS_BUILD_NUMBER -f workbench/build.xml
   
 before_deploy:
   - mkdir s3deploy
