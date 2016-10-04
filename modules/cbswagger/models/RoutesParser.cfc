@@ -1,31 +1,49 @@
-component name="RouteParser" accessors="true"{
-	property name="Controller" inject="coldbox";
-	property name="cbSwaggerSettings" inject="coldbox:setting:cbswagger";
-	property name="HandlersPath" inject="coldbox:setting:HandlersPath";
-	property name="HandlersInvocationPath" inject="coldbox:setting:HandlersInvocationPath";
-	property name="HandlersExternalLocationPath" inject="coldbox:setting:HandlersExternalLocationPath";
-	property name="OpenAPIUtil" inject="OpenAPIUtil@SwaggerSDK";
-	property name="OpenAPIParser" inject="OpenAPIParser@SwaggerSDK";
-	property name="HandlerService";
-	property name="InterceptorService";
+/**
+* Copyright since 2016 by Ortus Solutions, Corp
+* www.ortussolutions.com
+* ---
+* ColdBox Route Parser
+*/
+component accessors="true" threadsafe singleton{
+
+	// DI
+	property name="controller" 						inject="coldbox";
+	property name="cbSwaggerSettings" 				inject="coldbox:setting:cbswagger";
+	property name="handlersPath" 					inject="coldbox:setting:HandlersPath";
+	property name="handlersInvocationPath" 			inject="coldbox:setting:HandlersInvocationPath";
+	property name="handlersExternalLocationPath" 	inject="coldbox:setting:HandlersExternalLocationPath";
+	property name="SESInterceptor"					inject="coldbox:interceptor:SES";
+	property name="handlerService"					inject="coldbox:handlerService";
+	property name="interceptorService"				inject="coldbox:interceptorService";
+	property name="moduleService"					inject="coldbox:moduleService";
+	
+	// API Tools
+	property name="OpenAPIUtil" 					inject="OpenAPIUtil@SwaggerSDK";
+	property name="OpenAPIParser" 					inject="OpenAPIParser@SwaggerSDK";
+
+	// Load upon loading
 	property name="SESRoutes";
 
+	/**
+	* On DI Complete: Load up some services
+	*/
 	public function onDIComplete(){
-		setInterceptorService( getController().getInterceptorService() );
-		setHandlerService( getController().getHandlerService() );
-		setSESRoutes( getInterceptorService().getInterceptor("SES").getRoutes() );
+		variables.interceptorService 	= variables.controller.getInterceptorService();
+		variables.handlerService 		= variables.controller.getHandlerService();
+		variables.SESRoutes 			= variables.SESInterceptor.getRoutes();
 	}
 
 	/**
 	* Creates an OpenAPI Document from the Configured SES routes
+	* @return swagger-sdk.models.OpenAPI.Document
 	**/
 	public Document function createDocFromRoutes(){
 		var template = getOpenAPIUtil().newTemplate();
-		var moduleSettings = getCBSwaggerSettings();
+		
 		//append our configured settings
-		for( var key in moduleSettings ){
+		for( var key in variables.cbSwaggerSettings ){
 			if( structKeyExists( template, key ) ){
-				template[ key ] = moduleSettings[ key ];
+				template[ key ] = variables.cbSwaggerSettings[ key ];
 			}
 		}
 
@@ -36,24 +54,23 @@ component name="RouteParser" accessors="true"{
 		}
 
 		return getOpenAPIParser().parse( template ).getDocumentObject();
-
 	}
 
 	/**
 	* Filters the designated routes as provided in the cbSwagger configuration
 	**/
 	private any function filterDesignatedRoutes(){
-		var routingPrefixes = getCBSwaggerSettings().routes;
-		//make a copy of our routes array so we can append it
-		var SESRoutes = duplicate( getSESRoutes() );
-		var ModuleSESRoutes = [];
-		var designatedRoutes = {};
+		var routingPrefixes = variables.cbSwaggerSettings.routes;
+		// make a copy of our routes array so we can append it
+		var SESRoutes 			= duplicate( variables.SESRoutes );
+		var moduleSESRoutes 	= [];
+		var designatedRoutes 	= {};
 
 		for( var route in SESRoutes ){
-			//if we have a module routing, retrieve those routes and append them to our loop
+			// if we have a module routing, retrieve those routes and append them to our loop
 			if( len( route.moduleRouting ) ){
-				var moduleRoutes = getInterceptorService().getInterceptor("SES").getModuleRoutes( route.moduleRouting );
-				arrayAppend( ModuleSESRoutes, duplicate( moduleRoutes ), true );
+				var moduleRoutes = SESInterceptor.getModuleRoutes( route.moduleRouting );
+				arrayAppend( moduleSESRoutes, duplicate( moduleRoutes ), true );
 				continue;
 			}
 			for( var prefix in routingPrefixes ){
@@ -63,25 +80,22 @@ component name="RouteParser" accessors="true"{
 			}
 		}
 
-		//Now loop through our assembled module routes and append if designated
-		for( var route in ModuleSESRoutes ){
-			var moduleConfigCache = getController().getModuleService().getModuleConfigCache();
+		// Now loop through our assembled module routes and append if designated
+		for( var route in moduleSESRoutes ){
+			var moduleConfigCache = variables.moduleService.getModuleConfigCache();
 			if( 
 				structKeyExists( moduleConfigCache, route.module ) 
 				&& 
-				structKeyExists( moduleConfigCache[route.module], "entrypoint" ) 
+				structKeyExists( moduleConfigCache[ route.module ], "entrypoint" ) 
 			){
-				route.pattern = moduleConfigCache[route.module].entrypoint & '/' & route.pattern;
+				route.pattern = moduleConfigCache[ route.module ].entrypoint & '/' & route.pattern;
 
-				if( structKeyExists( moduleConfigCache[route.module], "cfmapping" ) ){
-					route[ "moduleInvocationPath" ] = moduleConfigCache[route.module].cfmapping;				
+				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) ){
+					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;				
 				} else {
-					var moduleConventionPath = listToArray( getController().getColdboxSettings().modulesConvention, "/" );
+					var moduleConventionPath = listToArray( variables.controller.getColdboxSettings().modulesConvention, "/" );
 					arrayAppend( moduleConventionPath, route.module );
-					route[ "moduleInvocationPath" ] = listToArray(
-						moduleConventionPath
-					 ,"." 
-					)
+					route[ "moduleInvocationPath" ] = listToArray( moduleConventionPath, "." );
 				}
 			}
 			for( var prefix in routingPrefixes ){
@@ -91,12 +105,12 @@ component name="RouteParser" accessors="true"{
 			}
 		}
 		
-		//Now custom sort our routes alphabetically
-		var entrySet = structKeyArray( designatedRoutes );
-		var sortedRoutes = createLinkedHashMap();
+		// Now custom sort our routes alphabetically
+		var entrySet 		= structKeyArray( designatedRoutes );
+		var sortedRoutes 	= createLinkedHashMap();
 
-		for( var i=1; i<=arrayLen( entrySet ); i++ ){
-			entrySet[ i ]=replace( entrySet[ i ], "/", "", "ALL" );
+		for( var i = 1; i <= arrayLen( entrySet ); i++ ){
+			entrySet[ i ] = replace( entrySet[ i ], "/", "", "ALL" );
 		}
 		
 		arraySort( entrySet, "textnocase", "asc" );
@@ -114,23 +128,23 @@ component name="RouteParser" accessors="true"{
 
 	/**
 	* Creates paths individual paths from our routing configuration
-	* @param struct Route  		A coldbox SES Route Configuration
+	* @param struct route  A coldbox SES Route Configuration
 	**/
-	private any function createPathsFromRouteConfig( required struct Route ){
+	private any function createPathsFromRouteConfig( required struct route ){
 		var paths = createLinkedHashMap();
 		//first parse our route to see if we have conditionals and create separate all found conditionals
-		var pathArray = listToArray( getOpenAPIUtil().translatePath( Route.pattern ), "/" );
-		var assembledRoute = [];
-		var handlerMetadata = getHandlerMetadata( Route );
+		var pathArray 		= listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
+		var assembledRoute 	= [];
+		var handlerMetadata = getHandlerMetadata( arguments.route );
 		
 		for( var routeSegment in pathArray ){
 			if( findNoCase( "?", routeSegment ) ){
 				//first add the already assembled path
 				addPathFromRouteConfig( 
-					existingPaths=paths, 
-					pathKey="/" & arrayToList( assembledRoute, "/" ), 
-					RouteConfig=Route,
-					handlerMetadata= !isNull( handlerMetadata ) ? handlerMetadata : false
+					existingPaths 	= paths, 
+					pathKey 		= "/" & arrayToList( assembledRoute, "/" ), 
+					RouteConfig 	= arguments.route,
+					handlerMetadata = !isNull( handlerMetadata ) ? handlerMetadata : false
 				);
 				//now append our optional key to construct an extended path
 				arrayAppend( assembledRoute, replace( routeSegment, "?" ) );
@@ -139,10 +153,9 @@ component name="RouteParser" accessors="true"{
 			}
 		}
 		//Add our final constructed route to the paths map
-		addPathFromRouteConfig( paths, "/" & arrayToList( assembledRoute, "/" ), Route );
+		addPathFromRouteConfig( paths, "/" & arrayToList( assembledRoute, "/" ), arguments.route );
 
 		return paths;
-		
 	}
 
 
@@ -156,31 +169,29 @@ component name="RouteParser" accessors="true"{
 	private void function addPathFromRouteConfig( 
 		required any existingPaths,
 		required string pathKey,
-		required any RouteConfig
+		required any routeConfig
 		any handlerMetadata
 	){
 		var path = createLinkedHashmap();
-		var errorMethods = [ 'onInvalidHTTPMethod', 'onMissingHandler', 'onError' ];
+		var errorMethods = [ 'onInvalidHTTPMethod', 'onMissingAction', 'onError' ];
 
 
-		if( isNull(handlerMetadata) || !isBoolean( handlerMetadata ) ){
-			arguments.handlerMetadata = getHandlerMetadata( ARGUMENTS.RouteConfig );
+		if( isNull( arguments.handlerMetadata ) || !isBoolean( arguments.handlerMetadata ) ){
+			arguments.handlerMetadata = getHandlerMetadata( arguments.routeConfig );
 		}
 
-		var actions = structKeyExists( RouteConfig, "action" ) ? RouteConfig.action : "";
+		var actions = structKeyExists( arguments.routeConfig, "action" ) ? arguments.routeConfig.action : "";
 
 		if( isStruct( actions ) ){
 			for( var methodList in actions  ){
-				//handle any delimited method lists
+				// handle any delimited method lists
 				for( var methodName in listToArray( methodList ) ){
-					//handle explicit SES workarounds
+					// handle explicit SES workarounds
 					if( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ){
 						path.put( ucase( methodName ), getOpenAPIUtil().newMethod() );
 					
-						if( !isNull( handlerMetadata ) ){
-							
-							appendFunctionInfo( path[ucase( methodName )], actions[ methodList ], handlerMetadata );
-
+						if( !isNull( arguments.handlerMetadata ) ){
+							appendFunctionInfo( path[ ucase( methodName ) ], actions[ methodList ], arguments.handlerMetadata );
 						}	
 					}
 				}
@@ -188,35 +199,34 @@ component name="RouteParser" accessors="true"{
 		} else{
 			for( var methodName in getOpenAPIUtil().defaultMethods() ){
 				path.put( ucase( methodName ), getOpenAPIUtil().newMethod() );
-				if( len( actions ) && !isNull( handlerMetadata ) ){
-					appendFunctionInfo( path[ucase( methodName )], actions, handlerMetadata );
+				if( len( actions ) && !isNull( arguments.handlerMetadata ) ){
+					appendFunctionInfo( path[ ucase( methodName ) ], actions, arguments.handlerMetadata );
 				}	
 			}
 		}
 		
-		ARGUMENTS.existingPaths.put( ARGUMENTS.pathKey, path );
+		arguments.existingPaths.put( arguments.pathKey, path );
 	}
 	
 	/**
 	* Retreives the handler metadata, if available, from the route configuration
-	* @param struct Route  		A coldbox SES Route Configuration
+	* @param struct route  		A coldbox SES Route Configuration
 	* @return any handlerMetadata
 	**/
-	private any function getHandlerMetadata( required any Route ){
-		var handlerRoute = Route.handler;
-		var module = Route.module;
+	private any function getHandlerMetadata( required any route ){
+		var handlerRoute 	= arguments.route.handler;
+		var module 			= arguments.route.module;
 
 		try{
-			if( len( module ) && structKeyExists( route, "moduleInvocationPath" ) ){
-				var invocationPath = route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
+			if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){
+				var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
 			} else {			
 				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;	
 			}
-
-			var handler = createObject( "component", invocationPath );
-			return getMetadata( handler );	
+			
+			return getComponentMetaData( invocationPath )
 		} catch( any e ){
-		 	return;	
+		 	return;
 		}
 
 	}
@@ -234,15 +244,15 @@ component name="RouteParser" accessors="true"{
 		required any handlerMetadata
 	){
 
-		method[ "operationId" ] = functionName;
+		arguments.method[ "operationId" ] = arguments.functionName;
 
-		var functionMetaData = getFunctionMetaData( functionName, handlerMetadata );
+		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 		
 		if( !isNull( functionMetadata ) ){						
-			var defaultKeys = structKeyArray( method );
+			var defaultKeys = structKeyArray( arguments.method );
 			for( var infoKey in functionMetaData ){
 				if( findNoCase( "x-", infoKey ) ){
-					normalizedKey = replaceNoCase( infoKey, "x-", "" );
+					var normalizedKey = replaceNoCase( infoKey, "x-", "" );
 					//evaluate whether we have an x- replacement or a standard x-attribute
 					if( arrayContains( defaultKeys, normalizedKey ) ){
 						//check for $ref includes
@@ -251,12 +261,10 @@ component name="RouteParser" accessors="true"{
 							|| 
 							left( functionMetaData[ infoKey ], 4 ) == 'http' 
 						){
-							method[ normalizedKey ] = {"$ref":functionMetaData[ infoKey ]};
+							method[ normalizedKey ] = { "$ref" : functionMetaData[ infoKey ] };
 						} else {
 							method[ normalizedKey ] = functionMetaData[ infoKey ];	
 						}
-
-						
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
@@ -267,7 +275,7 @@ component name="RouteParser" accessors="true"{
 						|| 
 						left( functionMetaData[ infoKey ], 4 ) == 'http' 
 					){
-						method[ infoKey ] = {"$ref":functionMetaData[ infoKey ]};
+						method[ infoKey ] = { "$ref" : functionMetaData[ infoKey ] };
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];	
 					}
@@ -281,14 +289,14 @@ component name="RouteParser" accessors="true"{
 	* Retreives the handler metadata, if available
 	* @param string functionName					The name of the function to look up in the handler metadata
 	* @param any handlerMetadata 					The metadata of the handler to reference
-	* @return any|null
+	* @return struct|null
 	**/
 	private any function getFunctionMetadata( 
 		required string functionName, 
 		required any handlerMetadata 
 	){
-		for( var functionMetadata in handlerMetadata.functions ){
-			if( lcase(functionMetadata.name) == lcase(arguments.functionName) ){
+		for( var functionMetadata in arguments.handlerMetadata.functions ){
+			if( lcase( functionMetadata.name ) == lcase( arguments.functionName ) ){
 				return functionMetadata;
 			}		
 		}

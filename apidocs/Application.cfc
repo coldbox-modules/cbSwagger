@@ -9,7 +9,7 @@ component{
 	rootPath = REReplaceNoCase( API_ROOT, "apidocs(\\|\/)$", "" );
 
 	// MODULE NAME
-	request.moduleName = "cbModule";
+	request.moduleName = "cbSwagger";
 
 	this.mappings[ "/docbox" ] 	= API_ROOT & "docbox";
 	this.mappings[ "/root" ] 	= rootPath;

@@ -1,7 +1,8 @@
 /**
-*********************************************************************************
-* Your Copyright
-********************************************************************************
+* Copyright since 2016 by Ortus Solutions, Corp
+* www.ortussolutions.com
+* ---
+* Module Config
 */
 component{
 
@@ -24,17 +25,12 @@ component{
 	// Auto-map models
 	this.autoMapModels		= true;
 	// Module Dependencies That Must Be Loaded First, use internal names or aliases
-	this.dependencies		= [ ];
+	this.dependencies		= [ "swagger-sdk" ];
 
 	/**
 	* Configure module
 	*/
 	function configure(){
-		//ensure cbjavaloader is an activated module
-		if(!Wirebox.getColdbox().getModuleService().isModuleActive('swagger-sdk')){
-			Wirebox.getColdbox().getModuleService().reload('swagger-sdk');	
-		}
-		
 		// SES Routes
 		routes = [			
 			//Module Root Requests
@@ -52,7 +48,7 @@ component{
 		// parse parent settings
 		parseParentSettings();
 
-		//RelaxDSL Translator
+		// Add mixins
 		binder.map( "RoutesParser@cbswagger" )
 			.to( "#moduleMapping#.models.RoutesParser" )
 			.mixins( '/SwaggerSDK/models/mixins/hashMap.cfm' );
@@ -84,35 +80,34 @@ component{
 		// Default Config Structure
 		configStruct.cbswagger = {
 			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
-			"routes":["api"],
+			"routes" : ["api"],
 			//A base path prefix for your API - leave blank if all routes are configured to the root of the site
-			"basePath":"",
+			"basePath" : "",
 			//The API host
-			"host":"",
+			"host" : "",
 			// Information about your API
-			"info":{
+			"info" : {
 				//The contact email address
-				"contact":"",
+				"contact" : "",
 				//A title for your API
-				"title":"",
+				"title" : "",
 				//A descritpion of your API
-				"description":"",
+				"description" : "",
 				//A url to the License of your API
-				"license":"",
+				"license" : "",
 				//A terms of service URL for your API
-				"termsOfService":"",
+				"termsOfService" : "",
 				//The version of your API
-				"version":""
+				"version" : ""
 			},
 			//An array of all of the request body formats your your API is configured to consume 
-			"consumes": ["application/json","multipart/form-data","application/x-www-form-urlencoded"],
+			"consumes" : ["application/json","multipart/form-data","application/x-www-form-urlencoded"],
 			//An array of all of the response body formats your API delivers
-			"produces": ["application/json"]
+			"produces" : ["application/json"]
 		};
 
 		// Append it
 		structAppend( configStruct.cbswagger, cbswaggerDSL, true );
-
 	}
 
 }

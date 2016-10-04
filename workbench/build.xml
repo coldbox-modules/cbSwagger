@@ -3,7 +3,7 @@
 	<!-- Version: UPDATE ON EACH RELEASE AS NEEDED -->
 	<property name="project.name" 		value="cbswagger" />
 	<property name="module.name" 		value="cbswagger" />
-	<property name="project.version" 	value="1.0.1"/>
+	<property name="project.version" 	value="1.0.2"/>
 	<property name="groupID" 			value="ortussolutions" />
 
 	<condition property="isTravis" else="false">
@@ -57,7 +57,7 @@
 		</if>
 				
 		<!-- Build Label -->
-		<property name="build.label" value="${project.name}-${project.version}.${build.number}-${start.DSTAMP}${start.TSTAMP}"/>
+		<property name="build.label" value="${project.name}-${project.version}+${build.number}-${start.DSTAMP}${start.TSTAMP}"/>
 		<!-- Get Build Dependencies -->
  		<antcall target="getDependencies" />
 		<!-- Cleanup + Init -->
@@ -80,7 +80,6 @@
         </copy>
         <!-- Copy documentation -->
         <copy todir="${dir.build}" encoding="UTF-8" file="readme.md" overwrite="true" />
-        <copy todir="${dir.build}" encoding="UTF-8" file="instructions.md" overwrite="true" />
         <copy todir="${dir.build}" encoding="UTF-8" file="changelog.md" overwrite="true" />
         
         <!-- Replace Version + Build Numbers -->
@@ -219,7 +218,6 @@
 			<arg line="install" />
 		</exec>
 	</target>
-
 
 	<target name="startServer" description="Starts a single server">
 		<exec executable="box" dir="${basedir}">
