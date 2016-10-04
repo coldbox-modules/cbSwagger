@@ -4,12 +4,12 @@
     "slug":"cbSwagger-shell",
     "private":false,
     "dependencies":{
-        "coldbox":"4.1.0+00002",
+        "coldbox":"^4.2.0",
         "cbjavaloader":">1.0.0",
         "swagger-sdk":">0.0.9"
     },
     "devDependencies":{
-        "testbox":"2.2.0"
+        "testbox":"^2.3.0"
     },
     "installPaths":{
         "coldbox":"coldbox",
