@@ -223,10 +223,8 @@ component accessors="true" threadsafe singleton{
 			} else {			
 				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;	
 			}
-
-			// TODO: change this to getObjectMetadata
-			var handler = createObject( "component", invocationPath );
-			return getMetadata( handler );	
+			
+			return getComponentMetaData( invocationPath )
 		} catch( any e ){
 		 	return;
 		}
