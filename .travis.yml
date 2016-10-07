@@ -20,6 +20,7 @@ install:
   - sudo apt-get update && sudo apt-get --assume-yes install commandbox
   # Test that the box binary is available and ready for our tests
   - sudo box version
+  - sudo touch ~/.Commandbox/CommandBox.json
   - sudo echo '{"endpoints":{"forgebox":{"APIToken":"$FORGEBOX_API_TOKEN"}}}' > ~/.Commandbox/CommandBox.json
   # Setup for our tests
   - mkdir tests/results
