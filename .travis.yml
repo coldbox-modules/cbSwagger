@@ -20,6 +20,8 @@ install:
   - sudo apt-get update && sudo apt-get --assume-yes install commandbox
   # Test that the box binary is available and ready for our tests
   - sudo box version
+  - sudo echo '{"endpoints":{"forgebox":{"APIToken":"$FORGEBOX_API_TOKEN"}}}' > ~/.Commandbox/CommandBox.json
+  # Setup for our tests
   - mkdir tests/results
   - sudo chmod -R 775 tests/results
 
@@ -46,7 +48,7 @@ deploy:
   acl: public_read
 
 after_deploy:
-  - cd $TRAVIS_BUILD_DIR/build && box forgebox login username=$FORGEBOX_USERNAME password=$FORGEBOX_PASSWORD && box forgebox publish
+  - cd $TRAVIS_BUILD_DIR/build && box forgebox publish
 
 notifications:
   slack:
