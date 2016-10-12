@@ -19,7 +19,7 @@
     ],
     "engines"   : [
         { "type" : "lucee", "version" : ">4.5" },
-        { "type" : "adobe", "version" : ">9.02" }
+        { "type" : "adobe", "version" : ">10" }
     ],
     "dependencies"  :{
         "swagger-sdk":"stable"

@@ -19,13 +19,17 @@ install:
   # Install Commandbox
   - sudo apt-get update && sudo apt-get --assume-yes install commandbox
   # Test that the box binary is available and ready for our tests
-  - sudo box version
-  - mkdir tests/results
-  - sudo chmod -R 775 tests/results
-
-script:
-  - sudo ant -DisTravis=true -Dbuild.number=$TRAVIS_BUILD_NUMBER -f workbench/build.xml
+  - box version
+  # Store the Ortus API Key for forgebox publishing in `master`
+  - box config set endpoints.forgebox.APIToken=$FORGEBOX_API_TOKEN
   
+script:
+  # Execute build via ANT
+  - ant -DisTravis=true -Dbuild.number=$TRAVIS_BUILD_NUMBER -f workbench/build.xml
+  # Spit out log just in case we need to debug
+  - box server log
+
+# Only executed when merging to master  
 before_deploy:
   - mkdir s3deploy
   - cp -r ./artifacts/cbswagger/* ./s3deploy/
@@ -46,7 +50,7 @@ deploy:
   acl: public_read
 
 after_deploy:
-  - cd $TRAVIS_BUILD_DIR/build && box forgebox login username=$FORGEBOX_USERNAME password=$FORGEBOX_PASSWORD && box forgebox publish
+  - cd $TRAVIS_BUILD_DIR/build && box forgebox publish
 
 notifications:
   slack:
