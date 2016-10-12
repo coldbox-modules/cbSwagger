@@ -214,8 +214,8 @@ component accessors="true" threadsafe singleton{
 	* @return any handlerMetadata
 	**/
 	private any function getHandlerMetadata( required any route ){
-		var handlerRoute 	= arguments.route.handler;
-		var module 			= arguments.route.module;
+		var handlerRoute 	= arguments.route.handler ?: "";
+		var module 			= arguments.route.module ?: "";
 
 		try{
 			if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){

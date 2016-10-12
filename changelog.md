@@ -1,6 +1,9 @@
 CHANGELOG
 =========
 
+## 1.0.3
+* Exception when `handler` or `module` does not exist in a route.
+
 ## 1.0.2
 * Overall syntax Ortus standards
 * Some var scoping issues
