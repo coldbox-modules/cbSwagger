@@ -147,7 +147,7 @@ component accessors="true" threadsafe singleton{
 					handlerMetadata = !isNull( handlerMetadata ) ? handlerMetadata : false
 				);
 				//now append our optional key to construct an extended path
-				arrayAppend( assembledRoute, replace( routeSegment, "?" ) );
+				arrayAppend( assembledRoute, replace( routeSegment, "?", "" ) );
 			} else {
 				arrayAppend( assembledRoute, routeSegment );
 			}
@@ -224,7 +224,7 @@ component accessors="true" threadsafe singleton{
 				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;	
 			}
 			
-			return getComponentMetaData( invocationPath )
+			return getComponentMetaData( invocationPath );
 		} catch( any e ){
 		 	return;
 		}
