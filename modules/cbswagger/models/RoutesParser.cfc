@@ -48,15 +48,12 @@ component accessors="true" threadsafe singleton{
 		}
 
 		var apiRoutes = filterDesignatedRoutes();
-
+		
 		var pathKeys = structKeyArray( apiRoutes );
 
 		for( var path in pathKeys ){
-
 			template[ "paths" ].putAll( createPathsFromRouteConfig( apiRoutes[ path ] ) );
-
 		}
-
 
 		return getOpenAPIParser().parse( template ).getDocumentObject();
 	}
@@ -87,9 +84,7 @@ component accessors="true" threadsafe singleton{
 
 		// Now loop through our assembled module routes and append if designated
 		for( var route in moduleSESRoutes ){
-			
 			var moduleConfigCache = variables.moduleService.getModuleConfigCache();
-			
 			if( 
 				structKeyExists( moduleConfigCache, route.module ) 
 				&& 
@@ -105,7 +100,6 @@ component accessors="true" threadsafe singleton{
 					route[ "moduleInvocationPath" ] = listToArray( moduleConventionPath, "." );
 				}
 			}
-
 			for( var prefix in routingPrefixes ){
 				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
 					designatedRoutes[ route.pattern ] = route;
@@ -155,7 +149,7 @@ component accessors="true" threadsafe singleton{
 					handlerMetadata = !isNull( handlerMetadata ) ? handlerMetadata : false
 				);
 				//now append our optional key to construct an extended path
-				arrayAppend( assembledRoute, replace( routeSegment, "?" ) );
+				arrayAppend( assembledRoute, replace( routeSegment, "?", "" ) );
 			} else {
 				arrayAppend( assembledRoute, routeSegment );
 			}
@@ -232,7 +226,7 @@ component accessors="true" threadsafe singleton{
 				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;	
 			}
 			
-			return getComponentMetaData( invocationPath )
+			return getComponentMetaData( invocationPath );
 		} catch( any e ){
 		 	return;
 		}
