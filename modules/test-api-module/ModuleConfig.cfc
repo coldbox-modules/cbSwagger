@@ -23,50 +23,48 @@ component{
 	this.cfmapping			= "test-api-module";
 	// Auto-map models
 	this.autoMapModels		= true;
-	// Module Dependencies That Must Be Loaded First, use internal names or aliases
-	this.dependencies		= [ ];
 
 	/**
 	* Configure module
 	*/
 	function configure(){
-		
+
 		// API Routing
-		var defaultAPIActions = {
-			"GET":"index",
-			"POST":"add",
-			"PUT":"onInvalidHTTPMethod",
-			"PATCH":"onInvalidHTTPMethod",
-			"DELETE":"onInvalidHTTPMethod"
+		defaultAPIActions = {
+			"GET"   	= "index",
+			"POST"  	= "add",
+			"PUT"   	= "onInvalidHTTPMethod",
+			"PATCH" 	= "onInvalidHTTPMethod",
+			"DELETE"	= "onInvalidHTTPMethod"
 		};
-		var defaultEntityActions = {
-			"GET":"get",
-			"PUT":"update",
-			"PATCH":"update",
-			"DELETE":"delete"
+
+		defaultEntityActions = {
+			"GET"   	= "get",
+			"PUT"   	= "update",
+			"PATCH" 	= "update",
+			"DELETE"	= "delete"
 		};
 
 
 		// SES Routes
-		routes = [			
+		routes = [
 			//Module API Routes
 			{
-				pattern:'users/login',
-				handler:'Users',
-				action:{"POST":"login","DELETE":"login"}
+				pattern	= 'users/login',
+				handler	= 'Users',
+				action 	= { "POST" = "login" , "DELETE" = "login" }
 			},
 			{
-				pattern:'users/:id',
-				handler:'Users',
-				action:defaultEntityActions
+				pattern 	= 'users/:id',
+				handler 	= 'Users',
+				action 		= defaultEntityActions
 			},
 			{
-				pattern:'users',
-				handler:'Users',
-				action:defaultAPIActions
+				pattern = 'users',
+				handler = 'Users',
+				action  = defaultAPIActions
 			}
 		];
-
 
 	}
 

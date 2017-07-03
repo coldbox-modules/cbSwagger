@@ -1,20 +1,20 @@
-.DS_Store
-Thumbs.db
+# IDE Stuff
 .settings
-logs/*
 settings.xml
-.netbeans
-/bower_components/*
-/bower_components
-/node_modules/*
-/node_modules
+
+# Logs
+logs/*.log
+
+# Test Results
 tests/results/*
-apidocs/docbox/
-artifacts/
-workbench/build.number
+
+# Dependenncies
+coldbox/*
+testbox/*
+artifacts/*
+apidocs/docbox/*
+workbench/*
 build/*
-modules/*
-!modules/cbswagger
-!modules/test-api-module
-coldbox
-testbox
+**/apidocs/**
+modules/cbjavaloader
+modules/swagger-sdk
