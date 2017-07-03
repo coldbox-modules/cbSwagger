@@ -32,7 +32,7 @@ component{
 	*/
 	function configure(){
 		// SES Routes
-		routes = [			
+		routes = [
 			//Module Root Requests
 			{ pattern="", handler="Main", action="index" },
 			// Convention Route
@@ -58,7 +58,7 @@ component{
 	* Fired when the module is unregistered and unloaded
 	*/
 	function onUnload(){
-		
+
 	}
 
 	/**
@@ -80,30 +80,30 @@ component{
 		// Default Config Structure
 		configStruct.cbswagger = {
 			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
-			"routes" : ["api"],
+			"routes"   : ["api"],
 			//A base path prefix for your API - leave blank if all routes are configured to the root of the site
 			"basePath" : "",
 			//The API host
-			"host" : "",
+			"host"     : "",
 			// Information about your API
-			"info" : {
+			"info"     : {
 				//The contact email address
-				"contact" : "",
+				"contact"        : "",
 				//A title for your API
-				"title" : "",
+				"title"          : "",
 				//A descritpion of your API
-				"description" : "",
+				"description"    : "",
 				//A url to the License of your API
-				"license" : "",
+				"license"        : "",
 				//A terms of service URL for your API
 				"termsOfService" : "",
 				//The version of your API
-				"version" : ""
+				"version"        : ""
 			},
-			//An array of all of the request body formats your your API is configured to consume 
-			"consumes" : ["application/json","multipart/form-data","application/x-www-form-urlencoded"],
+			//An array of all of the request body formats your your API is configured to consume
+			"consumes" : [ "application/json", "multipart/form-data", "application/x-www-form-urlencoded" ],
 			//An array of all of the response body formats your API delivers
-			"produces" : ["application/json"]
+			"produces" : [ "application/json" ]
 		};
 
 		// Append it

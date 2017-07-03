@@ -10,7 +10,7 @@ component extends="coldbox.system.EventHandler"{
 	property name="routesParser" inject="RoutesParser@cbswagger";
 
 	/**
-	* Pre handler 
+	* Pre handler
 	*/
 	function preHandler( event, rc, prc, action, eventArguments ){
 		event.noLayout();
@@ -21,12 +21,12 @@ component extends="coldbox.system.EventHandler"{
 	*/
 	any function index( event, rc, prc ){
 		var APIDoc = routesParser.createDocFromRoutes();
-		event.renderData( 
-			type 			= "JSON", 
-			data 			= APIDoc.getNormalizedDocument(), 
-			statusCode 		= "200", 
+		event.renderData(
+			type 			= "JSON",
+			data 			= APIDoc.getNormalizedDocument(),
+			statusCode 		= "200",
 			statusMessage 	= "Success"
 		);
 	}
-	
+
 }
