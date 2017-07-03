@@ -13,10 +13,10 @@
         "testbox":"^2.4.0"
     },
     "installPaths":{
-        "coldbox":"coldbox",
-        "testbox":"testbox",
-        "cbjavaloader":"modules/cbjavaloader",
-        "swagger-sdk":"modules/swagger-sdk",
+        "coldbox":"coldbox/",
+        "testbox":"testbox/",
+        "cbjavaloader":"modules/cbjavaloader/",
+        "swagger-sdk":"modules/swagger-sdk/",
         "workbench":"workbench"
     },
     "testbox":{
