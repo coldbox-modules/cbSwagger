@@ -16,7 +16,7 @@ component accessors="true" threadsafe singleton{
 	property name="handlerService"					inject="coldbox:handlerService";
 	property name="interceptorService"				inject="coldbox:interceptorService";
 	property name="moduleService"					inject="coldbox:moduleService";
-	
+
 	// API Tools
 	property name="OpenAPIUtil" 					inject="OpenAPIUtil@SwaggerSDK";
 	property name="OpenAPIParser" 					inject="OpenAPIParser@SwaggerSDK";
@@ -39,7 +39,7 @@ component accessors="true" threadsafe singleton{
 	**/
 	public Document function createDocFromRoutes(){
 		var template = getOpenAPIUtil().newTemplate();
-		
+
 		//append our configured settings
 		for( var key in variables.cbSwaggerSettings ){
 			if( structKeyExists( template, key ) ){
@@ -48,8 +48,10 @@ component accessors="true" threadsafe singleton{
 		}
 
 		var apiRoutes = filterDesignatedRoutes();
-		
-		for( var path in apiRoutes ){
+
+		var pathKeys = structKeyArray( apiRoutes );
+
+		for( var path in pathKeys ){
 			template[ "paths" ].putAll( createPathsFromRouteConfig( apiRoutes[ path ] ) );
 		}
 
@@ -83,15 +85,15 @@ component accessors="true" threadsafe singleton{
 		// Now loop through our assembled module routes and append if designated
 		for( var route in moduleSESRoutes ){
 			var moduleConfigCache = variables.moduleService.getModuleConfigCache();
-			if( 
-				structKeyExists( moduleConfigCache, route.module ) 
-				&& 
-				structKeyExists( moduleConfigCache[ route.module ], "entrypoint" ) 
+			if(
+				structKeyExists( moduleConfigCache, route.module )
+				&&
+				structKeyExists( moduleConfigCache[ route.module ], "entrypoint" )
 			){
 				route.pattern = moduleConfigCache[ route.module ].entrypoint & '/' & route.pattern;
 
 				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) ){
-					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;				
+					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;
 				} else {
 					var moduleConventionPath = listToArray( variables.controller.getColdboxSettings().modulesConvention, "/" );
 					arrayAppend( moduleConventionPath, route.module );
@@ -104,7 +106,7 @@ component accessors="true" threadsafe singleton{
 				}
 			}
 		}
-		
+
 		// Now custom sort our routes alphabetically
 		var entrySet 		= structKeyArray( designatedRoutes );
 		var sortedRoutes 	= createLinkedHashMap();
@@ -112,7 +114,7 @@ component accessors="true" threadsafe singleton{
 		for( var i = 1; i <= arrayLen( entrySet ); i++ ){
 			entrySet[ i ] = replace( entrySet[ i ], "/", "", "ALL" );
 		}
-		
+
 		arraySort( entrySet, "textnocase", "asc" );
 
 		for( var pathEntry in entrySet ){
@@ -136,18 +138,18 @@ component accessors="true" threadsafe singleton{
 		var pathArray 		= listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
 		var assembledRoute 	= [];
 		var handlerMetadata = getHandlerMetadata( arguments.route );
-		
+
 		for( var routeSegment in pathArray ){
 			if( findNoCase( "?", routeSegment ) ){
 				//first add the already assembled path
-				addPathFromRouteConfig( 
-					existingPaths 	= paths, 
-					pathKey 		= "/" & arrayToList( assembledRoute, "/" ), 
+				addPathFromRouteConfig(
+					existingPaths 	= paths,
+					pathKey 		= "/" & arrayToList( assembledRoute, "/" ),
 					RouteConfig 	= arguments.route,
 					handlerMetadata = !isNull( handlerMetadata ) ? handlerMetadata : false
 				);
 				//now append our optional key to construct an extended path
-				arrayAppend( assembledRoute, replace( routeSegment, "?" ) );
+				arrayAppend( assembledRoute, replace( routeSegment, "?", "" ) );
 			} else {
 				arrayAppend( assembledRoute, routeSegment );
 			}
@@ -166,7 +168,7 @@ component accessors="true" threadsafe singleton{
 	* @param struct RouteConfig  							A coldbox SES Route Configuration
 	* @param [ handlerMetadata ]							If not provided a lookup of the metadata will be performed
 	**/
-	private void function addPathFromRouteConfig( 
+	private void function addPathFromRouteConfig(
 		required any existingPaths,
 		required string pathKey,
 		required any routeConfig
@@ -188,26 +190,26 @@ component accessors="true" threadsafe singleton{
 				for( var methodName in listToArray( methodList ) ){
 					// handle explicit SES workarounds
 					if( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ){
-						path.put( ucase( methodName ), getOpenAPIUtil().newMethod() );
-					
+						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
+
 						if( !isNull( arguments.handlerMetadata ) ){
-							appendFunctionInfo( path[ ucase( methodName ) ], actions[ methodList ], arguments.handlerMetadata );
-						}	
+							appendFunctionInfo( path[ lcase( methodName ) ], actions[ methodList ], arguments.handlerMetadata );
+						}
 					}
 				}
 			}
 		} else{
 			for( var methodName in getOpenAPIUtil().defaultMethods() ){
-				path.put( ucase( methodName ), getOpenAPIUtil().newMethod() );
+				path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
 				if( len( actions ) && !isNull( arguments.handlerMetadata ) ){
-					appendFunctionInfo( path[ ucase( methodName ) ], actions, arguments.handlerMetadata );
-				}	
+					appendFunctionInfo( path[ lcase( methodName ) ], actions, arguments.handlerMetadata );
+				}
 			}
 		}
-		
+
 		arguments.existingPaths.put( arguments.pathKey, path );
 	}
-	
+
 	/**
 	* Retreives the handler metadata, if available, from the route configuration
 	* @param struct route  		A coldbox SES Route Configuration
@@ -220,11 +222,11 @@ component accessors="true" threadsafe singleton{
 		try{
 			if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){
 				var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
-			} else {			
-				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;	
+			} else {
+				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;
 			}
-			
-			return getComponentMetaData( invocationPath )
+
+			return getComponentMetaData( invocationPath );
 		} catch( any e ){
 		 	return;
 		}
@@ -238,7 +240,7 @@ component accessors="true" threadsafe singleton{
 	* @param any handlerMetadata 					The metadata of the handler to reference
 	* @return null
 	**/
-	private void function appendFunctionInfo(  
+	private void function appendFunctionInfo(
 		required any method,
 		required string functionName,
 		required any handlerMetadata
@@ -247,8 +249,8 @@ component accessors="true" threadsafe singleton{
 		arguments.method[ "operationId" ] = arguments.functionName;
 
 		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
-		
-		if( !isNull( functionMetadata ) ){						
+
+		if( !isNull( functionMetadata ) ){
 			var defaultKeys = structKeyArray( arguments.method );
 			for( var infoKey in functionMetaData ){
 				if( findNoCase( "x-", infoKey ) ){
@@ -256,28 +258,28 @@ component accessors="true" threadsafe singleton{
 					//evaluate whether we have an x- replacement or a standard x-attribute
 					if( arrayContains( defaultKeys, normalizedKey ) ){
 						//check for $ref includes
-						if( 
-							right( functionMetaData[ infoKey ], 5 ) == '.json' 
-							|| 
-							left( functionMetaData[ infoKey ], 4 ) == 'http' 
+						if(
+							right( functionMetaData[ infoKey ], 5 ) == '.json'
+							||
+							left( functionMetaData[ infoKey ], 4 ) == 'http'
 						){
 							method[ normalizedKey ] = { "$ref" : functionMetaData[ infoKey ] };
 						} else {
-							method[ normalizedKey ] = functionMetaData[ infoKey ];	
+							method[ normalizedKey ] = functionMetaData[ infoKey ];
 						}
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
 				} else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
 					//check for $ref includes
-					if( 
-						right( functionMetaData[ infoKey ], 5 ) == '.json' 
-						|| 
-						left( functionMetaData[ infoKey ], 4 ) == 'http' 
+					if(
+						right( functionMetaData[ infoKey ], 5 ) == '.json'
+						||
+						left( functionMetaData[ infoKey ], 4 ) == 'http'
 					){
 						method[ infoKey ] = { "$ref" : functionMetaData[ infoKey ] };
 					} else {
-						method[ infoKey ] = functionMetaData[ infoKey ];	
+						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
 				}
 			}
@@ -291,14 +293,14 @@ component accessors="true" threadsafe singleton{
 	* @param any handlerMetadata 					The metadata of the handler to reference
 	* @return struct|null
 	**/
-	private any function getFunctionMetadata( 
-		required string functionName, 
-		required any handlerMetadata 
+	private any function getFunctionMetadata(
+		required string functionName,
+		required any handlerMetadata
 	){
 		for( var functionMetadata in arguments.handlerMetadata.functions ){
 			if( lcase( functionMetadata.name ) == lcase( arguments.functionName ) ){
 				return functionMetadata;
-			}		
+			}
 		}
 
 		return;

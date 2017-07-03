@@ -10,6 +10,7 @@ Apache License, Version 2.0.
 - https://github.com/coldbox-modules/cbSwagger
 
 ## SYSTEM REQUIREMENTS
+- Adobe CF 10+
 - Lucee 4.5+
 - ColdBox 4+
 
@@ -51,7 +52,7 @@ cbswagger = {
 		//The version of your API
 		"version":""
 	},
-	//An array of all of the request body formats your your API is configured to consume 
+	//An array of all of the request body formats your your API is configured to consume
 	"consumes": ["application/json","multipart/form-data","application/x-www-form-urlencoded"],
 	//An array of all of the response body formats your API delivers
 	"produces": ["application/json"]
@@ -59,7 +60,7 @@ cbswagger = {
 
 ```
 
-## ;;;;;;Handler Introspection & Documentation attributes
+## Handler Introspection & Documentation attributes
 
 cbSwagger will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes, which will be picked up and included in your documentation.  Some notes on function attributes:
 
@@ -71,7 +72,7 @@ Example:
 
 ```js
 //(POST) /api/v1/users
-function add(event,rc,prc)
+function add( event, rc, prc )
 	description="Adds a new user"
 	parameters="/includes/resources/users.add.parameters.json"
 	responses="/includes/resources/users.add.responses.json"
@@ -79,7 +80,7 @@ function add(event,rc,prc)
 {
 
 	...[ Your code here ]...
-		
+
 }
 ```
 
@@ -96,7 +97,7 @@ Because of His grace, this project exists. If you don't like this, then don't re
 By whom also we have access by faith into this grace wherein we stand, and rejoice in hope of the glory of God.
 And not only so, but we glory in tribulations also: knowing that tribulation worketh patience;
 And patience, experience; and experience, hope:
-And hope maketh not ashamed; because the love of God is shed abroad in our hearts by the 
+And hope maketh not ashamed; because the love of God is shed abroad in our hearts by the
 Holy Ghost which is given unto us. ." Romans 5:5
 
 ###THE DAILY BREAD
