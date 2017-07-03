@@ -4,12 +4,12 @@
  * @package cbSwagger-shell
  * @description This is the User API Controller
  * @author Jon Clausen <jon_clausen@silowebworks.com>
- * 
+ *
  **/
 component displayname="API.v1.Users"{
-	
+
 	this.API_BASE_URL = "/api/v1/users";
-		
+
 	//(GET) /api/v1/users
 	function index(event,rc,prc){
 		runEvent('api.v1.Users.list');
@@ -20,44 +20,45 @@ component displayname="API.v1.Users"{
 		if(event.getHTTPMethod() is "POST"){
 			var email = event.getValue("email",createUUID());
 			var User = ModelUsers.where("email",email).find();
-			if(User.loaded() && UserService.passwordMatches(event.getValue("password",""),User.getPassword())){
+			if(User.loaded() && userService.passwordMatches(event.getValue("password",""),User.getPassword())){
 				SessionService.loginUser(User);
-				ARGUMENTS.User = User;
-				marshallUser(argumentCollection=ARGUMENTS);
+				arguments.user = User;
+				marshallUser(argumentCollection=arguments);
 				rc.statusCode = STATUS.CREATED;
 			} else {
 				rc.data = {};
 				rc.statusCode = STATUS.NOT_AUTHORIZED;
-			}	
+			}
 		} else {
 			SessionService.logoutUser();
 			rc.data={};
 			rc.statusCode = STATUS.NO_CONTENT;
 		}
-	}	
+	}
 
 	//(GET) /api/v1/users/:id
 	function get(event,rc,prc){
 		//404 default
 		rc.statusCode = STATUS.NOT_FOUND;
 		this.marshallUser(argumentCollection=arguments);
-	}	
+	}
 
 	//(GET) /api/v1/users (search)
 	function list(event,rc,prc){
 		requireRole("User");
 		this.marshallUsers(argumentCollection=arguments);
-	}	
+	}
 
-	//(POST) /api/v1/users
+	/**
+	* @description Adds a new user
+	* @x-parameters /includes/resources/users.add.parameters.json##user
+	* @responses /includes/resources/users.add.responses.json
+	* @x-SomeAdditionalInfo Here is some additional information on this path
+	*/
 	function add(event,rc,prc)
-		description="Adds a new user"
-		x-parameters="/includes/resources/users.add.parameters.json##user"
-		responses="/includes/resources/users.add.responses.json"
-		x-SomeAdditionalInfo="Here is some additional information on this path"
 	{
 
-		var creation = UserService.createUser(rc);
+		var creation = userService.createUser(rc);
 
 		if(creation.success){
 			rc.id = creation.result.userId;
@@ -67,40 +68,40 @@ component displayname="API.v1.Users"{
 			if(event.getValue("postLogin",false)){
 				SessionService.loginUser(creation.result.user);
 			}
-	
+
 		} else {
-	
+
 			rc.statusCode = STATUS.NOT_ACCEPTABLE;
 			rc.data['error'] = creation.friendlyMessage;
-			rc.data['validationErrors'] = creation.errors;	
-	
+			rc.data['validationErrors'] = creation.errors;
+
 		}
-			
-	}	
+
+	}
 
 	//(PUT) /api/v1/users/:id
 	function update(event,rc,prc){
-		requireRole("User")
+		requireRole("User");
 		this.marshallUser(argumentCollection=arguments);
 		if(structKeyExists(prc,'user') && (isUserInRole("Administrator") or prc.user.get_Id() == prc.currentUser['_id'])){
-			var updated = UserService.updateUser(prc.user,rc);
+			var updated = userService.updateUser(prc.user,rc);
 
 			if(updated.success){
-				ARGUMENTS.User = updated.result.user;
-				rc.id = ARGUMENTS.User.get_Id();
+				arguments.user = updated.result.user;
+				rc.id = arguments.user.get_Id();
 				marshallUser(argumentCollection=arguments);
-		
+
 			} else {
-		
+
 				rc.statusCode = STATUS.NOT_ACCEPTABLE;
 				rc.data['error'] =updated.friendlyMessage;
 				rc.data['validationErrors'] = updated.message;
-		
+
 			}
 		} else {
 			onAuthorizationFailure();
 		}
-	}	
+	}
 
 	//(DELETE) /api/v1/users/:id
 	function delete(event,rc,prc){
@@ -111,18 +112,18 @@ component displayname="API.v1.Users"{
 		this.marshallUser(argumentCollection=arguments);
 
 		if(structKeyExists(prc,'user') && prc.user.get_Id() != currentUser.get_Id()){
-		
+
 			prc.user.setActive(false);
 			prc.user.update();
 			rc.data = {};
 			rc.statusCode = STATUS.NO_CONTENT;
-		
+
 		} else if(structKeyExists(prc,'user')){
-		
+
 			rc.statusCode = STATUS.NOT_ALLOWED;
-			rc.data['error'] = "You are not authorized to delete this user";	
+			rc.data['error'] = "You are not authorized to delete this user";
 		}
-	}	
+	}
 
 	//(GET) /api/v1/users/roles
 	function roles(event,rc,prc){
@@ -138,30 +139,30 @@ component displayname="API.v1.Users"{
 	/**
 	* Marshall Single User Data
 	**/
-	private function marshallUser(event,rc,prc,User User){
+	private function marshallUser( event, rc, prc, User user ){
 		//404 default
 		rc.statusCode = STATUS.NOT_FOUND;
-		
-		if(!isNull(ARGUMENTS.User)){
-			var user = ARGUMENTS.User;
+
+		if(!isNull( arguments.user ) ){
+			var thisUser = arguments.user;
 		} else {
-			var user = ModelUsers.load(rc.id);	
+			var thisUser = ModelUsers.load(rc.id);
 		}
-		
-		if(user.loaded() && user.getActive()){
-			rc.data = this.defaultUserResponse(user);
-			prc.user = user;
+
+		if( thisUser.loaded() && thisUser.getActive() ){
+			rc.data 	= this.defaultUserResponse( thisUser );
+			prc.user 	= thisUser;
 			rc.statusCode = STATUS.SUCCESS;
 		}
-	}	
+	}
 
 	/**
 	* Marshall Multiple Users Data
 	**/
-	private function marshallUsers(event,rc,prc){
-		rc.data["users"]=[];
+	private function marshallUsers( event, rc, prc ){
+		rc.data[ "users" ] = [];
 
-		var serviceResponse = UserService.searchUsers(rc);
+		var serviceResponse = userService.searchUsers( rc );
 
 		var users = serviceResponse.result.users;
 		//list methods return public data only
@@ -184,17 +185,17 @@ component displayname="API.v1.Users"{
 
 		rc.statusCode = STATUS.SUCCESS;
 
-	}	
+	}
 
 	/**
 	* Assemble the default user response
 	**/
-	private struct function defaultUserResponse(required User User){
-		var sUser = UserService.permissableData(user);
-		var userId = len(User.getIdTag())?User.getIdTag():User.get_id();
-		sUser['href'] = this.API_BASE_URL&'/'&userId;
+	private struct function defaultUserResponse( required User user ){
+		var sUser 		= userService.permissableData( arguments.user );
+		var userId 		= len( arguments.user.getIdTag() ) ? arguments.user.getIdTag() : arguments.user.get_id();
+		sUser[ 'href' ] 	= this.API_BASE_URL & '/' & userId;
 		//assemble default image sizes
-		sUser['images'] = CDEService.commonImageHrefs(User.get_id());
+		sUser[ 'images' ] = CDEService.commonImageHrefs( arguments.user.get_id() );
 		return sUser;
 	}
 

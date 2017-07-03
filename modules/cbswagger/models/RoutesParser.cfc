@@ -37,7 +37,7 @@ component accessors="true" threadsafe singleton{
 	* Creates an OpenAPI Document from the Configured SES routes
 	* @return swagger-sdk.models.OpenAPI.Document
 	**/
-	public Document function createDocFromRoutes(){
+	public any function createDocFromRoutes(){
 		var template = getOpenAPIUtil().newTemplate();
 
 		//append our configured settings
@@ -216,19 +216,18 @@ component accessors="true" threadsafe singleton{
 	* @return any handlerMetadata
 	**/
 	private any function getHandlerMetadata( required any route ){
-		var handlerRoute 	= arguments.route.handler ?: "";
-		var module 			= arguments.route.module ?: "";
+		var handlerRoute 	= ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
+		var module 			= ( isNull( arguments.route.module ) ? "" : arguments.route.module );
+
+		if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){
+			var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
+		} else {
+			var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;
+		}
 
 		try{
-			if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){
-				var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
-			} else {
-				var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;
-			}
-
 			return getComponentMetaData( invocationPath );
 		} catch( any e ){
-		 	return;
 		}
 
 	}
