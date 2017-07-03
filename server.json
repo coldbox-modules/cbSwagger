@@ -1,13 +1,9 @@
 {
-    "name":"cbSwagger",
     "force":true,
     "openbrowser":"false",
     "web":{
         "http":{
-            "port":"50680"
-        },
-        "rewrites":{
-            "enable":true
+            "port":"49616"
         }
     }
 }

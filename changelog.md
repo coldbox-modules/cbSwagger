@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+## 1.1.0
+* Normalization to new module templates
+* HTTP Verbs should be lower case [#1](https://github.com/coldbox-modules/cbSwagger/issues/1)
+
+
 ## 1.0.3
 * Exception when `handler` or `module` does not exist in a route.
 
@@ -15,5 +20,5 @@ CHANGELOG
 * Add module introspection
 * Forgebox integration updates
 
-## 1.0.0 
+## 1.0.0
 * Initial Module Release
