@@ -9,6 +9,7 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 	/*********************************** LIFE CYCLE Methods ***********************************/
 
 	function beforeAll(){
+		reset();
 		super.beforeAll();
 
 		// do your own stuff here

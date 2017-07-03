@@ -4,12 +4,12 @@
  * @package cbSwagger-shell
  * @description This is the User API Controller
  * @author Jon Clausen <jon_clausen@silowebworks.com>
- * 
+ *
  **/
 component displayname="API.v1.Users"{
-	
+
 	this.API_BASE_URL = "/api/v1/users";
-		
+
 	//(GET) /api/v1/users
 	function index(event,rc,prc){
 		runEvent('api.v1.Users.list');
@@ -28,26 +28,26 @@ component displayname="API.v1.Users"{
 			} else {
 				rc.data = {};
 				rc.statusCode = STATUS.NOT_AUTHORIZED;
-			}	
+			}
 		} else {
 			SessionService.logoutUser();
 			rc.data={};
 			rc.statusCode = STATUS.NO_CONTENT;
 		}
-	}	
+	}
 
 	//(GET) /api/v1/users/:id
 	function get(event,rc,prc){
 		//404 default
 		rc.statusCode = STATUS.NOT_FOUND;
 		this.marshallUser(argumentCollection=arguments);
-	}	
+	}
 
 	//(GET) /api/v1/users (search)
 	function list(event,rc,prc){
 		requireRole("User");
 		this.marshallUsers(argumentCollection=arguments);
-	}	
+	}
 
 	//(POST) /api/v1/users
 	function add(event,rc,prc){
@@ -62,20 +62,20 @@ component displayname="API.v1.Users"{
 			if(event.getValue("postLogin",false)){
 				SessionService.loginUser(creation.result.user);
 			}
-	
+
 		} else {
-	
+
 			rc.statusCode = STATUS.NOT_ACCEPTABLE;
 			rc.data['error'] = creation.friendlyMessage;
-			rc.data['validationErrors'] = creation.errors;	
-	
+			rc.data['validationErrors'] = creation.errors;
+
 		}
-			
-	}	
+
+	}
 
 	//(PUT) /api/v1/users/:id
 	function update(event,rc,prc){
-		requireRole("User")
+		requireRole("User");
 		this.marshallUser(argumentCollection=arguments);
 		if(structKeyExists(prc,'user') && (isUserInRole("Administrator") or prc.user.get_Id() == prc.currentUser['_id'])){
 			var updated = UserService.updateUser(prc.user,rc);
@@ -84,18 +84,18 @@ component displayname="API.v1.Users"{
 				ARGUMENTS.User = updated.result.user;
 				rc.id = ARGUMENTS.User.get_Id();
 				marshallUser(argumentCollection=arguments);
-		
+
 			} else {
-		
+
 				rc.statusCode = STATUS.NOT_ACCEPTABLE;
 				rc.data['error'] =updated.friendlyMessage;
 				rc.data['validationErrors'] = updated.message;
-		
+
 			}
 		} else {
 			onAuthorizationFailure();
 		}
-	}	
+	}
 
 	//(DELETE) /api/v1/users/:id
 	function delete(event,rc,prc){
@@ -106,18 +106,18 @@ component displayname="API.v1.Users"{
 		this.marshallUser(argumentCollection=arguments);
 
 		if(structKeyExists(prc,'user') && prc.user.get_Id() != currentUser.get_Id()){
-		
+
 			prc.user.setActive(false);
 			prc.user.update();
 			rc.data = {};
 			rc.statusCode = STATUS.NO_CONTENT;
-		
+
 		} else if(structKeyExists(prc,'user')){
-		
+
 			rc.statusCode = STATUS.NOT_ALLOWED;
-			rc.data['error'] = "You are not authorized to delete this user";	
+			rc.data['error'] = "You are not authorized to delete this user";
 		}
-	}	
+	}
 
 	//(GET) /api/v1/users/roles
 	function roles(event,rc,prc){
@@ -136,19 +136,19 @@ component displayname="API.v1.Users"{
 	private function marshallUser(event,rc,prc,User User){
 		//404 default
 		rc.statusCode = STATUS.NOT_FOUND;
-		
+
 		if(!isNull(ARGUMENTS.User)){
 			var user = ARGUMENTS.User;
 		} else {
-			var user = ModelUsers.load(rc.id);	
+			var user = ModelUsers.load(rc.id);
 		}
-		
+
 		if(user.loaded() && user.getActive()){
 			rc.data = this.defaultUserResponse(user);
 			prc.user = user;
 			rc.statusCode = STATUS.SUCCESS;
 		}
-	}	
+	}
 
 	/**
 	* Marshall Multiple Users Data
@@ -179,7 +179,7 @@ component displayname="API.v1.Users"{
 
 		rc.statusCode = STATUS.SUCCESS;
 
-	}	
+	}
 
 	/**
 	* Assemble the default user response

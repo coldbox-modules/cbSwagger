@@ -216,8 +216,8 @@ component accessors="true" threadsafe singleton{
 	* @return any handlerMetadata
 	**/
 	private any function getHandlerMetadata( required any route ){
-		var handlerRoute 	= arguments.route.handler ?: "";
-		var module 			= arguments.route.module ?: "";
+		var handlerRoute 	= ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
+		var module 			= ( isNull( arguments.route.module ) ? "" : arguments.route.module );
 
 		if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){
 			var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
@@ -225,7 +225,11 @@ component accessors="true" threadsafe singleton{
 			var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;
 		}
 
-		return getComponentMetaData( invocationPath );
+		try{
+			return getComponentMetaData( invocationPath );
+		} catch( any e ){
+		}
+
 	}
 
 	/**
