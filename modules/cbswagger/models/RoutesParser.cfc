@@ -31,6 +31,7 @@ component accessors="true" threadsafe singleton{
 		variables.interceptorService 	= variables.controller.getInterceptorService();
 		variables.handlerService 		= variables.controller.getHandlerService();
 		variables.SESRoutes 			= variables.SESInterceptor.getRoutes();
+		variables.util 					= new coldbox.system.core.util.Util();
 	}
 
 	/**
@@ -90,7 +91,8 @@ component accessors="true" threadsafe singleton{
 				&&
 				structKeyExists( moduleConfigCache[ route.module ], "entrypoint" )
 			){
-				route.pattern = moduleConfigCache[ route.module ].entrypoint & '/' & route.pattern;
+				var moduleEntryPoint = arrayToList( listToArray( moduleConfigCache[ route.module ].entrypoint, "/" ), "/" );
+				route.pattern = moduleEntryPoint & '/' & route.pattern;
 
 				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) ){
 					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;
@@ -100,11 +102,13 @@ component accessors="true" threadsafe singleton{
 					route[ "moduleInvocationPath" ] = listToArray( moduleConventionPath, "." );
 				}
 			}
+
 			for( var prefix in routingPrefixes ){
 				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
 					designatedRoutes[ route.pattern ] = route;
 				}
 			}
+
 		}
 
 		// Now custom sort our routes alphabetically
@@ -226,8 +230,9 @@ component accessors="true" threadsafe singleton{
 		}
 
 		try{
-			return getComponentMetaData( invocationPath );
+			return util.getInheritedMetadata( invocationPath );
 		} catch( any e ){
+			return {};
 		}
 
 	}
@@ -258,25 +263,26 @@ component accessors="true" threadsafe singleton{
 					if( arrayContains( defaultKeys, normalizedKey ) ){
 						//check for $ref includes
 						if(
-							right( functionMetaData[ infoKey ], 5 ) == '.json'
+							right( listFirst( functionMetaData[ infoKey ], "##" ), 5 ) == '.json'
 							||
 							left( functionMetaData[ infoKey ], 4 ) == 'http'
 						){
-							method[ normalizedKey ] = { "$ref" : functionMetaData[ infoKey ] };
+							method[ normalizedKey ] = { "$ref" : replaceNoCase( functionMetaData[ infoKey ], "####", "##", "ALL" ) };
 						} else {
 							method[ normalizedKey ] = functionMetaData[ infoKey ];
 						}
+
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
 				} else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
 					//check for $ref includes
 					if(
-						right( functionMetaData[ infoKey ], 5 ) == '.json'
+						right( listFirst( functionMetaData[ infoKey ], "##" ), 5 ) == '.json'
 						||
 						left( functionMetaData[ infoKey ], 4 ) == 'http'
 					){
-						method[ infoKey ] = { "$ref" : functionMetaData[ infoKey ] };
+						method[ infoKey ] = { "$ref" : replaceNoCase( functionMetaData[ infoKey ], "####", "##", "ALL" ) };
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
@@ -296,6 +302,10 @@ component accessors="true" threadsafe singleton{
 		required string functionName,
 		required any handlerMetadata
 	){
+
+		//exit out if we have no functions defined
+		if( !structKeyExists( arguments.handlerMetadata, "functions" ) ) return;
+
 		for( var functionMetadata in arguments.handlerMetadata.functions ){
 			if( lcase( functionMetadata.name ) == lcase( arguments.functionName ) ){
 				return functionMetadata;
