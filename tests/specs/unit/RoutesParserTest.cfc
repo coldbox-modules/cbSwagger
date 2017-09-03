@@ -5,11 +5,12 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 	property name="controller" 			inject="coldbox";
 
 	this.loadColdbox=true;
+	this.unloadColdbox=true;
 
 	/*********************************** LIFE CYCLE Methods ***********************************/
 
 	function beforeAll(){
-		reset();
+
 		super.beforeAll();
 
 		// do your own stuff here
@@ -46,6 +47,7 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 				expect( isJSON( APIDoc.asJSON() ) ).toBeTrue();
 
 				variables.APIDoc = APIDoc;
+
 			});
 
 			it( "Tests the API Document against the routing configuration", function(){
@@ -62,6 +64,8 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 
 				var CBRoutes = getController().getInterceptorService().getInterceptor("SES").getRoutes();
 				expect( CBRoutes ).toBeArray();
+
+				expect( arrayLen( CBRoutes ) ).toBeGT( 0 );
 
 				//Tests that all of our configured paths exist
 				for( var routePrefix in apiPrefixes ){
@@ -91,6 +95,8 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 
 				var TLRoutes = getController().getInterceptorService().getInterceptor( "SES" ).getRoutes();
 				expect( TLRoutes ).toBeArray();
+
+				expect( arrayLen( TLRoutes ) ).toBeGT( 0 );
 
 				for( var TLRoute in TLRoutes ){
 					if( len( TLRoute.moduleRouting ) ){
