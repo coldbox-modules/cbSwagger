@@ -50,6 +50,24 @@ component{
 		routes = [
 			//Module API Routes
 			{
+				pattern	= 'users/:userID/posts/:id',
+				handler	= 'Users',
+				action 	= { 
+					"GET"    = "get" , 
+					"POST"   = "update",
+					"PATCH"  = "update",
+					"DELETE" = "delete" 
+				}
+			},
+			{
+				pattern	= 'users/:userID/posts',
+				handler	= 'Users',
+				action 	= { 
+					"GET"  = "index" , 
+					"POST" = "add" 
+				}
+			},
+			{
 				pattern	= 'users/login',
 				handler	= 'Users',
 				action 	= { "POST" = "login" , "DELETE" = "login" }

@@ -1,5 +1,6 @@
 {
-  "user":[
+  "user":
+  [
     {
       "name": "user",
       "in": "body",

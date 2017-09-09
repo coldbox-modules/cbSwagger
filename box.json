@@ -7,7 +7,7 @@
         "coldbox":"^4.3.0",
         "workbench":"git+https://github.com/Ortus-Solutions/unified-workbench.git",
         "cbjavaloader":">1.0.0",
-        "swagger-sdk":">0.0.9"
+        "swagger-sdk":"^1.0.3"
     },
     "devDependencies":{
         "testbox":"^2.4.0"
@@ -17,7 +17,7 @@
         "testbox":"testbox/",
         "cbjavaloader":"modules/cbjavaloader/",
         "swagger-sdk":"modules/swagger-sdk/",
-        "workbench":"workbench"
+        "workbench":"workbench/"
     },
     "testbox":{
         "runner":"http://localhost:49616"

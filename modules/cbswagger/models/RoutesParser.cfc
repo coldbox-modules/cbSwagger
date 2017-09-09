@@ -31,6 +31,7 @@ component accessors="true" threadsafe singleton{
 		variables.interceptorService 	= variables.controller.getInterceptorService();
 		variables.handlerService 		= variables.controller.getHandlerService();
 		variables.SESRoutes 			= variables.SESInterceptor.getRoutes();
+		variables.util 					= new coldbox.system.core.util.Util();
 	}
 
 	/**
@@ -55,7 +56,8 @@ component accessors="true" threadsafe singleton{
 			template[ "paths" ].putAll( createPathsFromRouteConfig( apiRoutes[ path ] ) );
 		}
 
-		return getOpenAPIParser().parse( template ).getDocumentObject();
+		return getOpenAPIParser().parse( template ).getDocumentObject();	
+
 	}
 
 	/**
@@ -90,7 +92,8 @@ component accessors="true" threadsafe singleton{
 				&&
 				structKeyExists( moduleConfigCache[ route.module ], "entrypoint" )
 			){
-				route.pattern = moduleConfigCache[ route.module ].entrypoint & '/' & route.pattern;
+				var moduleEntryPoint = arrayToList( listToArray( moduleConfigCache[ route.module ].entrypoint, "/" ), "/" );
+				route.pattern = moduleEntryPoint & '/' & route.pattern;
 
 				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) ){
 					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;
@@ -100,11 +103,13 @@ component accessors="true" threadsafe singleton{
 					route[ "moduleInvocationPath" ] = listToArray( moduleConventionPath, "." );
 				}
 			}
+
 			for( var prefix in routingPrefixes ){
 				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
 					designatedRoutes[ route.pattern ] = route;
 				}
 			}
+
 		}
 
 		// Now custom sort our routes alphabetically
@@ -154,6 +159,7 @@ component accessors="true" threadsafe singleton{
 				arrayAppend( assembledRoute, routeSegment );
 			}
 		}
+
 		//Add our final constructed route to the paths map
 		addPathFromRouteConfig( paths, "/" & arrayToList( assembledRoute, "/" ), arguments.route );
 
@@ -190,10 +196,16 @@ component accessors="true" threadsafe singleton{
 				for( var methodName in listToArray( methodList ) ){
 					// handle explicit SES workarounds
 					if( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ){
+						
 						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
 
 						if( !isNull( arguments.handlerMetadata ) ){
-							appendFunctionInfo( path[ lcase( methodName ) ], actions[ methodList ], arguments.handlerMetadata );
+							appendFunctionInfo( 
+								path[ lcase( methodName ) ], 
+								actions[ methodList ], 
+								arguments.handlerMetadata, 
+								len( arguments.routeConfig.module ) ? arguments.routeConfig.module : javacast( "null", "" ) 
+							);
 						}
 					}
 				}
@@ -226,8 +238,15 @@ component accessors="true" threadsafe singleton{
 		}
 
 		try{
-			return getComponentMetaData( invocationPath );
+	
+			return util.getInheritedMetadata( invocationPath );
+
 		} catch( any e ){
+			throw( 
+				type         = "cbSwagger.RoutesParse.handlerSyntaxException",
+				message      = "The handler at #invocationPath# could not be parsed.  The error that occurred: #e.message#",
+				extendedInfo = e.detail
+			);
 		}
 
 	}
@@ -242,11 +261,23 @@ component accessors="true" threadsafe singleton{
 	private void function appendFunctionInfo(
 		required any method,
 		required string functionName,
-		required any handlerMetadata
+		required any handlerMetadata,
+		moduleName
 	){
 
-		arguments.method[ "operationId" ] = arguments.functionName;
 
+		if( !isNull( moduleName ) ){
+
+			var operationPath = moduleName & ":" & listLast( handlerMetadata.name, "." );
+		
+		} else{
+		
+			var operationPath = listLast( handlerMetadata.name, "." );
+		
+		}
+
+		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;	
+		
 		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 
 		if( !isNull( functionMetadata ) ){
@@ -258,25 +289,26 @@ component accessors="true" threadsafe singleton{
 					if( arrayContains( defaultKeys, normalizedKey ) ){
 						//check for $ref includes
 						if(
-							right( functionMetaData[ infoKey ], 5 ) == '.json'
+							right( listFirst( functionMetaData[ infoKey ], "##" ), 5 ) == '.json'
 							||
 							left( functionMetaData[ infoKey ], 4 ) == 'http'
 						){
-							method[ normalizedKey ] = { "$ref" : functionMetaData[ infoKey ] };
+							method[ normalizedKey ] = { "$ref" : replaceNoCase( functionMetaData[ infoKey ], "####", "##", "ALL" ) };
 						} else {
 							method[ normalizedKey ] = functionMetaData[ infoKey ];
 						}
+
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
 				} else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
 					//check for $ref includes
 					if(
-						right( functionMetaData[ infoKey ], 5 ) == '.json'
+						right( listFirst( functionMetaData[ infoKey ], "##" ), 5 ) == '.json'
 						||
 						left( functionMetaData[ infoKey ], 4 ) == 'http'
 					){
-						method[ infoKey ] = { "$ref" : functionMetaData[ infoKey ] };
+						method[ infoKey ] = { "$ref" : replaceNoCase( functionMetaData[ infoKey ], "####", "##", "ALL" ) };
 					} else {
 						method[ infoKey ] = functionMetaData[ infoKey ];
 					}
@@ -296,6 +328,10 @@ component accessors="true" threadsafe singleton{
 		required string functionName,
 		required any handlerMetadata
 	){
+
+		//exit out if we have no functions defined
+		if( !structKeyExists( arguments.handlerMetadata, "functions" ) ) return;
+
 		for( var functionMetadata in arguments.handlerMetadata.functions ){
 			if( lcase( functionMetadata.name ) == lcase( arguments.functionName ) ){
 				return functionMetadata;

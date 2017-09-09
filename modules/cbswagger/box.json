@@ -18,7 +18,7 @@
         "Luis Majano <lmajano@ortussolutions.com>"
     ],
     "dependencies"  :{
-        "swagger-sdk":"stable"
+        "swagger-sdk":"^1.0.3"
     },
 	"ignore":[
         "**/.*",
