@@ -56,7 +56,8 @@ component accessors="true" threadsafe singleton{
 			template[ "paths" ].putAll( createPathsFromRouteConfig( apiRoutes[ path ] ) );
 		}
 
-		return getOpenAPIParser().parse( template ).getDocumentObject();
+		return getOpenAPIParser().parse( template ).getDocumentObject();	
+
 	}
 
 	/**
@@ -158,6 +159,7 @@ component accessors="true" threadsafe singleton{
 				arrayAppend( assembledRoute, routeSegment );
 			}
 		}
+
 		//Add our final constructed route to the paths map
 		addPathFromRouteConfig( paths, "/" & arrayToList( assembledRoute, "/" ), arguments.route );
 
@@ -197,7 +199,12 @@ component accessors="true" threadsafe singleton{
 						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
 
 						if( !isNull( arguments.handlerMetadata ) ){
-							appendFunctionInfo( path[ lcase( methodName ) ], actions[ methodList ], arguments.handlerMetadata );
+							appendFunctionInfo( 
+								path[ lcase( methodName ) ], 
+								actions[ methodList ], 
+								arguments.handlerMetadata, 
+								len( arguments.routeConfig.module ) ? arguments.routeConfig.module : javacast( "null", "" ) 
+							);
 						}
 					}
 				}
@@ -247,11 +254,18 @@ component accessors="true" threadsafe singleton{
 	private void function appendFunctionInfo(
 		required any method,
 		required string functionName,
-		required any handlerMetadata
+		required any handlerMetadata,
+		moduleName
 	){
 
-		arguments.method[ "operationId" ] = arguments.functionName;
+		if( !isNull( moduleName ) ){
+			var operationPath = moduleName & ":" & listLast( handlerMetadata.name, "." );
+		} else{
+			var operationPath = listLast( handlerMetadata.name, "." );
+		}
 
+		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;	
+		
 		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 
 		if( !isNull( functionMetadata ) ){

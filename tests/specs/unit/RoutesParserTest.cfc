@@ -41,12 +41,42 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 				expect( APIDoc ).toBeComponent();
 
 				var NormalizedDoc = APIDoc.getNormalizedDocument();
+
 				expect( NormalizedDoc ).toBeStruct();
 				expect(	NormalizedDoc ).toHaveKey( "swagger" );
 
 				expect( isJSON( APIDoc.asJSON() ) ).toBeTrue();
 
 				variables.APIDoc = APIDoc;
+
+			});
+
+			it( "Tests casting", function(){
+
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+
+				var doc = APIDoc.getNormalizedDocument();
+
+				expect( doc ).toBeStruct();
+				expect( doc ).toHaveKey( "paths" );
+
+				for( var pathKey in doc[ "paths" ] ){
+					
+					if( left( pathKey, 2 ) == 'x-' ) continue;
+
+					for( var methodKey in doc[ "paths" ][ pathKey ] ){
+
+						if( left( methodKey, 2 ) == 'x-' ) continue;
+
+						var method = doc[ "paths" ][ pathKey ][ methodKey ];
+						expect( method ).toBeStruct();
+						if( structKeyExists( method, "parameters" ) ){
+
+							expect( method[ "parameters" ] ).toBeArray();
+						
+						}
+					}
+				}
 
 			});
 
