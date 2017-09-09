@@ -196,6 +196,7 @@ component accessors="true" threadsafe singleton{
 				for( var methodName in listToArray( methodList ) ){
 					// handle explicit SES workarounds
 					if( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ){
+						
 						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
 
 						if( !isNull( arguments.handlerMetadata ) ){
@@ -237,9 +238,15 @@ component accessors="true" threadsafe singleton{
 		}
 
 		try{
+	
 			return util.getInheritedMetadata( invocationPath );
+
 		} catch( any e ){
-			return {};
+			throw( 
+				type         = "cbSwagger.RoutesParse.handlerSyntaxException",
+				message      = "The handler at #invocationPath# could not be parsed.  The error that occurred: #e.message#",
+				extendedInfo = e.detail
+			);
 		}
 
 	}
@@ -258,10 +265,15 @@ component accessors="true" threadsafe singleton{
 		moduleName
 	){
 
+
 		if( !isNull( moduleName ) ){
+
 			var operationPath = moduleName & ":" & listLast( handlerMetadata.name, "." );
+		
 		} else{
+		
 			var operationPath = listLast( handlerMetadata.name, "." );
+		
 		}
 
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;	
