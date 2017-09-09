@@ -5,5 +5,8 @@
         "http":{
             "port":"49616"
         }
+    },
+    "app":{
+        "cfengine":"lucee@4.5"
     }
 }
