@@ -95,7 +95,7 @@ component accessors="true" threadsafe singleton{
 				var moduleEntryPoint = arrayToList( listToArray( moduleConfigCache[ route.module ].entrypoint, "/" ), "/" );
 				route.pattern = moduleEntryPoint & '/' & route.pattern;
 
-				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) ){
+				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) && len( moduleConfigCache[ route.module ].cfmapping ) ){
 					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;
 				} else {
 					var moduleConventionPath = listToArray( variables.controller.getColdboxSettings().modulesConvention, "/" );
