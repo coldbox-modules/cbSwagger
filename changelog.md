@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+## 1.1.2
+* Add `$ref` sanitization and inherited metadata introspection
+* Add the ability to handle arrays returned from `$ref` keys. Prepends moudule routing to operation id
+* ACF syntax corrections and add better throw for attempts to parse component with syntax errors
+
+
+
 ## 1.1.0
 * Normalization to new module templates
 * HTTP Verbs should be lower case [#1](https://github.com/coldbox-modules/cbSwagger/issues/1)
