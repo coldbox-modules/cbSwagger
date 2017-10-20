@@ -1,5 +1,7 @@
 CHANGELOG
 =========
+## 1.2.0
+* Adds new function metadata handling for parameters and responses
 
 ## 1.1.0
 * Normalization to new module templates
