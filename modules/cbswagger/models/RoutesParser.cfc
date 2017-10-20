@@ -409,7 +409,14 @@ component accessors="true" threadsafe singleton{
 		arguments.metadataText = trim( arguments.metadataText );
 
 		if( isJSON( metadataText ) ){
-			return deserializeJSON( metadataText )
+			var parsedMetadata = deserializeJSON( metadataText );
+			//check our metadata for $refs
+			if( isStruct( parsedMetadata ) ){
+				for( var key in parsedMetadata ){
+					parsedMetadata[ key ] = this.parseMetadataValue( parsedMetadata[ key ] );
+				}
+			}
+			return parsedMetadata;
 		} else if(
 			right( listFirst( metadataText, "##" ), 5 ) == '.json'
 			||
