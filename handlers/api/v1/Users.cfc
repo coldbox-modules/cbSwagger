@@ -37,7 +37,7 @@ component displayname="API.v1.Users"{
 	* @param-firstname { "type": "string", "required" : "false", "in" : "query" }
 	* @param-lastname { "type": "string", "required" : "false", "in" : "query" }
 	* @param-email { "type": "string", "required" : "false", "in" : "query" }
-	* @response-default { description="User successfully updated", schema="/includes/resources/users.add.responses.json##default.schema" }
+	* @response-default { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }
 	**/
 	function update(event,rc,prc){
 	}

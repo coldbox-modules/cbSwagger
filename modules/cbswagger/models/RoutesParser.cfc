@@ -200,7 +200,7 @@ component accessors="true" threadsafe singleton{
 						
 						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
 
-						appendPathParams( pathKey, path[ lcase( methodName ) ] )
+						appendPathParams( pathKey, path[ lcase( methodName ) ] );
 
 						if( !isNull( arguments.handlerMetadata ) ){
 							appendFunctionInfo( 
@@ -235,13 +235,13 @@ component accessors="true" threadsafe singleton{
 	private void function appendPathParams( required string pathKey, required struct method ){
 		//handle any parameters in the url now
 		var pathParams = arrayFilter( listToArray( pathKey, "/" ), function( segment ){
-			return left( segment, 1 ) == "{"
+			return left( segment, 1 ) == "{";
 		} );
 
 		if( arrayLen( pathParams ) ){
 
 			if( !structKeyExists( method, "parameters" ) ){
-				method.put( "parameters", [] )
+				method.put( "parameters", [] );
 			}
 
 			for( var urlParam in pathParams ){
@@ -254,7 +254,7 @@ component accessors="true" threadsafe singleton{
 						"required"   : true,
 						"type"       : "string"
 					}
-				)
+				);
 			}	
 		}
 	}
@@ -343,7 +343,7 @@ component accessors="true" threadsafe singleton{
 
 					// See if our parameter was already provided through URL parsing
 					paramSearch = arrayFilter( method[ "parameters" ], function( item ){
-						return item.name == paramName
+						return item.name == paramName;
 					} );
 
 					if( arrayLen( paramSearch ) ){
@@ -413,7 +413,7 @@ component accessors="true" threadsafe singleton{
 			//check our metadata for $refs
 			if( isStruct( parsedMetadata ) ){
 				for( var key in parsedMetadata ){
-					parsedMetadata[ key ] = this.parseMetadataValue( parsedMetadata[ key ] );
+					parsedMetadata[ key ] = parseMetadataValue( parsedMetadata[ key ] );
 				}
 			}
 			return parsedMetadata;

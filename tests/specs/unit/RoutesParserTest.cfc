@@ -157,7 +157,7 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 
 				expect( normalizedDoc ).toHaveKey( "paths" );
 				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users/{id}" );
-				expect( normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ] );
+				expect( normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ] ).toBeStruct();
 
 				var path = normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ];
 
@@ -168,9 +168,9 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 					expect( path[ methodKey ] ).toHaveKey( "parameters" );
 
 					var idParamSearch = arrayFilter( 
-						path[ methodKey ][ "parameters" ], 
+						path[ methodKey ][ "parameters" ],
 						function( parameter ){							
-							return structKeyExists( parameter, "name" ) && parameter[ "name" ] == "id";	
+							return ( structKeyExists( parameter, "name" ) && parameter[ "name" ] == "id" );	
 						} 
 					);
 
@@ -178,7 +178,7 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 					expect( arrayLen( idParamSearch ) ).toBe( 1 );
 
 					expect( idParamSearch[ 1 ].required ).toBeTrue();
-					expect( idParamSearch[ 1 ].in ).toBe( "path" );
+					expect( idParamSearch[ 1 ][ "in" ] ).toBe( "path" );
 				}
 
 
