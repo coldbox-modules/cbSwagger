@@ -320,11 +320,15 @@ component accessors="true" threadsafe singleton{
 		if( !isNull( functionMetadata ) ){
 			var defaultKeys = structKeyArray( arguments.method );
 			for( var infoKey in functionMetaData ){
+				//automatically make hints our "description"
 				if( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
-				// x-attributes and custom keys	
 				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 
-				if( left( infoKey, 2 ) == "x-" ){
+				// x-attributes and custom keys	
+				if( infoKey == "hint" ){
+					method.put( "description", infoMetadata );
+				} 
+				else if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" );
 					//evaluate whether we have an x- replacement or a standard x-attribute
 					if( arrayContains( defaultKeys, normalizedKey ) ){
@@ -392,8 +396,13 @@ component accessors="true" threadsafe singleton{
 					}
 				}
 				else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
-					//check for $ref includes
-					method[ infoKey ] = infoMetadata;
+					//don't override any previously set convention assignments
+					if( isSimpleValue( infoMetadata ) && len( infoMetadata ) ){
+						method[ infoKey ] = infoMetadata;		
+					} else if( !isSimpleValue( infoMetadata ) ) {
+						method[ infoKey ] = infoMetadata;
+					}
+					
 				}
 			}
 		}

@@ -35,9 +35,6 @@ component{
 
 	// request start
 	public boolean function onRequestStart( String targetPage ){
-		
-		structDelete( application, "wirebox" );
-		structDelete( application, "cbController" );
 		return true;
 	}
 
