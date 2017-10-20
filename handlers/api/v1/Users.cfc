@@ -22,10 +22,6 @@ component displayname="API.v1.Users"{
 	function get(event,rc,prc){
 	}
 
-	//(GET) /api/v1/users (search)
-	function list(event,rc,prc){
-	}
-
 	/**
 	* @description Adds a new user
 	* @x-parameters /includes/resources/users.add.parameters.json##user
@@ -35,7 +31,14 @@ component displayname="API.v1.Users"{
 	function add(event,rc,prc){
 	}
 
-	//(PUT) /api/v1/users/:id
+	
+	/**
+	* @description Updates a user
+	* @param-firstname { "type": "string", "required" : "false", "in" : "query" }
+	* @param-lastname { "type": "string", "required" : "false", "in" : "query" }
+	* @param-email { "type": "string", "required" : "false", "in" : "query" }
+	* @response-default { description="User successfully updated", schema="/includes/resources/users.add.responses.json##default.schema" }
+	**/
 	function update(event,rc,prc){
 	}
 

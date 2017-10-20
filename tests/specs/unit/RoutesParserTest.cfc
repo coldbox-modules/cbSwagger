@@ -84,10 +84,10 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 				var SwaggerUtil = Wirebox.getInstance( "OpenAPIUtil@SwaggerSDK" );
 				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
-				var NormDoc = variables.APIDoc.getNormalizedDocument();
-				expect( NormDoc ).toHaveKey( "paths" );
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+				expect( normalizedDoc ).toHaveKey( "paths" );
 
-				var APIPaths = NormDoc[ "paths" ];
+				var APIPaths = normalizedDoc[ "paths" ];
 				//pull our routing configuration
 				var apiPrefixes = cbSwaggerSettings.routes;
 				expect( apiPrefixes ).toBeArray();
@@ -103,7 +103,7 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 						if( left( route.pattern, len( routePrefix ) ) == routePrefix ){
 							var translatedPath = SwaggerUtil.translatePath( route.pattern );
 							if( !len( route.moduleRouting ) ){
-								expect( NormDoc[ "paths" ] ).toHaveKey( translatedPath );
+								expect( normalizedDoc[ "paths" ] ).toHaveKey( translatedPath );
 							}
 						}
 					}
@@ -115,10 +115,10 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 				var SwaggerUtil = Wirebox.getInstance( "OpenAPIUtil@SwaggerSDK" );
 				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
-				var NormDoc = variables.APIDoc.getNormalizedDocument();
-				expect( NormDoc ).toHaveKey( "paths" );
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+				expect( normalizedDoc ).toHaveKey( "paths" );
 
-				var APIPaths = NormDoc[ "paths" ];
+				var APIPaths = normalizedDoc[ "paths" ];
 				//pull our routing configuration
 				var apiPrefixes = cbSwaggerSettings.routes;
 				expect( apiPrefixes ).toBeArray();
@@ -140,7 +140,7 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 							for( var route in CBRoutes ){
 								if( left( route.pattern, len( routePrefix ) ) == routePrefix ){
 									var translatedPath = SwaggerUtil.translatePath( route.pattern );
-									expect( NormDoc[ "paths" ] ).toHaveKey( translatedPath );
+									expect( normalizedDoc[ "paths" ] ).toHaveKey( translatedPath );
 								}
 							}
 						}
@@ -148,6 +148,110 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 				}
 
 			});
+
+			it( "Tests that route-based parameters are appended to all method params", function(){
+				
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users/{id}" );
+				expect( normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ] );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ];
+
+				for( var methodKey in path ){
+
+					if( isSimpleValue( path[ methodKey ] ) ) continue;
+
+					expect( path[ methodKey ] ).toHaveKey( "parameters" );
+
+					var idParamSearch = arrayFilter( 
+						path[ methodKey ][ "parameters" ], 
+						function( parameter ){							
+							return structKeyExists( parameter, "name" ) && parameter[ "name" ] == "id";	
+						} 
+					);
+
+
+					expect( arrayLen( idParamSearch ) ).toBe( 1 );
+
+					expect( idParamSearch[ 1 ].required ).toBeTrue();
+					expect( idParamSearch[ 1 ].in ).toBe( "path" );
+				}
+
+
+			} );
+
+			it( "Tests the ability to parse parameter metadata definitions", function(){
+				
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users/{id}" );
+				expect( normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ] );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ];
+
+				expect( path ).toHaveKey( "put" );
+
+				expect( path[ "put" ] ).toHaveKey( "parameters" );
+
+				var firstNameSearch = arrayFilter( 
+					path[ "put" ][ "parameters" ], 
+					function( parameter ){							
+						return structKeyExists( parameter, "name" ) && parameter[ "name" ] == "firstname";	
+					}
+				);
+
+				expect( arrayLen( firstNameSearch ) ).toBe( 1 );
+
+				expect( firstNameSearch[ 1 ] )
+										.toBeStruct()
+										.toHaveKey( "required" );
+
+				expect( firstNameSearch[ 1 ].required ).toBe( false );
+
+			} );
+
+
+			it( "Tests the ability to parse response metadata definitions", function(){
+				
+				
+				
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users/{id}" );
+				expect( normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ] );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ];
+
+				expect( path ).toHaveKey( "put" );
+
+				expect( path[ "put" ] ).toHaveKey( "responses" );
+				expect( path[ "put" ][ "responses" ] ).toHaveKey( "default" );
+
+				expect( path[ "put" ][ "responses" ][ "default" ] )
+													.toBeStruct()
+													.toHaveKey( "description" )
+													.toHaveKey( "schema" );
+
+				expect(
+					path[ "put" ][ "responses" ][ "default" ][ "description" ]
+				).toBe( "User successfully updated" );
+
+				expect(
+					path[ "put" ][ "responses" ][ "default" ][ "schema" ]
+				).toBeStruct();
+
+
+			} );
 
 		});
 
