@@ -95,7 +95,7 @@ component accessors="true" threadsafe singleton{
 				var moduleEntryPoint = arrayToList( listToArray( moduleConfigCache[ route.module ].entrypoint, "/" ), "/" );
 				route.pattern = moduleEntryPoint & '/' & route.pattern;
 
-				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) ){
+				if( structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) && len( moduleConfigCache[ route.module ].cfmapping ) ){
 					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;
 				} else {
 					var moduleConventionPath = listToArray( variables.controller.getColdboxSettings().modulesConvention, "/" );
@@ -180,6 +180,7 @@ component accessors="true" threadsafe singleton{
 		required any routeConfig
 		any handlerMetadata
 	){
+
 		var path = createLinkedHashmap();
 		var errorMethods = [ 'onInvalidHTTPMethod', 'onMissingAction', 'onError' ];
 
@@ -199,6 +200,8 @@ component accessors="true" threadsafe singleton{
 						
 						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
 
+						appendPathParams( pathKey, path[ lcase( methodName ) ] );
+
 						if( !isNull( arguments.handlerMetadata ) ){
 							appendFunctionInfo( 
 								path[ lcase( methodName ) ], 
@@ -210,6 +213,7 @@ component accessors="true" threadsafe singleton{
 					}
 				}
 			}
+
 		} else{
 			for( var methodName in getOpenAPIUtil().defaultMethods() ){
 				path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
@@ -220,6 +224,39 @@ component accessors="true" threadsafe singleton{
 		}
 
 		arguments.existingPaths.put( arguments.pathKey, path );
+
+	}
+
+	/**
+	* Appends the path-based paramters to a method
+	* @pathKey  the path key ( route )
+	* @method 	The current path method object
+	**/
+	private void function appendPathParams( required string pathKey, required struct method ){
+		//handle any parameters in the url now
+		var pathParams = arrayFilter( listToArray( pathKey, "/" ), function( segment ){
+			return left( segment, 1 ) == "{";
+		} );
+
+		if( arrayLen( pathParams ) ){
+
+			if( !structKeyExists( method, "parameters" ) ){
+				method.put( "parameters", [] );
+			}
+
+			for( var urlParam in pathParams ){
+				var paramName = mid( urlParam, 2, len( urlParam ) - 2 );
+				arrayAppend( 
+					method[ "parameters" ],
+					{ 
+						"name"       : paramName,
+						"in"         : "path",
+						"required"   : true,
+						"type"       : "string"
+					}
+				);
+			}	
+		}
 	}
 
 	/**
@@ -283,39 +320,121 @@ component accessors="true" threadsafe singleton{
 		if( !isNull( functionMetadata ) ){
 			var defaultKeys = structKeyArray( arguments.method );
 			for( var infoKey in functionMetaData ){
-				if( findNoCase( "x-", infoKey ) ){
+				//automatically make hints our "description"
+				if( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
+				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
+
+				// x-attributes and custom keys	
+				if( infoKey == "hint" ){
+					method.put( "description", infoMetadata );
+				} 
+				else if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" );
 					//evaluate whether we have an x- replacement or a standard x-attribute
 					if( arrayContains( defaultKeys, normalizedKey ) ){
-						//check for $ref includes
-						if(
-							right( listFirst( functionMetaData[ infoKey ], "##" ), 5 ) == '.json'
-							||
-							left( functionMetaData[ infoKey ], 4 ) == 'http'
-						){
-							method[ normalizedKey ] = { "$ref" : replaceNoCase( functionMetaData[ infoKey ], "####", "##", "ALL" ) };
-						} else {
-							method[ normalizedKey ] = functionMetaData[ infoKey ];
-						}
+						method[ normalizedKey ] = infoMetadata;
+					} else {
+						method[ infoKey ] = infoMetadata;
+					}
+				} 
+				//parameter handling
+				else if( left( infoKey, 6 ) == 'param-'){
+					var paramName = right( infoKey, len( infoKey ) - 6 );
 
-					} else {
-						method[ infoKey ] = functionMetaData[ infoKey ];
+					if( !structKeyExists( method, "parameters" ) ){
+						method.put( "parameters", [] );
 					}
-				} else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
-					//check for $ref includes
-					if(
-						right( listFirst( functionMetaData[ infoKey ], "##" ), 5 ) == '.json'
-						||
-						left( functionMetaData[ infoKey ], 4 ) == 'http'
-					){
-						method[ infoKey ] = { "$ref" : replaceNoCase( functionMetaData[ infoKey ], "####", "##", "ALL" ) };
+
+					// See if our parameter was already provided through URL parsing
+					paramSearch = arrayFilter( method[ "parameters" ], function( item ){
+						return item.name == paramName;
+					} );
+
+					if( arrayLen( paramSearch ) ){
+					
+						var parameter = paramSearch[ 1 ];
+					
 					} else {
-						method[ infoKey ] = functionMetaData[ infoKey ];
+
+						//name it with defaults
+						var parameter = { 
+							"name"       : paramName,
+							"in"         : "query",
+							"required"   : false,
+							"type"       : "string"
+						};
+						
 					}
+
+
+					if( isSimpleValue( infoMetadata ) ){
+						parameter[ "description" ] = infoMetadata;
+					} else {
+						structAppend( parameter, infoMetadata );
+					}
+
+					arrayAppend( 
+						method[ "parameters" ],
+						parameter 
+					);
+
+				}
+				//individual response handling
+				else if( left( infoKey, 9 ) == 'response-'){
+					var responseName = right( infoKey, len( infoKey ) - 9 );
+					
+					if( !structKeyExists( method, "responses" ) ){
+						method.put( "responses", createLinkedHashmap() );
+					}
+
+					method[ "responses" ].put( responseName, createLinkedHashmap() );
+					
+					if( isSimpleValue( infoMetadata ) ){
+						method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
+					} else {
+						method[ "responses" ][ responseName ].putAll( infoMetadata );
+					}
+				}
+				else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
+					//don't override any previously set convention assignments
+					if( isSimpleValue( infoMetadata ) && len( infoMetadata ) ){
+						method[ infoKey ] = infoMetadata;		
+					} else if( !isSimpleValue( infoMetadata ) ) {
+						method[ infoKey ] = infoMetadata;
+					}
+					
 				}
 			}
 		}
 
+	}
+
+	/**
+	* Parses the metatdata values in to a valid swagger definition
+	* @metadataText 	the text content of the metadata item
+	**/
+	private any function parseMetadataValue( required string metadataText ){
+
+		arguments.metadataText = trim( arguments.metadataText );
+
+		if( isJSON( metadataText ) ){
+			var parsedMetadata = deserializeJSON( metadataText );
+			//check our metadata for $refs
+			if( isStruct( parsedMetadata ) ){
+				for( var key in parsedMetadata ){
+					parsedMetadata[ key ] = parseMetadataValue( parsedMetadata[ key ] );
+				}
+			}
+			return parsedMetadata;
+		} else if(
+			right( listFirst( metadataText, "##" ), 5 ) == '.json'
+			||
+			left( metadataText, 4 ) == 'http'
+		){
+			return { "$ref" : replaceNoCase( metadataText, "####", "##", "ALL" ) };
+		} else {
+			return metadataText;
+		}
 	}
 
 	/**
