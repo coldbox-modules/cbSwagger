@@ -35,6 +35,13 @@ component{
 
 	// request start
 	public boolean function onRequestStart( String targetPage ){
+		// Clear out the previous framework objects so that the first spec with `loadColdbox` set to `true` will reload them
+		if( structKeyExists( url, "persistColdbox" ) && !url.persistColdbox ){
+
+			structDelete( application, "cbController" );
+			structDelete( application, "wirebox" );	
+		
+		}
 		return true;
 	}
 
