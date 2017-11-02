@@ -55,7 +55,16 @@ cbswagger = {
 	//An array of all of the request body formats your your API is configured to consume
 	"consumes": ["application/json","multipart/form-data","application/x-www-form-urlencoded"],
 	//An array of all of the response body formats your API delivers
-	"produces": ["application/json"]
+	"produces": ["application/json"],
+	"securityDefinitions" : {
+		"tokenAuthentication" : {
+			"description":"Authentication provided by an API key.  This security scheme is stateless.  The header value must be in a space-delimited format with the token in the second index position",
+			"type"       : "apiKey",
+			"name"       : "Authorization",
+			"in"         : "header",
+			"example"    : "Bearer abcdefg1234567zyx"
+	    }
+	}
 };
 
 ```
