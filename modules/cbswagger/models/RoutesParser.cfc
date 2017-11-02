@@ -268,6 +268,8 @@ component accessors="true" threadsafe singleton{
 		var handlerRoute 	= ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
 		var module 			= ( isNull( arguments.route.module ) ? "" : arguments.route.module );
 
+		if( !len( handlerRoute ) ) return;
+
 		if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){
 			var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
 		} else {
