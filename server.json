@@ -4,6 +4,9 @@
     "web":{
         "http":{
             "port":"49616"
+        },
+        "rewrites":{
+            "enable":"true"
         }
     },
     "app":{
