@@ -250,7 +250,6 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 					path[ "put" ][ "responses" ][ "default" ][ "schema" ]
 				).toBeStruct();
 
-
 			} );
 
 			it( "Verifies that path typing parameters are removed and that the key omits the type", function(){

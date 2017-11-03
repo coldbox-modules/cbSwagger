@@ -182,7 +182,7 @@ component accessors="true" threadsafe singleton{
 	){
 
 		var path = createLinkedHashmap();
-		var errorMethods = [ 'onInvalidHTTPMethod', 'onMissingAction', 'onError' ];
+		var errorMethods = [ 'onInvalidHTTPMethod', 'onMissingAction', 'routeNotFound', 'fourOhFour', 'onError' ];
 
 
 		if( isNull( arguments.handlerMetadata ) || !isBoolean( arguments.handlerMetadata ) ){
