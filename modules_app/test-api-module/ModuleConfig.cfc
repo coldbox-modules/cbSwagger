@@ -60,7 +60,7 @@ component{
 				}
 			},
 			{
-				pattern	= 'users/:userID/posts',
+				pattern	= 'users/:userID/posts/:page-numeric?',
 				handler	= 'Users',
 				action 	= { 
 					"GET"  = "index" , 
@@ -81,7 +81,9 @@ component{
 				pattern = 'users',
 				handler = 'Users',
 				action  = defaultAPIActions
-			}
+			},
+			{ pattern="/v1", moduleRouting="api-v1" },
+			{ pattern="/:handler/:action?" }
 		];
 
 	}

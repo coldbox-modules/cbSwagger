@@ -253,6 +253,33 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/" accessors
 
 			} );
 
+			it( "Verifies that path typing parameters are removed and that the key omits the type", function(){
+				
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v2/users/{userID}/posts/{page}" );
+				var path = normalizedDoc[ "paths" ][ "/api/v2/users/{userID}/posts/{page}" ];
+				expect( path ).toHaveKey( "get" );
+				expect( path[ "get" ] ).toHaveKey( "parameters" );
+
+				var pageParamSearch = arrayFilter( 
+					path[ "get" ][ "parameters" ], 
+					function( parameter ){							
+						return structKeyExists( parameter, "name" ) && parameter[ "name" ] == "page";	
+					}
+				);
+
+				expect( arrayLen( pageParamSearch ) ).toBe( 1 );
+
+				expect( pageParamSearch[ 1 ][ "type" ] ).toBe( "integer" );
+
+
+
+			} );
+
 		});
 
 	}

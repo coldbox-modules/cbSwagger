@@ -223,7 +223,22 @@ component accessors="true" threadsafe singleton{
 			}
 		}
 
-		arguments.existingPaths.put( arguments.pathKey, path );
+		//Strip out any typing placeholders in routes
+		var pathSegments = listToArray( arguments.pathKey, "/" );
+		var typingParams = [ "numeric", "alpha", "regex" ];
+		for( var i = 1; i <= arrayLen( pathSegments ); i++ ){
+			var typedParam = listToArray( mid( pathSegments[ i ], 2, len( pathSegments[ i ] ) - 2 ), "-" );
+			if( arrayLen( typedParam ) > 1 ){
+				for( var type in typingParams ){
+					if( findNoCase( type, typedParam[ 2 ] ) ){
+						pathSegments[ i ] =  "{" & typedParam[ 1 ] & "}";
+						break;
+					}
+				}
+			}
+		}
+
+		arguments.existingPaths.put( "/" & arrayToList( pathSegments, "/" ), path );
 
 	}
 
@@ -245,18 +260,42 @@ component accessors="true" threadsafe singleton{
 			}
 
 			for( var urlParam in pathParams ){
-				var paramName = mid( urlParam, 2, len( urlParam ) - 2 );
+				//parsing for param types in Coldbox Routes
+				var paramSegments = listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" ) 
+				var paramName = paramSegments[ 1 ];
+
 				arrayAppend( 
 					method[ "parameters" ],
 					{ 
 						"name"       : paramName,
 						"in"         : "path",
 						"required"   : true,
-						"type"       : "string"
+						"type"       : parseSegmentType( paramSegments )
 					}
 				);
 			}	
 		}
+	}
+
+	/**
+	* Parses the segment type in to a swagger param type
+	* https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#parameterObject
+	**/
+	private string function parseSegmentType( required array paramSegments ){
+		if( arrayLen( paramSegments ) == 1 ) return "string";
+
+		switch( paramSegments[ 2 ] ){
+			case "numeric":{
+				return "integer";
+			}
+			case "regex":{
+				return "object";
+			}
+			default:{
+				return "string";
+			}
+		}
+
 	}
 
 	/**
