@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+## 1.2.1
+* Fixes a bug where an error was thrown when an api route does not contain a handler
+* Implements parsing of Coldbox route parameter types
+
 ## 1.2.0
 
 * Adds new function metadata handling for parameters and responses
