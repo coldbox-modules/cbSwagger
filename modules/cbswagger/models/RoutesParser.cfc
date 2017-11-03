@@ -261,7 +261,7 @@ component accessors="true" threadsafe singleton{
 
 			for( var urlParam in pathParams ){
 				//parsing for param types in Coldbox Routes
-				var paramSegments = listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" ) 
+				var paramSegments = listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" );
 				var paramName = paramSegments[ 1 ];
 
 				arrayAppend( 
