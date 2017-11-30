@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/coldbox-modules/cbSwagger.svg?branch=development)](https://travis-ci.org/coldbox-modules/cbSwagger)
 
-# Welcome to the Coldbox Swagger Module
-This module automatically generates OpenAPI ( fka Swagger ) documenation from your configured application and module routes.  This module utilizes the [v3.0 OpenAPI Specification]([https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md])
+# Welcome to the ColdBox Swagger Module
+This module automatically generates OpenAPI ( fka Swagger ) documenation from your configured application and module routes.  This module utilizes the [v2.0 OpenAPI Specification]([https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md])
 
 ## License
 Apache License, Version 2.0.
@@ -10,7 +10,7 @@ Apache License, Version 2.0.
 - https://github.com/coldbox-modules/cbSwagger
 
 ## SYSTEM REQUIREMENTS
-- Adobe CF 10+
+- Adobe CF 11+
 - Lucee 4.5+
 - ColdBox 4+
 
@@ -32,25 +32,34 @@ By default, cbSwagger looks for routes beginning with `api`.  By adding a `cbSwa
 ```js
 cbswagger = {
 	// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
-	"routes":["api"],
-	//A base path prefix for your API - leave blank if all routes are configured to the root of the site
-	"basePath":"",
-	//The API host
-	"host":"",
+	"routes" : [ "api" ],
+	// A base path prefix for your API - leave blank if all routes are configured to the root of the site
+	"basePath" : "/",
+	// The API host
+	"host" : "",
+	// The transfer protocol of the API Values must be from: http, https, ws, wss
+	"schemes" : [ "https", "http" ],
 	// Information about your API
-	"info":{
+	"info" : {
 		//The contact email address
-		"contact":"",
+		"contact" : {
+			"name" : "API Support",
+			"url" : "https://mysite.com",
+			"email" : "support@ortussolutions.com"
+		},
 		//A title for your API
 		"title":"",
 		//A descritpion of your API
 		"description":"",
 		//A url to the License of your API
-		"license":"",
+		"license" : {
+			"name": "Apache 2.0",
+			"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+		},
 		//A terms of service URL for your API
-		"termsOfService":"",
+		"termsOfService" : "http://swagger.io/terms/",
 		//The version of your API
-		"version":""
+		"version" : "v1"
 	},
 	//An array of all of the request body formats your your API is configured to consume
 	"consumes": ["application/json","multipart/form-data","application/x-www-form-urlencoded"],

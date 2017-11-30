@@ -81,20 +81,29 @@ component{
 		configStruct.cbswagger = {
 			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
 			"routes"   : ["api"],
-			//A base path prefix for your API - leave blank if all routes are configured to the root of the site
-			"basePath" : "",
-			//The API host
+			// A base path prefix for your API - leave blank if all routes are configured to the root of the site
+			"basePath" : "/",
+			// The API host
 			"host"     : "",
+			// API Protocol, default to http/https
+			"schemes"  : [ "https", "http" ],
 			// Information about your API
 			"info"     : {
 				//The contact email address
-				"contact"        : "",
+				"contact"        : {
+					"name"  : "",
+					"url"   : "",
+					"email" : "",
+				},
 				//A title for your API
 				"title"          : "",
 				//A descritpion of your API
 				"description"    : "",
 				//A url to the License of your API
-				"license"        : "",
+				"license"        :{
+					"name" 	: "",
+					"url"	: ""	
+				},
 				//A terms of service URL for your API
 				"termsOfService" : "",
 				//The version of your API

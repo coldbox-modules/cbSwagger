@@ -1,7 +1,14 @@
 CHANGELOG
 =========
 
+## 1.2.2
+
+* Updates to readme
+* Set the contact object and license object according to spec 2 defaults
+* Default the API schemes to http/s
+
 ## 1.2.1
+
 * Fixes a bug where an error was thrown when an api route does not contain a handler
 * Implements parsing of Coldbox route parameter types
 
