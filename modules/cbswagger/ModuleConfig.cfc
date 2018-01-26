@@ -93,7 +93,7 @@ component{
 				"contact"        : {
 					"name"  : "",
 					"url"   : "",
-					"email" : "",
+					"email" : ""
 				},
 				//A title for your API
 				"title"          : "",
@@ -102,7 +102,7 @@ component{
 				//A url to the License of your API
 				"license"        :{
 					"name" 	: "",
-					"url"	: ""	
+					"url"	: ""
 				},
 				//A terms of service URL for your API
 				"termsOfService" : "",
