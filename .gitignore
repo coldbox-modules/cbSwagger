@@ -1,6 +1,7 @@
 # IDE Stuff
 .settings
 settings.xml
+.vscode
 
 # Logs
 logs/*.log

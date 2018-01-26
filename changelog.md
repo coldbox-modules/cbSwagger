@@ -1,8 +1,10 @@
 CHANGELOG
 =========
 
-## 1.2.2
+## 1.3.0
 
+* Added Editor standards
+* Fix to modules invocation path on RouteParser when no cfmapping defined.
 * Updates to readme
 * Set the contact object and license object according to spec 2 defaults
 * Default the API schemes to http/s
