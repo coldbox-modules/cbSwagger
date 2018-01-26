@@ -10,7 +10,6 @@ env:
   matrix:
     - ENGINE=lucee@4.5
     - ENGINE=lucee@5
-    - ENGINE=adobe@10
     - ENGINE=adobe@11
     - ENGINE=adobe@2016
 
@@ -84,6 +83,7 @@ deploy:
     on:
       branch:
         - master
+        - development
       condition: "$ENGINE = lucee@4.5"
     skip_cleanup: true
     #AWS Credentials need to be set in Travis
@@ -93,7 +93,6 @@ deploy:
     local-dir: build/apidocs
     upload-dir: coldbox-modules/$MODULE_ID
     acl: public_read
-
 
 after_deploy:
   - cd $TRAVIS_BUILD_DIR/build && box forgebox publish

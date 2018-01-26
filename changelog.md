@@ -8,6 +8,8 @@ CHANGELOG
 * Updates to readme
 * Set the contact object and license object according to spec 2 defaults
 * Default the API schemes to http/s
+* Dropped cf10 from automated tests
+* Added API Docs to S3 via Travis
 
 ## 1.2.1
 
