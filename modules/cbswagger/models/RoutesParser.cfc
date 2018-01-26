@@ -56,7 +56,7 @@ component accessors="true" threadsafe singleton{
 			template[ "paths" ].putAll( createPathsFromRouteConfig( apiRoutes[ path ] ) );
 		}
 
-		return getOpenAPIParser().parse( template ).getDocumentObject();	
+		return getOpenAPIParser().parse( template ).getDocumentObject();
 
 	}
 
@@ -100,7 +100,7 @@ component accessors="true" threadsafe singleton{
 				} else {
 					var moduleConventionPath = listToArray( variables.controller.getColdboxSettings().modulesConvention, "/" );
 					arrayAppend( moduleConventionPath, route.module );
-					route[ "moduleInvocationPath" ] = listToArray( moduleConventionPath, "." );
+					route[ "moduleInvocationPath" ] = arrayToList( moduleConventionPath, "." );
 				}
 			}
 
@@ -197,17 +197,17 @@ component accessors="true" threadsafe singleton{
 				for( var methodName in listToArray( methodList ) ){
 					// handle explicit SES workarounds
 					if( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ){
-						
+
 						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
 
 						appendPathParams( pathKey, path[ lcase( methodName ) ] );
 
 						if( !isNull( arguments.handlerMetadata ) ){
-							appendFunctionInfo( 
-								path[ lcase( methodName ) ], 
-								actions[ methodList ], 
-								arguments.handlerMetadata, 
-								len( arguments.routeConfig.module ) ? arguments.routeConfig.module : javacast( "null", "" ) 
+							appendFunctionInfo(
+								path[ lcase( methodName ) ],
+								actions[ methodList ],
+								arguments.handlerMetadata,
+								len( arguments.routeConfig.module ) ? arguments.routeConfig.module : javacast( "null", "" )
 							);
 						}
 					}
@@ -264,16 +264,16 @@ component accessors="true" threadsafe singleton{
 				var paramSegments = listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" );
 				var paramName = paramSegments[ 1 ];
 
-				arrayAppend( 
+				arrayAppend(
 					method[ "parameters" ],
-					{ 
+					{
 						"name"       : paramName,
 						"in"         : "path",
 						"required"   : true,
 						"type"       : parseSegmentType( paramSegments )
 					}
 				);
-			}	
+			}
 		}
 	}
 
@@ -316,11 +316,11 @@ component accessors="true" threadsafe singleton{
 		}
 
 		try{
-	
+
 			return util.getInheritedMetadata( invocationPath );
 
 		} catch( any e ){
-			throw( 
+			throw(
 				type         = "cbSwagger.RoutesParse.handlerSyntaxException",
 				message      = "The handler at #invocationPath# could not be parsed.  The error that occurred: #e.message#",
 				extendedInfo = e.detail
@@ -347,15 +347,15 @@ component accessors="true" threadsafe singleton{
 		if( !isNull( moduleName ) ){
 
 			var operationPath = moduleName & ":" & listLast( handlerMetadata.name, "." );
-		
+
 		} else{
-		
+
 			var operationPath = listLast( handlerMetadata.name, "." );
-		
+
 		}
 
-		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;	
-		
+		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;
+
 		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 
 		if( !isNull( functionMetadata ) ){
@@ -365,10 +365,10 @@ component accessors="true" threadsafe singleton{
 				if( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
 				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 
-				// x-attributes and custom keys	
+				// x-attributes and custom keys
 				if( infoKey == "hint" ){
 					method.put( "description", infoMetadata );
-				} 
+				}
 				else if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" );
 					//evaluate whether we have an x- replacement or a standard x-attribute
@@ -377,7 +377,7 @@ component accessors="true" threadsafe singleton{
 					} else {
 						method[ infoKey ] = infoMetadata;
 					}
-				} 
+				}
 				//parameter handling
 				else if( left( infoKey, 6 ) == 'param-'){
 					var paramName = right( infoKey, len( infoKey ) - 6 );
@@ -392,19 +392,19 @@ component accessors="true" threadsafe singleton{
 					} );
 
 					if( arrayLen( paramSearch ) ){
-					
+
 						var parameter = paramSearch[ 1 ];
-					
+
 					} else {
 
 						//name it with defaults
-						var parameter = { 
+						var parameter = {
 							"name"       : paramName,
 							"in"         : "query",
 							"required"   : false,
 							"type"       : "string"
 						};
-						
+
 					}
 
 
@@ -414,22 +414,22 @@ component accessors="true" threadsafe singleton{
 						structAppend( parameter, infoMetadata );
 					}
 
-					arrayAppend( 
+					arrayAppend(
 						method[ "parameters" ],
-						parameter 
+						parameter
 					);
 
 				}
 				//individual response handling
 				else if( left( infoKey, 9 ) == 'response-'){
 					var responseName = right( infoKey, len( infoKey ) - 9 );
-					
+
 					if( !structKeyExists( method, "responses" ) ){
 						method.put( "responses", createLinkedHashmap() );
 					}
 
 					method[ "responses" ].put( responseName, createLinkedHashmap() );
-					
+
 					if( isSimpleValue( infoMetadata ) ){
 						method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
 					} else {
@@ -439,11 +439,11 @@ component accessors="true" threadsafe singleton{
 				else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
 					//don't override any previously set convention assignments
 					if( isSimpleValue( infoMetadata ) && len( infoMetadata ) ){
-						method[ infoKey ] = infoMetadata;		
+						method[ infoKey ] = infoMetadata;
 					} else if( !isSimpleValue( infoMetadata ) ) {
 						method[ infoKey ] = infoMetadata;
 					}
-					
+
 				}
 			}
 		}
