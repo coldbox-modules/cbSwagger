@@ -20,7 +20,7 @@ To operate, the module requires that SES routing be enabled in your application.
 
 ## Install cbSWagger ( via Commandbox )
 
-`box install cbswagger`
+`box install cbSwagger`
 
 > Note:  Omit the `box` from your command, if you are already in the Commandbox interactive shell
 
