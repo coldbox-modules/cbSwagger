@@ -1,5 +1,11 @@
-CHANGELOG
-=========
+# CHANGELOG
+
+## 1.4.0
+
+* Update build process for new module standards
+* ColdBox 5 Compatiblity for inherited entry points
+* Non RESTFul action params where not being translated on routes.
+* Fixed `int32` to `integer` on examples and tests so they can validate in the schema
 
 ## 1.3.0
 

@@ -1,28 +1,29 @@
 {
-    "name":"cbSwagger-shell",
-    "version":"1.1.0",
-    "slug":"cbSwagger-shell",
-    "private":false,
-    "dependencies":{
-        "coldbox":"^4.3.0",
-        "workbench":"git+https://github.com/Ortus-Solutions/unified-workbench.git",
-        "cbjavaloader":"^1.4.0+29",
-        "swagger-sdk":"^1.0.4+54"
+    "name"      : "cbSwagger",
+    "version"   : "@build.version@+@build.number@",
+    "location"	: "https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbswagger/@build.version@/cbswagger-@build.version@.zip",
+    "author"    : "Ortus Solutions, Corp",
+    "slug"      : "cbswagger",
+    "type"      : "modules",
+    "keywords"  : "Swagger,OpenAPI,API Docs",
+    "homepage"          : "https://github.com/coldbox-modules/cbswagger",
+    "documentation"     : "https://github.com/coldbox-modules/cbswagger/wiki",
+    "repository"        : { "type" : "git", "url" : "https://github.com/coldbox-modules/cbswagger" },
+    "bugs"              : "https://github.com/coldbox-modules/cbswagger/issues",
+    "shortDescription"  : "A Coldbox Module which automatically generates api documentation from your configured SES routes",
+    "license"           : [
+        { "type" : "Apache2", "url" : "http://www.apache.org/licenses/LICENSE-2.0.html" }
+    ],
+    "contributors"      : [
+		"Jon Clausen <jon_clausen@silowebworks.com>",
+        "Luis Majano <lmajano@ortussolutions.com>"
+    ],
+    "dependencies"  :{
+        "swagger-sdk":"^1.0.4"
     },
-    "devDependencies":{
-        "testbox":"^2.5.0"
-    },
-    "installPaths":{
-        "coldbox":"coldbox/",
-        "testbox":"testbox/",
-        "cbjavaloader":"modules/cbjavaloader",
-        "swagger-sdk":"modules/swagger-sdk",
-        "workbench":"workbench/"
-    },
-    "testbox":{
-        "runner":"http://localhost:49616"
-    },
-    "scripts":{
-        "postVersion":"recipe workbench/bump.boxr"
-    }
+	"ignore":[
+        "**/.*",
+        "test-harness",
+        "*/.md"
+    ]
 }
