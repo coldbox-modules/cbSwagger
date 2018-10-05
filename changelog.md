@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.4.1 
+
+* Fix for detecting ColdBox 5
+
 ## 1.4.0
 
 * Update build process for new module standards

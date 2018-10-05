@@ -8,7 +8,7 @@ env:
   # Fill out these global variables for build process
   global:
     - MODULE_ID=cbSwagger
-    - TARGET_VERSION=1.5.0
+    - TARGET_VERSION=1.4.1
   matrix:
     - ENGINE=lucee@45
     - ENGINE=lucee@5
