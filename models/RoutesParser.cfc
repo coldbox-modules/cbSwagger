@@ -401,6 +401,19 @@ component accessors="true" threadsafe singleton{
 				if( infoKey == "hint" ){
 					method.put( "description", infoMetadata );
 				}
+				// individual requestBody handling
+				else if( left( infoKey, 12 ) == 'requestBody'){
+					var requestBody = 'requestBody'
+					if( !structKeyExists( method, "requestBody" ) ){
+						method.put( "requestBody", createLinkedHashmap() );
+					}
+					method[ "requestBody" ].put( requestBody, createLinkedHashmap() );
+					if( isSimpleValue( infoMetadata ) ){
+						method[ "requestBody" ][ "description" ] = infoMetadata;
+					} else {
+						method[ "requestBody" ].putAll( infoMetadata );
+					}
+				}
 				else if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" );
 					//evaluate whether we have an x- replacement or a standard x-attribute
