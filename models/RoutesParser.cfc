@@ -113,6 +113,7 @@ component accessors="true" threadsafe singleton{
 				&&
 				len( moduleSettings[ route.module ].entryPoint )
 			){
+		
 				var moduleEntryPoint = moduleSettings[ route.module ].entryPoint;
 				// Check if ColdBox 5 inherited entry points are available.
 				if( moduleSettings[ route.module ].keyExists( "inheritedEntryPoint") ){
@@ -134,7 +135,9 @@ component accessors="true" threadsafe singleton{
 
 			for( var prefix in routingPrefixes ){
 				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
-					designatedRoutes[ route.pattern ] = route;
+					if( !findNoCase(':handler/', route.pattern)){
+						designatedRoutes[ route.pattern ] = route;
+					}
 				}
 			}
 
@@ -270,7 +273,6 @@ component accessors="true" threadsafe singleton{
 				}
 			}
 		}
-
 		arguments.existingPaths.put( "/" & arrayToList( pathSegments, "/" ), path );
 
 	}
@@ -291,7 +293,6 @@ component accessors="true" threadsafe singleton{
 			if( !structKeyExists( arguments.method, "parameters" ) ){
 				arguments.method.put( "parameters", [] );
 			}
-
 			for( var urlParam in pathParams ){
 				// parsing for param types in Coldbox Routes
 				var paramSegments = listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" );
@@ -347,7 +348,6 @@ component accessors="true" threadsafe singleton{
 		} else {
 			var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;
 		}
-
 		try{
 
 			return util.getInheritedMetadata( invocationPath );
@@ -386,9 +386,10 @@ component accessors="true" threadsafe singleton{
 			var operationPath = listLast( handlerMetadata.name, "." );
 
 		}
-
+		
+		
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;
-
+		
 		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 		if( !isNull( functionMetadata ) ){
 			var defaultKeys = structKeyArray( arguments.method );
@@ -403,11 +404,14 @@ component accessors="true" threadsafe singleton{
 				}
 				// individual requestBody handling
 				else if( left( infoKey, 12 ) == 'requestBody'){
-					var requestBody = 'requestBody'
+					var requestBody = 'requestBody';
+
 					if( !structKeyExists( method, "requestBody" ) ){
 						method.put( "requestBody", createLinkedHashmap() );
 					}
+
 					method[ "requestBody" ].put( requestBody, createLinkedHashmap() );
+
 					if( isSimpleValue( infoMetadata ) ){
 						method[ "requestBody" ][ "description" ] = infoMetadata;
 					} else {
@@ -433,15 +437,25 @@ component accessors="true" threadsafe singleton{
 
 					// See if our parameter was already provided through URL parsing
 					paramSearch = arrayFilter( method[ "parameters" ], function( item ){
+
 						return item.name == paramName;
 					} );
+
+
 
 					if( arrayLen( paramSearch ) ){
 
 						var parameter = paramSearch[ 1 ];
+						if( isSimpleValue( infoMetadata ) ){
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}
+
+						
 
 					} else {
-
+						
 						//name it with defaults
 						var parameter = {
 							"name"       : paramName,
@@ -450,19 +464,20 @@ component accessors="true" threadsafe singleton{
 							"type"       : "string"
 						};
 
+						if( isSimpleValue( infoMetadata ) ){
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}
+
+						arrayAppend(
+							method[ "parameters" ],
+							parameter
+						);
 					}
 
 
-					if( isSimpleValue( infoMetadata ) ){
-						parameter[ "description" ] = infoMetadata;
-					} else {
-						structAppend( parameter, infoMetadata );
-					}
-
-					arrayAppend(
-						method[ "parameters" ],
-						parameter
-					);
+					
 
 				}
 				// individual response handling
