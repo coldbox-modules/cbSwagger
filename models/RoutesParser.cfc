@@ -426,6 +426,11 @@ component accessors="true" threadsafe singleton{
 					if( arrayLen( paramSearch ) ){
 
 						var parameter = paramSearch[ 1 ];
+						if( isSimpleValue( infoMetadata ) ){
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}						
 
 					} else {
 
@@ -436,20 +441,17 @@ component accessors="true" threadsafe singleton{
 							"required"   : false,
 							"type"       : "string"
 						};
+						if( isSimpleValue( infoMetadata ) ){
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}
 
+						arrayAppend(
+							method[ "parameters" ],
+							parameter
+						);
 					}
-
-
-					if( isSimpleValue( infoMetadata ) ){
-						parameter[ "description" ] = infoMetadata;
-					} else {
-						structAppend( parameter, infoMetadata );
-					}
-
-					arrayAppend(
-						method[ "parameters" ],
-						parameter
-					);
 
 				}
 				// individual response handling
