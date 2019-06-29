@@ -86,7 +86,8 @@ component{
         command( 'testbox run' )
             .params(
                 runner = variables.testRunner,
-                verbose = true
+				verbose = true,
+				outputFile = "build/results.json"
             )
             .run();
 

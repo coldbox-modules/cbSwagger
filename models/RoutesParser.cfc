@@ -2,13 +2,13 @@
  * Copyright since 2016 by Ortus Solutions, Corp
  * www.ortussolutions.com
  * ---
- * ColdBox Route Parser
+ * ColdBox Routes Parser for Swagger/OpenAPI Support
  */
 component accessors="true" threadsafe singleton{
 
 	// DI
 	property name="controller" 						inject="coldbox";
-	property name="cbSwaggerSettings" 				inject="coldbox:setting:cbswagger";
+	property name="cbSwaggerSettings" 				inject="coldbox:moduleSettings:cbswagger";
 	property name="handlersPath" 					inject="coldbox:setting:HandlersPath";
 	property name="handlersInvocationPath" 			inject="coldbox:setting:HandlersInvocationPath";
 	property name="handlersExternalLocationPath" 	inject="coldbox:setting:HandlersExternalLocationPath";
@@ -17,8 +17,8 @@ component accessors="true" threadsafe singleton{
 	property name="moduleService"					inject="coldbox:moduleService";
 
 	// API Tools
-	property name="OpenAPIUtil" 					inject="OpenAPIUtil@SwaggerSDK";
-	property name="OpenAPIParser" 					inject="OpenAPIParser@SwaggerSDK";
+	property name="openAPIUtil" 					inject="OpenAPIUtil@SwaggerSDK";
+	property name="openAPIParser" 					inject="OpenAPIParser@SwaggerSDK";
 
 	/**
 	 * Application SES Routes
@@ -26,7 +26,7 @@ component accessors="true" threadsafe singleton{
 	property name="SESRoutes" type="array";
 
 	/**
-	 * The appropriate routing service
+	 * The appropriate routing service according to ColdBox Version
 	 */
 	property name="routingService";
 
@@ -52,6 +52,7 @@ component accessors="true" threadsafe singleton{
 
 	/**
 	 * Creates an OpenAPI Document from the Configured SES routes
+	 *
 	 * @return swagger-sdk.models.OpenAPI.Document
 	 **/
 	any function createDocFromRoutes(){
@@ -142,7 +143,7 @@ component accessors="true" threadsafe singleton{
 
 		// Now custom sort our routes alphabetically
 		var entrySet 		= structKeyArray( designatedRoutes );
-		var sortedRoutes 	= createLinkedHashMap();
+		var sortedRoutes 	= structNew( "ordered" );
 
 		for( var i = 1; i <= arrayLen( entrySet ); i++ ){
 			entrySet[ i ] = replace( entrySet[ i ], "/", "", "ALL" );
@@ -169,7 +170,7 @@ component accessors="true" threadsafe singleton{
 	 * @return linked map
 	 **/
 	private any function createPathsFromRouteConfig( required struct route ){
-		var paths = createLinkedHashMap();
+		var paths = structNew( "ordered" );
 		// first parse our route to see if we have conditionals and create separate all found conditionals
 		var pathArray 		= listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
 		var assembledRoute 	= [];
@@ -212,7 +213,7 @@ component accessors="true" threadsafe singleton{
 		required any routeConfig
 		any handlerMetadata
 	){
-		var path = createLinkedHashmap();
+		var path = structNew( "ordered" );
 		var errorMethods = [ 'onInvalidHTTPMethod', 'onMissingAction', 'routeNotFound', 'fourOhFour', 'onError' ];
 
 		if( isNull( arguments.handlerMetadata ) || !isBoolean( arguments.handlerMetadata ) ){
@@ -430,7 +431,7 @@ component accessors="true" threadsafe singleton{
 							parameter[ "description" ] = infoMetadata;
 						} else {
 							structAppend( parameter, infoMetadata );
-						}						
+						}
 
 					} else {
 
@@ -459,10 +460,10 @@ component accessors="true" threadsafe singleton{
 					var responseName = right( infoKey, len( infoKey ) - 9 );
 
 					if( !structKeyExists( method, "responses" ) ){
-						method.put( "responses", createLinkedHashmap() );
+						method.put( "responses", structNew( "ordered" ) );
 					}
 
-					method[ "responses" ].put( responseName, createLinkedHashmap() );
+					method[ "responses" ].put( responseName, structNew( "ordered" ) );
 
 					if( isSimpleValue( infoMetadata ) ){
 						method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
