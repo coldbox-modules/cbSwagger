@@ -434,6 +434,8 @@ component accessors="true" threadsafe singleton{
 				// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
 				if( left( infoKey, 12 ) == 'requestBody' ){
 
+					method.put( "requestBody", structNew( "ordered" ) );
+
 					if( isSimpleValue( infoMetadata ) ){
 						method[ "requestBody" ][ "description" ] 	= infoMetadata;
 						method[ "requestBody" ][ "required" ] 		= true;
@@ -446,26 +448,25 @@ component accessors="true" threadsafe singleton{
 					continue;
 				}
 
-				// Additional params
+				// Spec Extensions x-{name}, must be in lowercase
 				if( left( infoKey, 2 ) == "x-" ){
-					var normalizedKey = replaceNoCase( infoKey, "x-", "" );
-					//evaluate whether we have an x- replacement or a standard x-attribute
+					var normalizedKey = replaceNoCase( infoKey, "x-", "" ).lcase();
+					// evaluate whether we have an x- replacement or a standard x-attribute
 					if( arrayContains( defaultKeys, normalizedKey ) ){
 						method[ normalizedKey ] = infoMetadata;
 					} else {
-						method[ infoKey ] = infoMetadata;
+						method[ infoKey.lcase() ] = infoMetadata;
 					}
+					continue;
 				}
-				// parameter handling
-				else if( left( infoKey, 6 ) == 'param-'){
+
+				// Individual route params: param-{name}
+				if( left( infoKey, 6 ) == 'param-'){
+					// Get the param name
 					var paramName = right( infoKey, len( infoKey ) - 6 );
 
-					if( !structKeyExists( method, "parameters" ) ){
-						method.put( "parameters", [] );
-					}
-
 					// See if our parameter was already provided through URL parsing
-					paramSearch = arrayFilter( method[ "parameters" ], function( item ){
+					var paramSearch = arrayFilter( method[ "parameters" ], function( item ){
 						return item.name == paramName;
 					} );
 
@@ -480,13 +481,15 @@ component accessors="true" threadsafe singleton{
 
 					} else {
 
-						//name it with defaults
+						// Default Params
 						var parameter = {
-							"name"       : paramName,
-							"in"         : "query",
-							"required"   : false,
-							"type"       : "string"
+							"name"       		: paramName,
+							"description" 		: "",
+							"in"         		: "query",
+							"required"   		: false,
+							"type"       		: "string"
 						};
+
 						if( isSimpleValue( infoMetadata ) ){
 							parameter[ "description" ] = infoMetadata;
 						} else {
