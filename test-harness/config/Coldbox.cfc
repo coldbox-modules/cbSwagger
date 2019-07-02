@@ -128,7 +128,12 @@
 							"in" 			: "header"
 						}
 					}
-				}
+				},
+
+				"security" : [
+					{ "APIKey" : [] },
+					{ "UserSecurity" : [] }
+				]
 			}
 
 		};
