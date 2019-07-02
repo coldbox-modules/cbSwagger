@@ -36,7 +36,7 @@ component{
 			"routes"   : [ "api" ],
 
 			// The default output format, either json or yml
-			"defaultFormat" : "yml",
+			"defaultFormat" : "json",
 
 			// Information about your API
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#infoObject
@@ -72,11 +72,6 @@ component{
 			"servers"	: [
 			],
 
-			// A declaration of which security mechanisms can be used across the API. The list of values includes alternative security requirement objects that can be used. Only one of the security requirement objects need to be satisfied to authorize a request. Individual operations can override this definition.
-			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securityRequirementObject
-			"security" : {
-			},
-
 			// An element to hold various schemas for the specification.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#componentsObject
 			"components" : {
@@ -84,8 +79,7 @@ component{
 
 			// A declaration of which security mechanisms can be used across the API.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securityRequirementObject
-			"security" : {
-			},
+			"security" : [],
 
 			// A list of tags used by the specification with additional metadata.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject
@@ -95,6 +89,8 @@ component{
 			// Additional external documentation.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#externalDocumentationObject
 			"externalDocs" : {
+				"description" 	: "",
+				"url" 			: ""
 			}
 		};
 
