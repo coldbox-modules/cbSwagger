@@ -23,11 +23,12 @@ component displayname="API.v1.Users"{
 	}
 
 	/**
-	* @hint Adds a new user
-	* @parameters /includes/resources/users.add.parameters.json##user
-	* @responses /includes/resources/users.add.responses.json
-	* @x-SomeAdditionalInfo Here is some additional information on this path
-	*/
+	 * @hint Adds a new user
+	 * @parameters /includes/resources/users.add.parameters.json##user
+	 * @responses /includes/resources/users.add.responses.json
+	 * @x-SomeAdditionalInfo Here is some additional information on this path
+	 * @requestBody { "description" : "user rep", "required" : true, "content" : { "text/json" : {} } }
+	 */
 	function add( event, rc, prc ){
 	}
 

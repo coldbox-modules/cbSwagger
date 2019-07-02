@@ -544,10 +544,12 @@ component accessors="true" threadsafe singleton{
 
 		if( isJSON( metadataText ) ){
 			var parsedMetadata = deserializeJSON( metadataText );
-			//check our metadata for $refs
+			// check our metadata for $refs
 			if( isStruct( parsedMetadata ) ){
 				for( var key in parsedMetadata ){
-					parsedMetadata[ key ] = parseMetadataValue( parsedMetadata[ key ] );
+					if( isSimpleValue( parsedMetadata[ key ] ) ){
+						parsedMetadata[ key ] = parseMetadataValue( parsedMetadata[ key ] );
+					}
 				}
 			}
 			return parsedMetadata;
