@@ -425,9 +425,10 @@ component accessors="true" threadsafe singleton{
 				// parse values from each key
 				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 
-				// hint/description
+				// hint/description/summary
 				if( infoKey == "hint" ){
 					method.put( "description", infoMetadata );
+					method.put( "summary", infoMetadata );
 					continue;
 				}
 
@@ -452,7 +453,7 @@ component accessors="true" threadsafe singleton{
 				if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" ).lcase();
 					// evaluate whether we have an x- replacement or a standard x-attribute
-					if( arrayContains( defaultKeys, normalizedKey ) ){
+					if( arrayContainsNoCase( defaultKeys, normalizedKey ) ){
 						method[ normalizedKey ] = infoMetadata;
 					} else {
 						method[ infoKey.lcase() ] = infoMetadata;
@@ -507,7 +508,7 @@ component accessors="true" threadsafe singleton{
 
 				}
 
-				// individual response handling
+				// individual response handling: response-{type}
 				if( left( infoKey, 9 ) == 'response-'){
 					// get reponse name
 					var responseName = right( infoKey, len( infoKey ) - 9 );
@@ -527,8 +528,9 @@ component accessors="true" threadsafe singleton{
 					continue;
 				}
 
-				if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
-					//don't override any previously set convention assignments
+				if( arrayContainsNoCase( defaultKeys, infoKey ) ){
+
+					// don't override any previously set convention assignments
 					if( isSimpleValue( infoMetadata ) && len( infoMetadata ) ){
 						method[ infoKey ] = infoMetadata;
 					} else if( !isSimpleValue( infoMetadata ) ) {
