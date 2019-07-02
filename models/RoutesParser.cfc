@@ -487,7 +487,10 @@ component accessors="true" threadsafe singleton{
 							"description" 		: "",
 							"in"         		: "query",
 							"required"   		: false,
-							"type"       		: "string"
+							"schema"			: {
+								"type" 		: "string",
+								"default" 	: ""
+							}
 						};
 
 						if( isSimpleValue( infoMetadata ) ){
@@ -503,30 +506,34 @@ component accessors="true" threadsafe singleton{
 					}
 
 				}
-				// individual response handling
-				else if( left( infoKey, 9 ) == 'response-'){
-					var responseName = right( infoKey, len( infoKey ) - 9 );
 
-					if( !structKeyExists( method, "responses" ) ){
-						method.put( "responses", structNew( "ordered" ) );
-					}
+				// individual response handling
+				if( left( infoKey, 9 ) == 'response-'){
+					// get reponse name
+					var responseName = right( infoKey, len( infoKey ) - 9 );
 
 					method[ "responses" ].put( responseName, structNew( "ordered" ) );
 
+					// Use simple value for description and content type
 					if( isSimpleValue( infoMetadata ) ){
 						method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
+						method[ "responses" ][ responseName ][ "content" ] = {
+							"#infoMetadata#" : {}
+						};
 					} else {
 						method[ "responses" ][ responseName ].putAll( infoMetadata );
 					}
+
+					continue;
 				}
-				else if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
+
+				if( arrayContains( defaultKeys, infoKey ) && isSimpleValue( functionMetadata[ infoKey ] ) ){
 					//don't override any previously set convention assignments
 					if( isSimpleValue( infoMetadata ) && len( infoMetadata ) ){
 						method[ infoKey ] = infoMetadata;
 					} else if( !isSimpleValue( infoMetadata ) ) {
 						method[ infoKey ] = infoMetadata;
 					}
-
 				}
 			}
 		}

@@ -34,10 +34,10 @@ component displayname="API.v1.Users"{
 
 
 	/**
-	* @param-firstname { "type": "string", "required" : "false", "in" : "query" }
-	* @param-lastname { "type": "string", "required" : "false", "in" : "query" }
-	* @param-email { "type": "string", "required" : "false", "in" : "query" }
-	* @response-default { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }
+	* @param-firstname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+	* @param-lastname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+	* @param-email { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+	* @response-default { "description" : "User successfully updated", "content" : { "application/json" : { "schema" : { "$ref" : "/includes/resources/schema.json##user" } } } }
 	**/
 	function update( event, rc, prc ) description="Updates a user"{
 	}
