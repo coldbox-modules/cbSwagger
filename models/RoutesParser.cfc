@@ -337,16 +337,29 @@ component accessors="true" threadsafe singleton{
 	}
 
 	/**
-	* Retreives the handler metadata, if available, from the route configuration
-	* @param struct route  		A coldbox SES Route Configuration
-	* @return any handlerMetadata
-	**/
+	 * Retreives the handler metadata, if available, from the route configuration
+	 *
+	 * @route A ColdBox Route record
+	 *
+	 * @throws cbSwagger.RoutesParse.handlerSyntaxException
+	 *
+	 * @return struct of handlerMetadata
+	 */
 	private any function getHandlerMetadata( required any route ){
-		var handlerRoute 	= ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
-		var module 			= ( isNull( arguments.route.module ) ? "" : arguments.route.module );
+		var handlerRoute 	= ( isNull( arguments.route.handler ) 	? "" : arguments.route.handler );
+		var module 			= ( isNull( arguments.route.module ) 	? "" : arguments.route.module );
+		var fullEvent		= ( isNull( arguments.route.event ) 	? "" : arguments.route.event );
 
+		// Do event's first, if found, use it for the handler location
+		if( len( fullEvent ) ){
+			// remove last part which should be the action
+			handlerRoute = replace( fullEvent, ".#listLast( fullEvent, "." )#", "" );
+		}
+
+		// If no handlers, back out nothing to see here folks
 		if( !len( handlerRoute ) ) return;
 
+		// Discover via module or parent root
 		if( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ){
 			var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
 		} else {
@@ -534,17 +547,19 @@ component accessors="true" threadsafe singleton{
 	}
 
 	/**
-	* Retreives the handler metadata, if available
-	* @param string functionName					The name of the function to look up in the handler metadata
-	* @param any handlerMetadata 					The metadata of the handler to reference
-	* @return struct|null
-	**/
+	 * Retreives the handler metadata, if available
+	 *
+	 * @functionName The name of the function to look up in the handler metadata
+	 * @handlerMetadata The metadata of the handler to reference
+	 *
+	 * @return struct|null
+	 */
 	private any function getFunctionMetadata(
 		required string functionName,
 		required any handlerMetadata
 	){
 
-		//exit out if we have no functions defined
+		// exit out if we have no functions defined
 		if( !structKeyExists( arguments.handlerMetadata, "functions" ) ) return;
 
 		for( var functionMetadata in arguments.handlerMetadata.functions ){
