@@ -8,7 +8,7 @@ component accessors="true" threadsafe singleton{
 
 	// DI
 	property name="controller" 						inject="coldbox";
-	property name="cbSwaggerSettings" 				inject="coldbox:moduleSettings:cbswagger";
+	property name="moduleSettings" 					inject="coldbox:moduleSettings:cbswagger";
 	property name="handlersPath" 					inject="coldbox:setting:HandlersPath";
 	property name="handlersInvocationPath" 			inject="coldbox:setting:HandlersInvocationPath";
 	property name="handlersExternalLocationPath" 	inject="coldbox:setting:HandlersExternalLocationPath";
@@ -59,7 +59,7 @@ component accessors="true" threadsafe singleton{
 		var template = getOpenAPIUtil().newTemplate();
 
 		// append our configured settings
-		variables.cbSwaggerSettings
+		variables.moduleSettings
 			.filter( function( key, value ){
 				return structKeyExists( template, key );
 			} )
@@ -67,23 +67,21 @@ component accessors="true" threadsafe singleton{
 				template[ key ] = value;
 			} );
 
-		var apiRoutes = filterDesignatedRoutes();
-		var pathKeys = structKeyArray( apiRoutes );
-
-		for( var path in pathKeys ){
-			template[ "paths" ].putAll( createPathsFromRouteConfig( apiRoutes[ path ] ) );
-		}
+		// Incorporate our API routes into the document
+		filterDesignatedRoutes()
+			.each( function( key, value ){
+				template[ "paths" ].putAll( createPathsFromRouteConfig( value ) );
+			} );
 
 		return getOpenAPIParser().parse( template ).getDocumentObject();
-
 	}
 
 	/**
-	* Filters the designated routes as provided in the cbSwagger configuration
-	**/
+	 * Filters the designated routes as provided in the cbSwagger configuration
+	 */
 	private any function filterDesignatedRoutes(){
-		var routingPrefixes = variables.cbSwaggerSettings.routes;
 		// make a copy of our routes array so we can append it
+		var routingPrefixes 	= variables.moduleSettings.routes;
 		var SESRoutes 			= duplicate( variables.SESRoutes );
 		var moduleSESRoutes 	= [];
 		var designatedRoutes 	= {};
@@ -99,7 +97,9 @@ component accessors="true" threadsafe singleton{
 			// process a normal route
 			for( var prefix in routingPrefixes ){
 				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
-					designatedRoutes[ route.pattern ] = route;
+					if( !findNoCase( ":handler/", route.pattern ) ){
+						designatedRoutes[ route.pattern ] = route;
+					}
 				}
 			}
 		}
@@ -110,8 +110,10 @@ component accessors="true" threadsafe singleton{
 
 		for( var route in moduleSESRoutes ){
 			if(
+				// module exists
 				structKeyExists( moduleSettings, route.module )
 				&&
+				// and it has an entry point
 				len( moduleSettings[ route.module ].entryPoint )
 			){
 				var moduleEntryPoint = moduleSettings[ route.module ].entryPoint;
@@ -135,7 +137,9 @@ component accessors="true" threadsafe singleton{
 
 			for( var prefix in routingPrefixes ){
 				if( !len( prefix ) || left( route.pattern, len( prefix ) ) == prefix ){
-					designatedRoutes[ route.pattern ] = route;
+					if( !findNoCase( ":handler/", route.pattern ) ){
+						designatedRoutes[ route.pattern ] = route;
+					}
 				}
 			}
 
@@ -401,6 +405,22 @@ component accessors="true" threadsafe singleton{
 				// x-attributes and custom keys
 				if( infoKey == "hint" ){
 					method.put( "description", infoMetadata );
+				}
+				// individual requestBody handling
+				else if( left( infoKey, 12 ) == 'requestBody' ){
+					var requestBody = 'requestBody';
+
+					if( !structKeyExists( method, "requestBody" ) ){
+						method.put( "requestBody", structnew( "ordered" ) );
+					}
+
+					method[ "requestBody" ].put( requestBody, structnew( "ordered" ) );
+
+					if( isSimpleValue( infoMetadata ) ){
+						method[ "requestBody" ][ "description" ] = infoMetadata;
+					} else {
+						method[ "requestBody" ].putAll( infoMetadata );
+					}
 				}
 				else if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" );

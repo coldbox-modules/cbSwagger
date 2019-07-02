@@ -24,14 +24,14 @@ component displayname="API.v1.Users"{
 
 	/**
 	* @hint Adds a new user
-	* @x-parameters /includes/resources/users.add.parameters.json##user
+	* @parameters /includes/resources/users.add.parameters.json##user
 	* @responses /includes/resources/users.add.responses.json
 	* @x-SomeAdditionalInfo Here is some additional information on this path
 	*/
 	function add( event, rc, prc ){
 	}
 
-	
+
 	/**
 	* @param-firstname { "type": "string", "required" : "false", "in" : "query" }
 	* @param-lastname { "type": "string", "required" : "false", "in" : "query" }
