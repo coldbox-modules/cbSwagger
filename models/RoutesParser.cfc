@@ -178,7 +178,7 @@ component accessors="true" threadsafe singleton{
 		// first parse our route to see if we have conditionals and create separate all found conditionals
 		var pathArray 		= listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
 		var assembledRoute 	= [];
-		var handlerMetadata = getHandlerMetadata( arguments.route );
+		var handlerMetadata = getHandlerMetadata( arguments.route ) ?: false;
 
 		for( var routeSegment in pathArray ){
 			if( findNoCase( "?", routeSegment ) ){
@@ -186,9 +186,10 @@ component accessors="true" threadsafe singleton{
 				addPathFromRouteConfig(
 					existingPaths 	= paths,
 					pathKey 		= "/" & arrayToList( assembledRoute, "/" ),
-					RouteConfig 	= arguments.route,
-					handlerMetadata = !isNull( handlerMetadata ) ? handlerMetadata : false
+					routeConfig 	= arguments.route,
+					handlerMetadata = handlerMetadata
 				);
+
 				//now append our optional key to construct an extended path
 				arrayAppend( assembledRoute, replace( routeSegment, "?", "" ) );
 			} else {
@@ -197,11 +198,15 @@ component accessors="true" threadsafe singleton{
 		}
 
 		// Add our final constructed route to the paths map
-		addPathFromRouteConfig( paths, "/" & arrayToList( assembledRoute, "/" ), arguments.route );
+		addPathFromRouteConfig(
+			existingPaths 	= paths,
+			pathKey 		= "/" & arrayToList( assembledRoute, "/" ),
+			routeConfig 	= arguments.route,
+			handlerMetadata = handlerMetadata
+		);
 
 		return paths;
 	}
-
 
 	/**
 	 * Creates paths individual paths from our routing configuration
@@ -209,7 +214,7 @@ component accessors="true" threadsafe singleton{
 	 * @existingPaths The existing path hashmap
 	 * @pathKey The key of the path to be created
 	 * @routeConfig A coldbox SES Route Configuration
-	 * @handlerMetadata	If not provided a lookup of the metadata will be performed
+	 * @handlerMetadata	The handler metadata corresponding to the route
 	 **/
 	private void function addPathFromRouteConfig(
 		required any existingPaths,
@@ -217,32 +222,27 @@ component accessors="true" threadsafe singleton{
 		required any routeConfig
 		any handlerMetadata
 	){
-		var path = structNew( "ordered" );
-		var errorMethods = [ 'onInvalidHTTPMethod', 'onMissingAction', 'routeNotFound', 'fourOhFour', 'onError' ];
-
-		if( isNull( arguments.handlerMetadata ) || !isBoolean( arguments.handlerMetadata ) ){
-			arguments.handlerMetadata = getHandlerMetadata( arguments.routeConfig );
-		}
-
-		var actions = structKeyExists( arguments.routeConfig, "action" ) ? arguments.routeConfig.action : "";
+		var path 			= structNew( "ordered" );
+		var errorMethods 	= [ 'onInvalidHTTPMethod', 'onMissingAction', 'routeNotFound', 'fourOhFour', 'onError' ];
+		var actions 		= structKeyExists( arguments.routeConfig, "action" ) ? arguments.routeConfig.action : "";
 
 		if( isStruct( actions ) ){
 			for( var methodList in actions  ){
 				// handle any delimited method lists
 				for( var methodName in listToArray( methodList ) ){
-					// handle explicit SES workarounds
+					// method not in error methods
 					if( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ){
-
+						// Create new path template
 						path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
-
-						appendPathParams( arguments.pathKey, path[ lcase( methodName ) ] );
-
+						// Append Params
+						appendPathParams( pathKey = arguments.pathKey, method = path[ lcase( methodName ) ] );
+						// Append Function metadata
 						if( !isNull( arguments.handlerMetadata ) ){
 							appendFunctionInfo(
-								path[ lcase( methodName ) ],
-								actions[ methodList ],
-								arguments.handlerMetadata,
-								len( arguments.routeConfig.module ) ? arguments.routeConfig.module : javacast( "null", "" )
+								method 			= path[ lcase( methodName ) ],
+								functionName 	= actions[ methodList ],
+								handlerMetadata = arguments.handlerMetadata,
+								moduleName 		=len( arguments.routeConfig.module ) ? arguments.routeConfig.module : javacast( "null", "" )
 							);
 						}
 					}
@@ -251,19 +251,24 @@ component accessors="true" threadsafe singleton{
 
 		} else{
 			for( var methodName in getOpenAPIUtil().defaultMethods() ){
+				// Insert path template for default method
 				path.put( lcase( methodName ), getOpenAPIUtil().newMethod() );
-
-				appendPathParams( arguments.pathKey, path[ lcase( methodName ) ] );
-
+				// Append Params
+				appendPathParams( pathKey = arguments.pathKey, method = path[ lcase( methodName ) ] );
+				// Append metadata
 				if( len( actions ) && !isNull( arguments.handlerMetadata ) ){
-					appendFunctionInfo( path[ lcase( methodName ) ], actions, arguments.handlerMetadata );
+					appendFunctionInfo(
+						method 			= path[ lcase( methodName ) ],
+						functionName 	= actions,
+						handlerMetadata = arguments.handlerMetadata
+					);
 				}
 			}
 		}
 
 		// Strip out any typing placeholders in routes
 		var pathSegments = listToArray( arguments.pathKey, "/" );
-		var typingParams = [ "numeric", "alpha", "regex" ];
+		var typingParams = [ "numeric", "alpha", "regex:" ];
 		for( var i = 1; i <= arrayLen( pathSegments ); i++ ){
 			var typedParam = listToArray( mid( pathSegments[ i ], 2, len( pathSegments[ i ] ) - 2 ), "-" );
 			if( arrayLen( typedParam ) > 1 ){
@@ -277,11 +282,11 @@ component accessors="true" threadsafe singleton{
 		}
 
 		arguments.existingPaths.put( "/" & arrayToList( pathSegments, "/" ), path );
-
 	}
 
 	/**
 	 * Appends the path-based paramters to a method
+	 *
 	 * @pathKey The path key ( route )
 	 * @method The current path method object
 	 **/
@@ -299,8 +304,8 @@ component accessors="true" threadsafe singleton{
 
 			for( var urlParam in pathParams ){
 				// parsing for param types in Coldbox Routes
-				var paramSegments = listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" );
-				var paramName = paramSegments[ 1 ];
+				var paramSegments 	= listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" );
+				var paramName 		= paramSegments[ 1 ];
 
 				arrayAppend(
 					arguments.method[ "parameters" ],
@@ -317,16 +322,16 @@ component accessors="true" threadsafe singleton{
 
 	/**
 	 * Parses the segment type in to a swagger param type
-	 * https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#parameterObject
+	 * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#parameterObject
 	 **/
 	private string function parseSegmentType( required array paramSegments ){
 		if( arrayLen( paramSegments ) == 1 ) return "string";
 
 		switch( paramSegments[ 2 ] ){
-			case "numeric":{
+			case "numeric" :{
 				return "integer";
 			}
-			case "regex":{
+			case "regex" : {
 				return "object";
 			}
 			default:{
@@ -381,19 +386,20 @@ component accessors="true" threadsafe singleton{
 	}
 
 	/**
-	* Appends the function info/metadata to the method hashmap
-	* @param java.util.LinkedHashmap method 		The method hashmap to append to
-	* @param string functionName					The name of the function to look up in the handler metadata
-	* @param any handlerMetadata 					The metadata of the handler to reference
-	* @return null
-	**/
+	 * Appends the function info/metadata to the method hashmap
+	 *
+	 * @method The method hashmap to append to
+	 * @functionName The name of the function to look up in the handler metadata
+	 * @handlerMetadata The metadata of the handler to reference
+	 * @module The module name if any
+	 *
+	 */
 	private void function appendFunctionInfo(
 		required any method,
 		required string functionName,
 		required any handlerMetadata,
 		moduleName
 	){
-
 
 		if( !isNull( moduleName ) ){
 
@@ -408,34 +414,40 @@ component accessors="true" threadsafe singleton{
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;
 
 		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
+		// Process function metadata
 		if( !isNull( functionMetadata ) ){
 			var defaultKeys = structKeyArray( arguments.method );
 			for( var infoKey in functionMetaData ){
-				// automatically make hints our "description"
+
+				// is !simple, continue to next key
 				if( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
+
+				// parse values from each key
 				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 
-				// x-attributes and custom keys
+				// hint/description
 				if( infoKey == "hint" ){
 					method.put( "description", infoMetadata );
+					continue;
 				}
-				// individual requestBody handling
-				else if( left( infoKey, 12 ) == 'requestBody' ){
-					var requestBody = 'requestBody';
 
-					if( !structKeyExists( method, "requestBody" ) ){
-						method.put( "requestBody", structnew( "ordered" ) );
-					}
-
-					method[ "requestBody" ].put( requestBody, structnew( "ordered" ) );
+				// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
+				if( left( infoKey, 12 ) == 'requestBody' ){
 
 					if( isSimpleValue( infoMetadata ) ){
-						method[ "requestBody" ][ "description" ] = infoMetadata;
+						method[ "requestBody" ][ "description" ] 	= infoMetadata;
+						method[ "requestBody" ][ "required" ] 		= true;
+						method[ "requestBody" ][ "content" ] 		= {
+							"#infoMetadata#" : {}
+						};
 					} else {
 						method[ "requestBody" ].putAll( infoMetadata );
 					}
+					continue;
 				}
-				else if( left( infoKey, 2 ) == "x-" ){
+
+				// Additional params
+				if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" );
 					//evaluate whether we have an x- replacement or a standard x-attribute
 					if( arrayContains( defaultKeys, normalizedKey ) ){
@@ -519,9 +531,13 @@ component accessors="true" threadsafe singleton{
 	}
 
 	/**
-	* Parses the metatdata values in to a valid swagger definition
-	* @metadataText 	the text content of the metadata item
-	**/
+	 * Parses the metatdata values in to a valid swagger definition:
+	 * - If JSON, it inflates it back
+	 * - If .json or http value, then treat it as a $ref
+	 * - Else just string
+	 *
+	 * @metadataText The text content of the metadata item
+	 */
 	private any function parseMetadataValue( required string metadataText ){
 
 		arguments.metadataText = trim( arguments.metadataText );
