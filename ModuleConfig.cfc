@@ -95,10 +95,10 @@ component{
 		};
 
 		// SES Routes
-		routes = [
-			//Module Root Requests
-			{ pattern="/", handler="Main", action="index" }
-		];
+		router
+			.route( "/", "main.index" )
+			.route( "/json", "main.json" )
+			.route( "/yml", "main.yml" );
 
 	}
 
