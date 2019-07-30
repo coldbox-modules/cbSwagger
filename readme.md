@@ -16,7 +16,7 @@ Apache License, Version 2.0.
 
 ## Pre-requisites
 
-To operate, the module requires that SES routing be enabled in your application.  For more information [read the official documentation](https://coldbox.ortusbooks.com/content/Routing/routes_configuration.html).
+To operate, the module requires that SES routing be enabled in your application.  For more information [read the official documentation](https://coldbox.ortusbooks.com/the-basics/routing).
 
 ## Install cbSWagger ( via Commandbox )
 
@@ -49,7 +49,7 @@ cbswagger = {
 		},
 		//A title for your API
 		"title":"",
-		//A descritpion of your API
+		//A description of your API
 		"description":"",
 		//A url to the License of your API
 		"license" : {
@@ -85,8 +85,8 @@ cbSwagger will automatically introspect your API handlers provided by your routi
 * Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
 * Metadata attributes prefixed with `param-` will be included as paramters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
 * Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
-* You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#parameterObject) and [responses](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#responseObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#pathItemObject).
-* Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
+* You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#parameterObject) and [responses](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#responsesObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#pathItemObject).
+* Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#patterned-objects) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
 * `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method 
 * `description` due to variances in parsing comment annotations, `description` annotations must be provided as attributes of the function body.  For example, you would use `function update( event, rc, prc ) description="Updates a user"{}` rather than `@description Updates a user`
 
