@@ -42,7 +42,7 @@ component {
 
 		// SES Routes
 		router
-			.route( "/" ).to( "home.index" );
+			.route( "/" ).to( "Home.index" );
 
 		// SES Resources
 		resources = [
