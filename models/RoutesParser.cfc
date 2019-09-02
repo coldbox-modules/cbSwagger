@@ -240,6 +240,7 @@ component accessors="true" threadsafe singleton{
 						// Append Function metadata
 						if( !isNull( arguments.handlerMetadata ) ){
 							appendFunctionInfo(
+								methodName 		= methodName,
 								method 			= path[ lcase( methodName ) ],
 								functionName 	= actions[ methodList ],
 								handlerMetadata = arguments.handlerMetadata,
@@ -259,6 +260,7 @@ component accessors="true" threadsafe singleton{
 				// Append metadata
 				if( len( actions ) && !isNull( arguments.handlerMetadata ) ){
 					appendFunctionInfo(
+						methodName 		= methodName,
 						method 			= path[ lcase( methodName ) ],
 						functionName 	= actions,
 						handlerMetadata = arguments.handlerMetadata
@@ -393,6 +395,7 @@ component accessors="true" threadsafe singleton{
 	/**
 	 * Appends the function info/metadata to the method hashmap
 	 *
+	 * @methodName The method name in use
 	 * @method The method hashmap to append to
 	 * @functionName The name of the function to look up in the handler metadata
 	 * @handlerMetadata The metadata of the handler to reference
@@ -400,15 +403,16 @@ component accessors="true" threadsafe singleton{
 	 *
 	 */
 	private void function appendFunctionInfo(
+		required any methodName,
 		required any method,
 		required string functionName,
 		required any handlerMetadata,
 		moduleName
 	){
-		var operationPath = handlerMetadata.name.replaceNoCase( "handlers.", "" );
-		if( !isNull( moduleName ) ){
-			operationPath = moduleName & ":" & operationPath;
-		}
+		var operationPath = arguments.methodName &
+			">" &
+			( !isNull( moduleName ) ? moduleName & ":" : "" ) &
+			handlerMetadata.name.replaceNoCase( "handlers.", "" );
 
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;
 

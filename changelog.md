@@ -9,7 +9,7 @@
 * You can choose your default output format via the module settings: `defaultFormat` setting. Valid options are `json` and `yml`
 * `features` : Support for ColdBox 5 event routing and response routing.
 
-* `improvement` : Improved the way operation Ids are reported
+* `improvement` : Improved the way operation Ids are reported so they can be unique when reusing handler actions.
 * `improvement` : Refactored `createLinkedHashMap()` -> `structNew( "ordered" )`
 * `improvement`: Removed lucee 4.5, acf11 support.
 
