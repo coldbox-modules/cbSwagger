@@ -1,45 +1,53 @@
 {
 	"201": {
 		"description": "Creation success response",
-		"schema": {
-			"type": "object",
-			"required": [
-				"id",
-				"firstname",
-				"lastname",
-				"email"
-			],
-			"properties": {
-				"id": {
-					"type": "integer"
-				},
-				"firstname": {
-					"type": "string"
-				},
-				"lastname": {
-					"type": "string"
-				},
-				"email": {
-					"type": "string"
+		"content" : {
+			"application/json" : {
+				"schema": {
+					"type": "object",
+					"required": [
+						"id",
+						"firstname",
+						"lastname",
+						"email"
+					],
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"firstname": {
+							"type": "string"
+						},
+						"lastname": {
+							"type": "string"
+						},
+						"email": {
+							"type": "string"
+						}
+					}
 				}
 			}
 		}
 	},
 	"default": {
 		"description": "unexpected error",
-		"schema": {
-			"type": "object",
-			"required": [
-				"code",
-				"message"
-			],
-			"properties": {
-				"code": {
-					"type": "integer",
-					"format": "integer"
-				},
-				"message": {
-					"type": "string"
+		"content" : {
+			"application/json" : {
+				"schema": {
+					"type": "object",
+					"required": [
+						"code",
+						"message"
+					],
+					"properties": {
+						"code": {
+							"type": "integer",
+							"format": "integer"
+						},
+						"message": {
+							"type": "string"
+						}
+					}
 				}
 			}
 		}

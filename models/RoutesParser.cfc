@@ -292,33 +292,37 @@ component accessors="true" threadsafe singleton{
 	 * @method The current path method object
 	 **/
 	private void function appendPathParams( required string pathKey, required struct method ){
+
+		// Verify parameters array in the method definition
+		if( !structKeyExists( arguments.method, "parameters" ) ){
+			arguments.method.put( "parameters", [] );
+		}
+
 		// handle any parameters in the url now
-		var pathParams = arrayFilter( listToArray( arguments.pathKey, "/" ), function( segment ){
-			return left( segment, 1 ) == "{";
-		} );
-
-		if( arrayLen( pathParams ) ){
-
-			if( !structKeyExists( arguments.method, "parameters" ) ){
-				arguments.method.put( "parameters", [] );
-			}
-
-			for( var urlParam in pathParams ){
+		listToArray( arguments.pathKey, "/" )
+			.filter( function( segment ){
+				return left( segment, 1 ) == "{";
+			} )
+			.each( function( urlParam ){
 				// parsing for param types in Coldbox Routes
-				var paramSegments 	= listToArray( mid( urlParam, 2, len( urlParam ) - 2 ), "-" );
+				var paramSegments 	= listToArray( mid( arguments.urlParam, 2, len( arguments.urlParam ) - 2 ), "-" );
 				var paramName 		= paramSegments[ 1 ];
 
 				arrayAppend(
-					arguments.method[ "parameters" ],
+					method[ "parameters" ],
 					{
-						"name"       : paramName,
-						"in"         : "path",
-						"required"   : true,
-						"type"       : parseSegmentType( paramSegments )
+						"name"       		: paramName,
+						"description" 		: paramName,
+						"in"         		: "path",
+						"required"   		: true,
+						"schema"			: {
+							"type" 		: parseSegmentType( paramSegments ),
+							"default" 	: ""
+						}
 					}
 				);
-			}
-		}
+			} );
+
 	}
 
 	/**
@@ -467,7 +471,6 @@ component accessors="true" threadsafe singleton{
 					} );
 
 					if( arrayLen( paramSearch ) ){
-
 						var parameter = paramSearch[ 1 ];
 						if( isSimpleValue( infoMetadata ) ){
 							parameter[ "description" ] = infoMetadata;
