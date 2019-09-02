@@ -26,7 +26,7 @@ Apache License, Version 2.0.
 
 ## Pre-requisites
 
-To operate, the module requires that SES routing be enabled in your application.  For more information [read the official documentation](https://coldbox.ortusbooks.com/content/Routing/routes_configuration.html).
+To operate, the module requires that SES routing be enabled in your application.  For more information [read the official documentation](https://coldbox.ortusbooks.com/the-basics/routing).
 
 ## Install cbSWagger ( via Commandbox )
 
@@ -39,6 +39,7 @@ To operate, the module requires that SES routing be enabled in your application.
 By default, cbSwagger looks for routes beginning with `/api/*` prefix.  By adding a `cbSwagger` configuration key to your Coldbox configuration, you can add additional metadata to the OpenAPI JSON produced by the module entry point and configure this module for operation.
 
 * `routes:array` :  An array of route prefixes to search for and add to the resulting documentation.
+* `defaultFormat:string` : The default output format of the documentation. Valid options are `json` and `yml`.
 
 A full configuration example is provided below:
 
@@ -46,11 +47,13 @@ A full configuration example is provided below:
 cbswagger = {
 	// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
 	"routes" : [ "api" ],
+	// The default output format: json or yml
+	"defaultFormat" : "json",
 	// Information about your API
 	"info"		:{
 		// A title for your API
 		"title" 			: "My Awesome API",
-		// A descritpion of your API
+		// A description of your API
 		"description" 		: "This API produces amazing results and data.",
 		// A terms of service URL for your API
 		"termsOfService"	: "",
@@ -131,6 +134,22 @@ cbswagger = {
 
 ```
 
+## Outputting Documentation (json|yml)
+
+You can visit the API documentation by hitting the `/cbSwagger` route.  This will trigger the default format (json) to be sent to the output.
+
+### Format Parameter
+
+You can force the format by using the `?format={format}` in the URI.  The valid options are `json` and `yml`
+
+```
+http://localhost/cbSwagger?format=yml
+http://localhost/cbSwagger?format=json
+http://localhost/cbSwagger/json
+http://localhost/cbSwagger/yml
+```
+
+
 ## Handler Introspection & Documentation attributes
 
 `cbSwagger` will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes, which will be picked up and included in your documentation.  The content body of these attributes may be provided as JSON, plain text, or may provided a file pointer which will be included as a `$ref` attribute.  Some notes on function attributes:
@@ -138,8 +157,8 @@ cbswagger = {
 - Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
 - Metadata attributes prefixed with `param-` will be included as paramters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
 - Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
-- You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#parameterObject) and [responses](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#responseObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#pathItemObject).
-- Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
+- You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://swagger.io/specification/#parameterObject) and [responses](https://swagger.io/specification/#responsesObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://swagger.io/specification/#pathItemObject).
+- Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://swagger.io/specification/#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
 - `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method 
 - `description` due to variances in parsing comment annotations, `description` annotations must be provided as attributes of the function body.  For example, you would use `function update( event, rc, prc ) description="Updates a user"{}` rather than `@description Updates a user`
 
