@@ -2,17 +2,18 @@
 
 ## 2.0.0
 
-* Upgraded to swagger-sdk 2.0.0 to support OpenAPI 3.0.x. A great guide on migrating is here: https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/
-* Removed lucee 4.5, acf11 support.
+* `feature`: Upgraded to swagger-sdk 2.0.0 to support OpenAPI 3.0.x. A great guide on migrating is here: https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/
 * Migrated `cbSwagger` settings to the `moduleSettings` struct instead of top-level in the `config/ColdBox.cfc`. Make sure you move your settings.
-* Refactored `createLinkedHashMap()` -> `structNew( "ordered" )`
-* You can now pass a `format` to the `/cbSwagger` endpoint to either get the OpenAPI doc as `json` or `yml`. Eg: `/cbswagger?format=yml`
-* You have two distinct routes for the json and yml formats: `/cbSwagger/json` and `/cbSwagger/yml`
+* `feature` : You can now pass a `format` to the `/cbSwagger` endpoint to either get the OpenAPI doc as `json` or `yml`. Eg: `/cbswagger?format=yml`
+* `feature` : You have two distinct routes for the json and yml formats: `/cbSwagger/json` and `/cbSwagger/yml`
 * You can choose your default output format via the module settings: `defaultFormat` setting. Valid options are `json` and `yml`
-* Support for ColdBox 5 event routing and response routing.
+* `features` : Support for ColdBox 5 event routing and response routing.
 
+* `improvement` : Improved the way operation Ids are reported
+* `improvement` : Refactored `createLinkedHashMap()` -> `structNew( "ordered" )`
+* `improvement`: Removed lucee 4.5, acf11 support.
 
-## 1.4.1 
+## 1.4.1
 
 * Fix for detecting ColdBox 5
 
