@@ -73,6 +73,7 @@ component accessors="true" threadsafe singleton{
 				template[ "paths" ].putAll( createPathsFromRouteConfig( value ) );
 			} );
 
+		// Build out the Open API Document object
 		return getOpenAPIParser().parse( template ).getDocumentObject();
 	}
 
@@ -400,15 +401,9 @@ component accessors="true" threadsafe singleton{
 		required any handlerMetadata,
 		moduleName
 	){
-
+		var operationPath = handlerMetadata.name.replaceNoCase( "handlers.", "" );
 		if( !isNull( moduleName ) ){
-
-			var operationPath = moduleName & ":" & listLast( handlerMetadata.name, "." );
-
-		} else{
-
-			var operationPath = listLast( handlerMetadata.name, "." );
-
+			operationPath = moduleName & ":" & operationPath;
 		}
 
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;

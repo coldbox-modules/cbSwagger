@@ -99,10 +99,29 @@
 					"version":"1.0.0"
 				},
 
+				// Tags
+				"tags" : [
+					{
+						"name": "pet",
+						"description": "Pets operations"
+					}
+				],
+
+				// https://swagger.io/specification/#externalDocumentationObject
+				"externalDocs" : {
+					"description": "Find more info here",
+					"url": "https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/"
+				},
+
+				// https://swagger.io/specification/#serverObject
 				"servers" : [
 					{
 						"url" 			: "https://mysite.com/v1",
 						"description" 	: "The main production server"
+					},
+					{
+						"url" 			: "http://127.0.0.1:60299",
+						"description" 	: "The dev server"
 					}
 				],
 
@@ -130,6 +149,10 @@
 					}
 				},
 
+				// A declaration of which security mechanisms can be used across the API.
+				// The list of values includes alternative security requirement objects that can be used.
+				// Only one of the security requirement objects need to be satisfied to authorize a request.
+				// Individual operations can override this definition.
 				"security" : [
 					{ "APIKey" : [] },
 					{ "UserSecurity" : [] }

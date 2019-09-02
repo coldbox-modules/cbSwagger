@@ -10,7 +10,13 @@ component displayname="API.v1.Users"{
 
 	this.API_BASE_URL = "/api/v1/users";
 
-	//(GET) /api/v1/users
+	/**
+	 * (GET) /api/v1/users
+	 *
+	 * @event
+	 * @rc
+	 * @prc
+	 */
 	function index( event, rc, prc ){
 	}
 
