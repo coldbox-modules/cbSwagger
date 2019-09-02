@@ -133,15 +133,15 @@ cbswagger = {
 
 ## Handler Introspection & Documentation attributes
 
-cbSwagger will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes, which will be picked up and included in your documentation.  The content body of these attributes may be provided as JSON, plain text, or may provided a file pointer which will be included as a `$ref` attribute.  Some notes on function attributes:
+`cbSwagger` will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes, which will be picked up and included in your documentation.  The content body of these attributes may be provided as JSON, plain text, or may provided a file pointer which will be included as a `$ref` attribute.  Some notes on function attributes:
 
-* Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
-* Metadata attributes prefixed with `param-` will be included as paramters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
-* Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
-* You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#parameterObject) and [responses](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#responseObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#pathItemObject).
-* Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
-* `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method 
-* `description` due to variances in parsing comment annotations, `description` annotations must be provided as attributes of the function body.  For example, you would use `function update( event, rc, prc ) description="Updates a user"{}` rather than `@description Updates a user`
+- Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
+- Metadata attributes prefixed with `param-` will be included as paramters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
+- Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
+- You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#parameterObject) and [responses](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#responseObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/2.0.md#pathItemObject).
+- Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
+- `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method 
+- `description` due to variances in parsing comment annotations, `description` annotations must be provided as attributes of the function body.  For example, you would use `function update( event, rc, prc ) description="Updates a user"{}` rather than `@description Updates a user`
 
 *Basic Example:*
 
@@ -181,14 +181,40 @@ function add( event, rc, prc ){
 
 ```js
 /**
-* @param-firstname { "type": "string", "required" : "false", "in" : "query" }
-* @param-lastname { "type": "string", "required" : "false", "in" : "query" }
-* @param-email { "type": "string", "required" : "false", "in" : "query" }
-* @response-200 { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }
-**/
-function update( event, rc, prc ) description="Updates a user"{
+ * @hint Adds a new user
+ * @parameters /includes/resources/users.add.parameters.json##user
+ * @responses /includes/resources/users.add.responses.json
+ * @x-SomeAdditionalInfo Here is some additional information on this path
+ * @requestBody {
+ * 	"description" : "User to add",
+ * 	"required" : true,
+ * 	"content" : {
+ * 		"application/json" : {
+ * 			"schema" : { "$ref" : "/includes/resources/NewUser.json" }
+ * 		}
+ * 	}
+ * }
+ */
+function add( event, rc, prc ){
+}
 
-	...[ Your code here ]...
+
+/**
+ * @param-firstname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+ * @param-lastname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+ * @param-email { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+ * @response-default { "description" : "User successfully updated", "content" : { "application/json" : { "schema" : { "$ref" : "/includes/resources/schema.json##user" } } } }
+ */
+function update( event, rc, prc ) description="Updates a user"{
+}
+```
+
+### Operation Ids
+
+You can influence the operation Ids by adding a `displayName` to your handler CFC.
+
+```
+component displayName="API.v1.Users"{
 
 }
 ```
