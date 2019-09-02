@@ -50,7 +50,7 @@ component{
 		routes = [
 			//Module API Routes
 			{
-				pattern	= 'users/:userID/posts/:id',
+				pattern	= 'users/:userID/posts/:id-numeric',
 				handler	= 'UserPosts',
 				action 	= {
 					"GET"    = "get" ,
