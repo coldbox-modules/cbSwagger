@@ -51,7 +51,7 @@ component{
 			//Module API Routes
 			{
 				pattern	= 'users/:userID/posts/:id',
-				handler	= 'Users',
+				handler	= 'UserPosts',
 				action 	= {
 					"GET"    = "get" ,
 					"POST"   = "update",

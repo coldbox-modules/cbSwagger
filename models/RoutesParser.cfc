@@ -409,10 +409,9 @@ component accessors="true" threadsafe singleton{
 		required any handlerMetadata,
 		moduleName
 	){
-		var operationPath = arguments.methodName &
-			">" &
-			( !isNull( moduleName ) ? moduleName & ":" : "" ) &
-			handlerMetadata.name.replaceNoCase( "handlers.", "" );
+		var operationPath = "#arguments.methodName#>" & // verb
+			( !isNull( moduleName ) ? moduleName & ":" : "" ) & // Module
+			( !isNull( handlerMetadata.displayName ) ? handlerMetadata.displayName : handlerMetadata.name ); // Name
 
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;
 

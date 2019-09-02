@@ -1,12 +1,12 @@
- /**
+/**
  *
  * @name User API Controller
  * @package cbSwagger-shell
  * @description This is the User Posts API Controller
  * @author Jon Clausen <jon_clausen@silowebworks.com>
- * 
- **/
-component name="API.v1.Posts"{
+ *
+ */
+component displayName="API.v1.Posts"{
 
 	function preHandler(event,action,eventArguments,rc,prc){
 	}
