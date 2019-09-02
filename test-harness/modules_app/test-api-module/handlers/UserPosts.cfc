@@ -6,7 +6,7 @@
  * @author Jon Clausen <jon_clausen@silowebworks.com>
  *
  */
-component displayName="API.v1.Posts"{
+component displayName="API.v2.Posts"{
 
 	function preHandler(event,action,eventArguments,rc,prc){
 	}

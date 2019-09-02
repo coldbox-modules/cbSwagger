@@ -6,9 +6,9 @@
  * @author Jon Clausen <jon_clausen@silowebworks.com>
  *
  **/
-component displayname="API.v1.Users"{
+component {
 
-	this.API_BASE_URL = "/api/v1/users";
+	this.API_BASE_URL = "/api/v2/users";
 
 	//(GET) /api/v1/users
 	function index(event,rc,prc){}

@@ -60,14 +60,6 @@ component{
 				}
 			},
 			{
-				pattern	= 'users/:userID/posts/:page-numeric?',
-				handler	= 'Users',
-				action 	= {
-					"GET"  = "index" ,
-					"POST" = "add"
-				}
-			},
-			{
 				pattern	= 'users/login',
 				handler	= 'Users',
 				action 	= { "POST" = "login" , "DELETE" = "logout" }
