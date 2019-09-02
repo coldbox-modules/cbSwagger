@@ -1,6 +1,6 @@
 {
     "name"      : "cbSwagger",
-    "version"   : "@build.version@+@build.number@",
+    "version"   : "2.0.0",
     "location"	: "https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbSwagger/@build.version@/cbSwagger-@build.version@.zip",
     "author"    : "Ortus Solutions, Corp",
     "slug"      : "cbSwagger",
@@ -19,11 +19,14 @@
         "Luis Majano <lmajano@ortussolutions.com>"
     ],
     "dependencies"  :{
-        "swagger-sdk":"^1.0.4"
+        "swagger-sdk":"^2.0.0"
     },
 	"ignore":[
         "**/.*",
         "test-harness",
         "*/.md"
-    ]
+    ],
+    "scripts": {
+    	"toMaster": "recipe build/toMaster.boxr"
+    }
 }

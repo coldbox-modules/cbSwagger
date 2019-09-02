@@ -30,13 +30,75 @@ component{
 	* Configure module
 	*/
 	function configure(){
+
+		settings = {
+			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
+			"routes"   : [ "api" ],
+
+			// The default output format, either json or yml
+			"defaultFormat" : "json",
+
+			// Information about your API
+			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#infoObject
+			"info"     	: {
+				// REQUIRED A title for your API
+				"title"          : "My Awesome API",
+				// A short description of the application. CommonMark syntax MAY be used for rich text representation.
+				"description"    : "",
+				// A URL to the Terms of Service for the API. MUST be in the format of a URL.
+				"termsOfService" : "",
+				// Contact information for the exposed API.
+				"contact"        : {
+					// The identifying name of the contact person/organization.
+					"name"  : "",
+					// The URL pointing to the contact information. MUST be in the format of a URL.
+					"url"   : "",
+					// The email address of the contact person/organization. MUST be in the format of an email address.
+					"email" : ""
+				},
+				// License information for the exposed API.
+				"license"        : {
+					// The license name used for the API.
+					"name" 	: "",
+					// A URL to the license used for the API. MUST be in the format of a URL.
+					"url"	: ""
+				},
+				// REQUIRED. The version of the OpenAPI document (which is distinct from the OpenAPI Specification version or the API implementation version).
+				"version"        : "1.0.0"
+			},
+
+			// An array of Server Objects, which provide connectivity information to a target server. If the servers property is not provided, or is an empty array, the default value would be a Server Object with a url value of /.
+			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#serverObject
+			"servers"	: [
+			],
+
+			// An element to hold various schemas for the specification.
+			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#componentsObject
+			"components" : {
+			},
+
+			// A declaration of which security mechanisms can be used across the API.
+			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securityRequirementObject
+			"security" : [],
+
+			// A list of tags used by the specification with additional metadata.
+			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject
+			"tags" : [
+			],
+
+			// Additional external documentation.
+			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#externalDocumentationObject
+			"externalDocs" : {
+				"description" 	: "",
+				"url" 			: ""
+			}
+		};
+
 		// SES Routes
-		routes = [
-			//Module Root Requests
-			{ pattern="", handler="Main", action="index" },
-			// Convention Route
-			{ pattern=":handler/:action?" }
-		];
+		router
+			.route( "/", "main.index" )
+			.route( "/json", "main.json" )
+			.route( "/yml", "main.yml" );
 
 	}
 
@@ -44,13 +106,6 @@ component{
 	* Fired when the module is registered and activated.
 	*/
 	function onLoad(){
-		// parse parent settings
-		parseParentSettings();
-
-		// Add mixins
-		binder.map( "RoutesParser@cbswagger" )
-			.to( "#moduleMapping#.models.RoutesParser" )
-			.mixins( '/SwaggerSDK/models/mixins/hashMap.cfm' );
 	}
 
 	/**
@@ -58,64 +113,6 @@ component{
 	*/
 	function onUnload(){
 
-	}
-
-	/**
-	* Prepare settings
-	*/
-	private function parseParentSettings(){
-		/**
-		Sample Config:
-		cbswagger = {
-			// The location of the cbswaggered APIs, defaults to /models/resources
-			routes = ["api"]
-		};
-		**/
-		// Read parent application config
-		var oConfig 		= controller.getSetting( "ColdBoxConfig" );
-		var cbswaggerDSL	= oConfig.getPropertyMixin( "cbswagger", "variables", structnew() );
-		var configStruct 	= controller.getConfigSettings();
-
-		// Default Config Structure
-		configStruct.cbswagger = {
-			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
-			"routes"   : ["api"],
-			// A base path prefix for your API - leave blank if all routes are configured to the root of the site
-			"basePath" : "/",
-			// The API host
-			"host"     : "",
-			// API Protocol, default to http/https
-			"schemes"  : [ "https", "http" ],
-			// Information about your API
-			"info"     : {
-				//The contact email address
-				"contact"        : {
-					"name"  : "",
-					"url"   : "",
-					"email" : ""
-				},
-				//A title for your API
-				"title"          : "",
-				//A descritpion of your API
-				"description"    : "",
-				//A url to the License of your API
-				"license"        :{
-					"name" 	: "",
-					"url"	: ""
-				},
-				//A terms of service URL for your API
-				"termsOfService" : "",
-				//The version of your API
-				"version"        : ""
-			},
-			//An array of all of the request body formats your your API is configured to consume
-			"consumes" : [ "application/json", "multipart/form-data", "application/x-www-form-urlencoded" ],
-			//An array of all of the response body formats your API delivers
-			"produces" : [ "application/json" ]
-		};
-
-		// Append it
-		structAppend( configStruct.cbswagger, cbswaggerDSL, true );
 	}
 
 }

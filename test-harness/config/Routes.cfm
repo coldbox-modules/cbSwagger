@@ -40,7 +40,7 @@
 	addRoute(
 		pattern='/api/v1/users/login',
 		handler='api.v1.Users',
-		action={"POST":"login","DELETE":"login"}
+		action={"POST":"login","DELETE":"logout"}
 	);
 
 	addRoute(

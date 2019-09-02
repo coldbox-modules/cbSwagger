@@ -10,7 +10,13 @@ component displayname="API.v1.Users"{
 
 	this.API_BASE_URL = "/api/v1/users";
 
-	//(GET) /api/v1/users
+	/**
+	 * (GET) /api/v1/users
+	 *
+	 * @event
+	 * @rc
+	 * @prc
+	 */
 	function index( event, rc, prc ){
 	}
 
@@ -23,21 +29,30 @@ component displayname="API.v1.Users"{
 	}
 
 	/**
-	* @hint Adds a new user
-	* @x-parameters /includes/resources/users.add.parameters.json##user
-	* @responses /includes/resources/users.add.responses.json
-	* @x-SomeAdditionalInfo Here is some additional information on this path
-	*/
+	 * @hint Adds a new user
+	 * @parameters /includes/resources/users.add.parameters.json##user
+	 * @responses /includes/resources/users.add.responses.json
+	 * @x-SomeAdditionalInfo Here is some additional information on this path
+	 * @requestBody {
+	 * 	"description" : "User to add",
+	 * 	"required" : true,
+	 * 	"content" : {
+	 * 		"application/json" : {
+	 * 			"schema" : { "$ref" : "/includes/resources/NewUser.json" }
+	 * 		}
+	 * 	}
+	 * }
+	 */
 	function add( event, rc, prc ){
 	}
 
-	
+
 	/**
-	* @param-firstname { "type": "string", "required" : "false", "in" : "query" }
-	* @param-lastname { "type": "string", "required" : "false", "in" : "query" }
-	* @param-email { "type": "string", "required" : "false", "in" : "query" }
-	* @response-default { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }
-	**/
+	 * @param-firstname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+	 * @param-lastname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+	 * @param-email { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+	 * @response-default { "description" : "User successfully updated", "content" : { "application/json" : { "schema" : { "$ref" : "/includes/resources/schema.json##user" } } } }
+	 */
 	function update( event, rc, prc ) description="Updates a user"{
 	}
 

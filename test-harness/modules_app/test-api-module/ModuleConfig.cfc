@@ -51,26 +51,18 @@ component{
 			//Module API Routes
 			{
 				pattern	= 'users/:userID/posts/:id',
-				handler	= 'Users',
-				action 	= { 
-					"GET"    = "get" , 
+				handler	= 'UserPosts',
+				action 	= {
+					"GET"    = "get" ,
 					"POST"   = "update",
 					"PATCH"  = "update",
-					"DELETE" = "delete" 
-				}
-			},
-			{
-				pattern	= 'users/:userID/posts/:page-numeric?',
-				handler	= 'Users',
-				action 	= { 
-					"GET"  = "index" , 
-					"POST" = "add" 
+					"DELETE" = "delete"
 				}
 			},
 			{
 				pattern	= 'users/login',
 				handler	= 'Users',
-				action 	= { "POST" = "login" , "DELETE" = "login" }
+				action 	= { "POST" = "login" , "DELETE" = "logout" }
 			},
 			{
 				pattern 	= 'users/:id',

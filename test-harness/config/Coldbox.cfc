@@ -70,41 +70,96 @@
 			info = [ "coldbox.system" ]
 		};
 
-		cbswagger = {
-			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
-			//"routes":[ "api" ],
-			//A base path prefix for your API - leave blank if all routes are configured to the root of the site
-			"basePath":"/api",
-			//The API host
-			"host":"www.ortussolutions.com",
-			// Information about your API
-			"info":{
-				//The contact email address
-				"contact":{
-					"name": "API Support",
-					"url": "http://www.swagger.io/support",
-					"email": "info@ortussolutions.com"
-				},
-				//A title for your API
-				"title":"CB Swagger Test",
-				//A descritpion of your API
-				"description":"The testing of the cb swagger module",
-				//A url to the License of your API
-				"license": {
-					"name": "Apache 2.0",
-					"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-				},
-				//A terms of service URL for your API
-				"termsOfService":"",
-				//The version of your API
-				"version":"1.0.0"
-			},
-			//An array of all of the request body formats your your API is configured to consume
-			"consumes": ["application/json","multipart/form-data","application/x-www-form-urlencoded"],
-			//An array of all of the response body formats your API delivers
-			"produces": ["application/json"]
-		};
+		// Module Settings
+		moduleSettings = {
 
+			cbswagger : {
+				//  The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
+				// "routes":[ "api" ],
+				// Information about your API
+				"info"		:{
+					// A title for your API
+					"title" 			: "My Awesome API",
+					// A descritpion of your API
+					"description" 		: "This API produces amazing results and data.",
+					// A terms of service URL for your API
+					"termsOfService"	: "",
+					//The contact email address
+					"contact" 		:{
+						"name": "API Support",
+						"url": "http://www.swagger.io/support",
+						"email": "info@ortussolutions.com"
+					},
+					//A url to the License of your API
+					"license": {
+						"name": "Apache 2.0",
+						"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+					},
+					//The version of your API
+					"version":"1.0.0"
+				},
+
+				// Tags
+				"tags" : [
+					{
+						"name": "pet",
+						"description": "Pets operations"
+					}
+				],
+
+				// https://swagger.io/specification/#externalDocumentationObject
+				"externalDocs" : {
+					"description": "Find more info here",
+					"url": "https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/"
+				},
+
+				// https://swagger.io/specification/#serverObject
+				"servers" : [
+					{
+						"url" 			: "https://mysite.com/v1",
+						"description" 	: "The main production server"
+					},
+					{
+						"url" 			: "http://127.0.0.1:60299",
+						"description" 	: "The dev server"
+					}
+				],
+
+				// An element to hold various schemas for the specification.
+				// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#componentsObject
+				"components" : {
+
+					// Define your security schemes here
+					// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securitySchemeObject
+					"securitySchemes" : {
+						"UserSecurity" : {
+							// REQUIRED. The type of the security scheme. Valid values are "apiKey", "http", "oauth2", "openIdConnect".
+							"type" 			: "http",
+							// A short description for security scheme. CommonMark syntax MAY be used for rich text representation.
+							"description" 	: "HTTP Basic auth",
+							// REQUIRED. The name of the HTTP Authorization scheme to be used in the Authorization header as defined in RFC7235.
+							"scheme" 		: "basic"
+						},
+						"APIKey" : {
+							"type" 			: "apiKey",
+							"description" 	: "An API key for security",
+							"name" 			: "x-api-key",
+							"in" 			: "header"
+						}
+					}
+				},
+
+				// A declaration of which security mechanisms can be used across the API.
+				// The list of values includes alternative security requirement objects that can be used.
+				// Only one of the security requirement objects need to be satisfied to authorize a request.
+				// Individual operations can override this definition.
+				"security" : [
+					{ "APIKey" : [] },
+					{ "UserSecurity" : [] }
+				]
+			}
+
+		};
 
 	}
 

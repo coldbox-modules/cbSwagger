@@ -56,6 +56,8 @@ component{
         buildID=createUUID(),
         branch="development"
     ){
+		// Create project mapping
+		fileSystemUtil.createMapping( arguments.projectName, variables.cwd );
 
         // Run the tests
         runTests();
@@ -86,7 +88,8 @@ component{
         command( 'testbox run' )
             .params(
                 runner = variables.testRunner,
-                verbose = true
+				verbose = true,
+				outputFile = "build/results.json"
             )
             .run();
 
