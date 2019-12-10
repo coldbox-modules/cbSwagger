@@ -420,7 +420,6 @@ component accessors="true" threadsafe singleton{
 		if( !isNull( arguments.functionMetadata ) ){
 			var defaultKeys = arguments.method.keyArray();
 
-			appendFunctionSecurity( argumentCollection=arguments );
 			appendFunctionParams( argumentCollection=arguments );
 			appendFunctionResponses( argumentCollection=arguments );
 
@@ -641,29 +640,6 @@ component accessors="true" threadsafe singleton{
 			sampleArgs = { "type" : "responses" };
 			sampleArgs.append( arguments );
 			appendConventionSamples( argumentCollection=sampleArgs );
-	}
-
-	private void function appendFunctionSecurity(
-		required any methodName,
-		required any method,
-		required string functionName,
-		required any handlerMetadata,
-		required any functionMetadata,
-		moduleName
-	){
-		functionMetadata.keyArray()
-							.filter( 
-								function( key ){
-									return left( key, 9 ) == 'response-';
-								} 
-							).each( 
-								function( infoKey ){
-									// parse values from each key
-									var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
-
-								} 
-							);
-		
 	}
 
 	/**
