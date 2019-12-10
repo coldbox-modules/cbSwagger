@@ -415,12 +415,16 @@ component accessors="true" threadsafe singleton{
 
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;
 
-		var functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
+		arguments.functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 		// Process function metadata
-		if( !isNull( functionMetadata ) ){
-			var defaultKeys = structKeyArray( arguments.method );
-			for( var infoKey in functionMetaData ){
+		if( !isNull( arguments.functionMetadata ) ){
+			var defaultKeys = arguments.method.keyArray();
 
+			appendFunctionSecurity( argumentCollection=arguments );
+			appendFunctionParams( argumentCollection=arguments );
+			appendFunctionResponses( argumentCollection=arguments );
+
+			functionMetadata.keyArray().each( function( infoKey ){
 				// is !simple, continue to next key
 				if( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
 
@@ -463,8 +467,92 @@ component accessors="true" threadsafe singleton{
 					continue;
 				}
 
-				// Individual route params: param-{name}
-				if( left( infoKey, 6 ) == 'param-'){
+				if( arrayContainsNoCase( defaultKeys, infoKey ) ){
+
+					// don't override any previously set convention assignments
+					if( isSimpleValue( infoMetadata ) && len( infoMetadata ) ){
+						method[ infoKey ] = infoMetadata;
+					} else if( !isSimpleValue( infoMetadata ) ) {
+						method[ infoKey ] = infoMetadata;
+					}
+				}
+			} );
+
+			// check for a request body convention file
+			if( !method.keyExists( "requestBody" ) || structIsEmpty( method[ "requestBody" ] ) ){
+				sampleArgs = { "type" : "requestBody" };
+				sampleArgs.append( arguments );
+				appendConventionSamples( argumentCollection=sampleArgs );
+			}
+		}
+
+	}
+
+	private void function appendConventionSamples(
+		required string type,
+		required any methodName,
+		required any method,
+		required string functionName,
+		required any handlerMetadata,
+		required any functionMetadata,
+		moduleName
+	){
+		var conventionDirectory = controller.getAppRootPath() & arrayToList( listToArray( moduleSettings.samplesPath, '/' ), '/' );
+		if( !directoryExists( conventionDirectory ) ) return;
+
+		if( directoryExists( conventionDirectory & "/" & type ) ){
+			var availableFiles = directoryList( conventionDirectory & "/" & arguments.type , true, "path", "*", "name DESC", "file" );
+			/**
+			 * we accept the following conventions:
+			 * 1. [handler].[methodName].json - all sample types
+			 * 2. [moduleName].[handler].[methodName].json - all sample types
+			 * 3. [handler].[methodName].[status code|default].json - status-code specific responses
+			 * 4. [moduleName].[handler].[methodName].[status code|default].json - status-code specific responses
+			 */
+			if( !isNull( moduleName ) ){
+				var filterString = arrayToList( [ moduleName, listLast( handlerMetadata.name, "." ), methodName ], "." );
+			} else {
+				var filterString = arrayToList( [ handlerMetadata.name, methodName ], "." );
+			}
+			
+			availableFiles.filter( function( filePath ){
+				return findNoCase( filterString, replaceNoCase( filePath, conventionDirectory, "" ) );
+			} )
+			.each( function( filePath ){
+				var fileContent = fileRead( filePath );
+				if( isJSON( fileContent ) ){
+					var sampleData = parseMetadataValue( fileContent );
+					var descriptors = listToArray( replaceNoCase( replaceNoCase( filePath, filterString & ".", "" ), conventionDirectory & "/" & type & "/" , "" ), "." );
+					arrayDeleteAt( descriptors, descriptors.len() );
+					if( descriptors.len() ){
+						method[ type ][ arrayToList( descriptors, "-" ) ] = type == 'responses' ? { "description" : "", "#fileGetMimeType( filePath )#" : sampleData } : sampleData;
+					} else {
+						method[ type ] = type == 'responses' ? { "default" : { "description" : "", "#fileGetMimeType( filePath )#" : sampleData } } : sampleData;
+					}
+				}
+			} );
+		}
+
+	}
+
+	private void function appendFunctionParams(
+		required any methodName,
+		required any method,
+		required string functionName,
+		required any handlerMetadata,
+		required any functionMetadata,
+		moduleName
+	){
+		functionMetadata
+			.keyArray()
+			.filter( 
+				function( key ){
+					return left( key, 6 ) == 'param-';
+				} 
+			).each( 
+				function( infoKey ){
+					// parse values from each key
+					var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 					// Get the param name
 					var paramName = right( infoKey, len( infoKey ) - 6 );
 
@@ -506,11 +594,32 @@ component accessors="true" threadsafe singleton{
 							parameter
 						);
 					}
+				} 
+			);
+			
+		sampleArgs = { "type" : "parameters" };
+		sampleArgs.append( arguments );
+		appendConventionSamples( argumentCollection=sampleArgs );
+	}
 
-				}
-
-				// individual response handling: response-{type}
-				if( left( infoKey, 9 ) == 'response-'){
+	private void function appendFunctionResponses(
+		required any methodName,
+		required any method,
+		required string functionName,
+		required any handlerMetadata,
+		required any functionMetadata,
+		moduleName
+	){
+		functionMetadata
+			.keyArray()
+			.filter( 
+				function( key ){
+					return left( key, 9 ) == 'response-';
+				} 
+			).each( 
+				function( infoKey ){
+					// parse values from each key
+					var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 					// get reponse name
 					var responseName = right( infoKey, len( infoKey ) - 9 );
 
@@ -526,21 +635,35 @@ component accessors="true" threadsafe singleton{
 						method[ "responses" ][ responseName ].putAll( infoMetadata );
 					}
 
-					continue;
-				}
+				} 
+			);
 
-				if( arrayContainsNoCase( defaultKeys, infoKey ) ){
+			sampleArgs = { "type" : "responses" };
+			sampleArgs.append( arguments );
+			appendConventionSamples( argumentCollection=sampleArgs );
+	}
 
-					// don't override any previously set convention assignments
-					if( isSimpleValue( infoMetadata ) && len( infoMetadata ) ){
-						method[ infoKey ] = infoMetadata;
-					} else if( !isSimpleValue( infoMetadata ) ) {
-						method[ infoKey ] = infoMetadata;
-					}
-				}
-			}
-		}
+	private void function appendFunctionSecurity(
+		required any methodName,
+		required any method,
+		required string functionName,
+		required any handlerMetadata,
+		required any functionMetadata,
+		moduleName
+	){
+		functionMetadata.keyArray()
+							.filter( 
+								function( key ){
+									return left( key, 9 ) == 'response-';
+								} 
+							).each( 
+								function( infoKey ){
+									// parse values from each key
+									var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 
+								} 
+							);
+		
 	}
 
 	/**
