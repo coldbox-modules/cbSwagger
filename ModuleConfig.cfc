@@ -34,10 +34,10 @@ component{
 		settings = {
 			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
 			"routes"   : [ "api" ],
-
 			// The default output format, either json or yml
 			"defaultFormat" : "json",
-
+			// A convention route where samples are stored ( e.g. resources/apidocs/[module].[handler].[action].json )
+			"samplesPath" : "resources/apidocs",
 			// Information about your API
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#infoObject
 			"info"     	: {
