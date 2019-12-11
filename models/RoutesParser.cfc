@@ -147,9 +147,9 @@ component accessors="true" threadsafe singleton{
 		}
 
 		// Remove any route excludes
-		if ( !!ArrayLen( variables.moduleSettings.excludeRoutes ) ) {
+		if ( !!ArrayLen( moduleSettings.excludeRoutes ) ) {
 			for ( var route in StructKeyArray( designatedRoutes ) ) {
-				if ( !!ArrayFindNoCase( variables.moduleSettings.excludeRoutes, route ) ) {
+				if ( !!ArrayFindNoCase( moduleSettings.excludeRoutes, route ) ) {
 					StructDelete( designatedRoutes, route );
 				}
 			}
