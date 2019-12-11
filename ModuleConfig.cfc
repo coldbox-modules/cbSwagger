@@ -34,7 +34,8 @@ component{
 		settings = {
 			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
 			"routes"   : [ "api" ],
-
+			// Routes to exclude from the generated spec
+			"excludeRoutes"	: [],
 			// The default output format, either json or yml
 			"defaultFormat" : "json",
 
