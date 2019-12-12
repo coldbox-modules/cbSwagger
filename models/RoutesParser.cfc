@@ -229,7 +229,7 @@ component accessors="true" threadsafe singleton{
 	private void function addPathFromRouteConfig(
 		required any existingPaths,
 		required string pathKey,
-		required any routeConfig
+		required any routeConfig,
 		any handlerMetadata
 	){
 		var path 			= structNew( "ordered" );
