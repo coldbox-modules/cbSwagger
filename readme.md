@@ -51,6 +51,8 @@ cbswagger = {
 	// Any routes to exclude
 	"excludeRoutes"	: [],
 	"defaultFormat" : "json",
+	// A convention route, relative to your app root, where request/response samples are stored ( e.g. resources/apidocs/responses/[module].[handler].[action].[HTTP Status Code].json )
+	"samplesPath" : "resources/apidocs",
 	// Information about your API
 	"info"		:{
 		// A title for your API
@@ -229,6 +231,20 @@ function add( event, rc, prc ){
 function update( event, rc, prc ) description="Updates a user"{
 }
 ```
+
+*Using convention paths to generate documentation schema and samples*
+
+Conventions also exist, which will allow you to place JSON files within a conventions directory, defined by the `samplesPath` setting, which will automatically be included as part of your documentation. The default samples path is `resources/apidocs`.  A JSON file placed, for example, at the location of `resources/apidocs/responses/api.v1.Users.add.201.json`, would automatically be picked as the `201` status code response for the `add` method of the `Users` handler, within the `api.v1` directory.
+
+In addition to the `responses` sub-directory, the directories of `parameters` and `responseBody` will also be inspected for content which matches the route/event being parsed. The latter two directories are parsed as-is, and are assumed to be in a valid Swagger specification format.
+
+File naming conventions supported include:
+
+* `[handler].[methodName].json` - all sample types
+* `[moduleName].[handler].[methodName].json` - all sample types
+* `[handler].[methodName](.[status code]).json` - responses with or without status codes
+* `[moduleName].[handler].[methodName](.[status code]).json` - responses with or without status codes
+
 
 ### Operation Ids
 
