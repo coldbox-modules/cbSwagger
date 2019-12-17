@@ -202,10 +202,12 @@ function add( event, rc, prc ){
 
 *Example using JSON ( + file pointers )*
 
+_Note: Because CFML has its own `parameters` key within the function metadata, we would pull in a document of parameters using `x-parameters`, which will appear as `parameters` in the swagger method definition_
+
 ```js
 /**
  * @hint Adds a new user
- * @parameters /includes/resources/users.add.parameters.json##user
+ * @x-parameters /includes/resources/users.add.parameters.json
  * @responses /includes/resources/users.add.responses.json
  * @x-SomeAdditionalInfo Here is some additional information on this path
  * @requestBody {
