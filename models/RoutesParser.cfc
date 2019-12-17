@@ -107,20 +107,20 @@ component accessors="true" threadsafe singleton{
 
 		// Now loop through our assembled module routes and append if designated
 		var moduleConfigCache 	= variables.moduleService.getModuleConfigCache();
-		var moduleSettings 		= variables.controller.getSetting( "modules" );
+		var modulesSettings 		= variables.controller.getSetting( "modules" );
 
 		for( var route in moduleSESRoutes ){
 			if(
 				// module exists
-				structKeyExists( moduleSettings, route.module )
+				structKeyExists( modulesSettings, route.module )
 				&&
 				// and it has an entry point
-				len( moduleSettings[ route.module ].entryPoint )
+				len( modulesSettings[ route.module ].entryPoint )
 			){
-				var moduleEntryPoint = moduleSettings[ route.module ].entryPoint;
+				var moduleEntryPoint = modulesSettings[ route.module ].entryPoint;
 				// Check if ColdBox 5 inherited entry points are available.
-				if( moduleSettings[ route.module ].keyExists( "inheritedEntryPoint") ){
-					moduleEntryPoint = moduleSettings[ route.module ].inheritedEntryPoint;
+				if( modulesSettings[ route.module ].keyExists( "inheritedEntryPoint") ){
+					moduleEntryPoint = modulesSettings[ route.module ].inheritedEntryPoint;
 				}
 				// TODO: not sure why Jon is doing this, ask him.
 				var moduleEntryPoint = arrayToList( listToArray( moduleEntryPoint, "/" ), "/" );
@@ -144,6 +144,15 @@ component accessors="true" threadsafe singleton{
 				}
 			}
 
+		}
+
+		// Remove any route excludes
+		if ( !!ArrayLen( moduleSettings.excludeRoutes ) ) {
+			for ( var route in StructKeyArray( designatedRoutes ) ) {
+				if ( !!ArrayFindNoCase( moduleSettings.excludeRoutes, route ) ) {
+					StructDelete( designatedRoutes, route );
+				}
+			}
 		}
 
 		// Now custom sort our routes alphabetically
@@ -220,7 +229,7 @@ component accessors="true" threadsafe singleton{
 	private void function addPathFromRouteConfig(
 		required any existingPaths,
 		required string pathKey,
-		required any routeConfig
+		required any routeConfig,
 		any handlerMetadata
 	){
 		var path 			= structNew( "ordered" );

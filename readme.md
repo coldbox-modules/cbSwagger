@@ -48,6 +48,8 @@ cbswagger = {
 	// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
 	"routes" : [ "api" ],
 	// The default output format: json or yml
+	// Any routes to exclude
+	"excludeRoutes"	: [],
 	"defaultFormat" : "json",
 	// A convention route, relative to your app root, where request/response samples are stored ( e.g. resources/apidocs/responses/[module].[handler].[action].[HTTP Status Code].json )
 	"samplesPath" : "resources/apidocs",
@@ -161,7 +163,7 @@ http://localhost/cbSwagger/yml
 - Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
 - You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://swagger.io/specification/#parameterObject) and [responses](https://swagger.io/specification/#responsesObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://swagger.io/specification/#pathItemObject).
 - Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://swagger.io/specification/#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
-- `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method 
+- `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method
 - `description` due to variances in parsing comment annotations, `description` annotations must be provided as attributes of the function body.  For example, you would use `function update( event, rc, prc ) description="Updates a user"{}` rather than `@description Updates a user`
 
 *Basic Example:*
