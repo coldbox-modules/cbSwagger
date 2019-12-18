@@ -234,7 +234,21 @@ component accessors="true" threadsafe singleton{
 	){
 		var path 			= structNew( "ordered" );
 		var errorMethods 	= [ 'onInvalidHTTPMethod', 'onMissingAction', 'routeNotFound', 'fourOhFour', 'onError' ];
-		var actions 		= structKeyExists( arguments.routeConfig, "action" ) ? arguments.routeConfig.action : "";
+        var actions 		= structKeyExists( arguments.routeConfig, "action" ) ? arguments.routeConfig.action : "";
+
+        // This ensures that if there are verbs attached to a route, it shows up in the actions as a struct.
+        // The ColdBox router allows a { "pattern": "/some/path", "event": "handler.action", "verbs": "get" } syntax.
+        // We only want one code path, when possible, so we convert these to the equivalent action structs:
+        // { "pattern": "/some/path", "handler": "handler", "action": { "get": "action" } }
+        if ( ! isStruct( actions ) && structKeyExists( arguments.routeConfig, "verbs" ) ) {
+            var targetAction = len( arguments.routeConfig.event ) ?
+                listLast( arguments.routeConfig.event, "." ) :
+                arguments.routeConfig.action;
+            actions = arguments.routeConfig.verbs.listToArray().reduce( function( acc, verb ) {
+                acc[ verb ] = targetAction;
+                return acc;
+            }, {} );
+        }
 
 		if( isStruct( actions ) ){
 			for( var methodList in actions  ){
@@ -522,7 +536,7 @@ component accessors="true" threadsafe singleton{
 			} else {
 				var filterString = arrayToList( [ handlerMetadata.name, methodName ], "." );
 			}
-			
+
 			availableFiles.filter( function( filePath ){
 				return findNoCase( filterString, replaceNoCase( filePath, conventionDirectory, "" ) );
 			} )
@@ -553,11 +567,11 @@ component accessors="true" threadsafe singleton{
 	){
 		functionMetadata
 			.keyArray()
-			.filter( 
+			.filter(
 				function( key ){
 					return left( key, 6 ) == 'param-';
-				} 
-			).each( 
+				}
+			).each(
 				function( infoKey ){
 					// parse values from each key
 					var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
@@ -602,9 +616,9 @@ component accessors="true" threadsafe singleton{
 							parameter
 						);
 					}
-				} 
+				}
 			);
-			
+
 		sampleArgs = { "type" : "parameters" };
 		sampleArgs.append( arguments );
 		appendConventionSamples( argumentCollection=sampleArgs );
@@ -620,11 +634,11 @@ component accessors="true" threadsafe singleton{
 	){
 		functionMetadata
 			.keyArray()
-			.filter( 
+			.filter(
 				function( key ){
 					return left( key, 9 ) == 'response-';
-				} 
-			).each( 
+				}
+			).each(
 				function( infoKey ){
 					// parse values from each key
 					var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
@@ -643,7 +657,7 @@ component accessors="true" threadsafe singleton{
 						method[ "responses" ][ responseName ].putAll( infoMetadata );
 					}
 
-				} 
+				}
 			);
 
 			sampleArgs = { "type" : "responses" };
