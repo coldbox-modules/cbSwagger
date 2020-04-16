@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 2.1.0
+
+### Features
+
+* Allow `@security` annotation to override the security mechanisms defined in config. The value can be a JSON array of security directives, a file pointer, or for convenience the name of a security schema. See readme for examples.
+* Support for discovering responses and examples by conventions in the `resources/apidocs` folder convention. See readme for examples.
+* Ability to exclude routes from the generated spec via the `excludeRoutes` configuration key.
+
+### Improvements
+
+* Add default `samplesPath` config item to `resources/apidocs` in the ModuleConfig
+* Add convention samples parsing and refactor segment parsing to separate methods
+
+### Bugs
+
+* Fixes for new router syntax not parsing actions correctly or not taking into account actions attached to verbs
+
+
 ## 2.0.0
 
 * `feature`: Upgraded to swagger-sdk 2.0.0 to support OpenAPI 3.0.x. A great guide on migrating is here: https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/

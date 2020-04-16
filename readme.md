@@ -48,7 +48,11 @@ cbswagger = {
 	// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
 	"routes" : [ "api" ],
 	// The default output format: json or yml
+	// Any routes to exclude
+	"excludeRoutes"	: [],
 	"defaultFormat" : "json",
+	// A convention route, relative to your app root, where request/response samples are stored ( e.g. resources/apidocs/responses/[module].[handler].[action].[HTTP Status Code].json )
+	"samplesPath" : "resources/apidocs",
 	// Information about your API
 	"info"		:{
 		// A title for your API
@@ -122,10 +126,10 @@ cbswagger = {
 		}
 	},
 
-	// A declaration of which security mechanisms can be used across the API.
-	// The list of values includes alternative security requirement objects that can be used.
-	// Only one of the security requirement objects need to be satisfied to authorize a request.
-	// Individual operations can override this definition.
+	// A default declaration of Security Requirement Objects to be used across the API.
+	// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securityRequirementObject
+	// Only one of these requirements needs to be satisfied to authorize a request.
+	// Individual operations may set their own requirements with `@security`
 	"security" : [
 		{ "APIKey" : [] },
 		{ "UserSecurity" : [] }
@@ -157,9 +161,10 @@ http://localhost/cbSwagger/yml
 - Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
 - Metadata attributes prefixed with `param-` will be included as paramters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
 - Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
+- [Security Requirement Objects](https://swagger.io/specification/#securityRequirementObject) defined in the cbSwagger config will be displayed on every API method, except methods that override the default with `@security`. You may use the name of a security scheme, a JSON array of Security Requirement Objects, or a file pointer. Security Requirement Objects must have the same name as a Security Scheme Object defined under components in `cbSwagger` settings.
 - You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://swagger.io/specification/#parameterObject) and [responses](https://swagger.io/specification/#responsesObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://swagger.io/specification/#pathItemObject).
 - Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://swagger.io/specification/#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
-- `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method 
+- `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method
 - `description` due to variances in parsing comment annotations, `description` annotations must be provided as attributes of the function body.  For example, you would use `function update( event, rc, prc ) description="Updates a user"{}` rather than `@description Updates a user`
 
 *Basic Example:*
@@ -171,6 +176,7 @@ function add( event, rc, prc )
 	description="Adds a new user"
 	parameters="/includes/resources/users.add.parameters.json"
 	responses="/includes/resources/users.add.responses.json"
+	security="APIKey"
 	x-SomeAdditionalInfo="Here is some additional information on this path"
 {
 
@@ -198,12 +204,15 @@ function add( event, rc, prc ){
 
 *Example using JSON ( + file pointers )*
 
+_Note: Because CFML has its own `parameters` key within the function metadata, we would pull in a document of parameters using `x-parameters`, which will appear as `parameters` in the swagger method definition_
+
 ```js
 /**
  * @hint Adds a new user
- * @parameters /includes/resources/users.add.parameters.json##user
+ * @x-parameters /includes/resources/users.add.parameters.json
  * @responses /includes/resources/users.add.responses.json
  * @x-SomeAdditionalInfo Here is some additional information on this path
+ * @security /includes/resources/users.add.security.json
  * @requestBody {
  * 	"description" : "User to add",
  * 	"required" : true,
@@ -222,11 +231,26 @@ function add( event, rc, prc ){
  * @param-firstname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
  * @param-lastname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
  * @param-email { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
+ * @security [ { "APIKey": [] } ]
  * @response-default { "description" : "User successfully updated", "content" : { "application/json" : { "schema" : { "$ref" : "/includes/resources/schema.json##user" } } } }
  */
 function update( event, rc, prc ) description="Updates a user"{
 }
 ```
+
+*Using convention paths to generate documentation schema and samples*
+
+Conventions also exist, which will allow you to place JSON files within a conventions directory, defined by the `samplesPath` setting, which will automatically be included as part of your documentation. The default samples path is `resources/apidocs`.  A JSON file placed, for example, at the location of `resources/apidocs/responses/api.v1.Users.add.201.json`, would automatically be picked as the `201` status code response for the `add` method of the `Users` handler, within the `api.v1` directory.
+
+In addition to the `responses` sub-directory, the directories of `parameters` and `responseBody` will also be inspected for content which matches the route/event being parsed. The latter two directories are parsed as-is, and are assumed to be in a valid Swagger specification format.
+
+File naming conventions supported include:
+
+* `[handler].[methodName].json` - all sample types
+* `[moduleName].[handler].[methodName].json` - all sample types
+* `[handler].[methodName](.[status code]).json` - responses with or without status codes
+* `[moduleName].[handler].[methodName](.[status code]).json` - responses with or without status codes
+
 
 ### Operation Ids
 
