@@ -477,6 +477,25 @@ component accessors="true" threadsafe singleton{
 					continue;
 				}
 
+				// security
+				if ( infoKey == "security" ) {
+					method.put( "security", [] );
+					if ( IsSimpleValue( infoMetadata ) ) {
+						// expect a list of pre-defined securitySchemes
+						for ( var security in ListToArray( infoMetadata, " " ) ) {
+							if ( StructKeyList( moduleSettings.components.securitySchemes ).find( security ) ) {
+								var secStruct = {};
+								secStruct[ security ] = [];
+								method[ "security" ].append( secStruct );
+							}
+						}
+					}
+					else {
+						method[ "security" ] = infoMetadata;
+					}
+					continue;
+				}
+
 				// Spec Extensions x-{name}, must be in lowercase
 				if( left( infoKey, 2 ) == "x-" ){
 					var normalizedKey = replaceNoCase( infoKey, "x-", "" ).lcase();
