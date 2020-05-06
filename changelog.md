@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.1.1
+
+* Updates to support ColdBox 6
+
 ## 2.1.0
 
 ### Features
@@ -16,7 +20,6 @@
 ### Bugs
 
 * Fixes for new router syntax not parsing actions correctly or not taking into account actions attached to verbs
-
 
 ## 2.0.0
 
