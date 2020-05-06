@@ -41,7 +41,7 @@ component accessors="true" threadsafe singleton {
 	 * On DI Complete: Load up some services
 	 */
 	function onDIComplete(){
-		if ( listFirst( controller.getSetting( "version", true ), "." ) gte 5 ) {
+		if ( listFirst( controller.getColdBoxSettings().version, "." ) gte 5 ) {
 			variables.routingService = variables.controller.getRoutingService();
 		} else {
 			variables.routingService = variables.interceptorService.getInterceptor( "ses" );
