@@ -1,6 +1,6 @@
 {
     "name":"cbSwagger",
-    "version":"2.2.0",
+    "version":"2.1.1",
     "location":"https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbSwagger/@build.version@/cbSwagger-@build.version@.zip",
     "author":"Ortus Solutions, Corp",
     "slug":"cbSwagger",
