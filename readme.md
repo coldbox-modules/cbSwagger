@@ -153,12 +153,11 @@ http://localhost/cbSwagger/json
 http://localhost/cbSwagger/yml
 ```
 
-
 ## Handler Introspection & Documentation attributes
 
 `cbSwagger` will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes, which will be picked up and included in your documentation.  The content body of these attributes may be provided as JSON, plain text, or may provided a file pointer which will be included as a `$ref` attribute.  Some notes on function attributes:
 
-- Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/includes/resources/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
+- Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/resources/apidocs/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
 - Metadata attributes prefixed with `param-` will be included as paramters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
 - Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
 - [Security Requirement Objects](https://swagger.io/specification/#securityRequirementObject) defined in the cbSwagger config will be displayed on every API method, except methods that override the default with `@security`. You may use the name of a security scheme, a JSON array of Security Requirement Objects, or a file pointer. Security Requirement Objects must have the same name as a Security Scheme Object defined under components in `cbSwagger` settings.
@@ -169,13 +168,12 @@ http://localhost/cbSwagger/yml
 
 *Basic Example:*
 
-
 ```js
 //(POST) /api/v1/users
 function add( event, rc, prc )
 	description="Adds a new user"
-	parameters="/includes/resources/users.add.parameters.json"
-	responses="/includes/resources/users.add.responses.json"
+	parameters="~users.add.parameters.json"
+	responses="~users.add.responses.json"
 	security="APIKey"
 	x-SomeAdditionalInfo="Here is some additional information on this path"
 {
@@ -190,8 +188,8 @@ function add( event, rc, prc )
 ```js
 /**
 * @hint Adds a new user
-* @x-parameters /includes/resources/users.add.parameters.json##user
-* @responses /includes/resources/users.add.responses.json
+* @x-parameters ~users.add.parameters.json##user
+* @responses ~users.add.responses.json
 * @x-SomeAdditionalInfo Here is some additional information on this path
 */
 function add( event, rc, prc ){
@@ -209,16 +207,16 @@ _Note: Because CFML has its own `parameters` key within the function metadata, w
 ```js
 /**
  * @hint Adds a new user
- * @x-parameters /includes/resources/users.add.parameters.json
- * @responses /includes/resources/users.add.responses.json
+ * @x-parameters ~users.add.parameters.json
+ * @responses ~users.add.responses.json
  * @x-SomeAdditionalInfo Here is some additional information on this path
- * @security /includes/resources/users.add.security.json
+ * @security ~users.add.security.json
  * @requestBody {
  * 	"description" : "User to add",
  * 	"required" : true,
  * 	"content" : {
  * 		"application/json" : {
- * 			"schema" : { "$ref" : "/includes/resources/NewUser.json" }
+ * 			"schema" : { "$ref" : "/includes/apidocs/NewUser.json" }
  * 		}
  * 	}
  * }
@@ -232,11 +230,15 @@ function add( event, rc, prc ){
  * @param-lastname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
  * @param-email { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
  * @security [ { "APIKey": [] } ]
- * @response-default { "description" : "User successfully updated", "content" : { "application/json" : { "schema" : { "$ref" : "/includes/resources/schema.json##user" } } } }
+ * @response-default { "description" : "User successfully updated", "content" : { "application/json" : { "schema" : { "$ref" : "/resources/apidocs/schema.json##user" } } } }
  */
 function update( event, rc, prc ) description="Updates a user"{
 }
 ```
+
+### `~` expand path
+
+The shortcut notation to expand the path to the `samplesPath` setting is by using the `~` prefix.  However, please note that this prefix only works on the annotations within a component NOT within a json document.
 
 *Using convention paths to generate documentation schema and samples*
 
@@ -250,7 +252,6 @@ File naming conventions supported include:
 * `[moduleName].[handler].[methodName].json` - all sample types
 * `[handler].[methodName](.[status code]).json` - responses with or without status codes
 * `[moduleName].[handler].[methodName](.[status code]).json` - responses with or without status codes
-
 
 ### Operation Ids
 
