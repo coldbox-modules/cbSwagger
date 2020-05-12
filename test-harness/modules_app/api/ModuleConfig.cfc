@@ -1,80 +1,64 @@
 component {
 
 	// Module Properties
-	this.title 				= "api";
-	this.author 			= "";
-	this.webURL 			= "";
-	this.description 		= "";
-	this.version			= "1.0.0";
+	this.title              = "api";
+	this.author             = "";
+	this.webURL             = "";
+	this.description        = "";
+	this.version            = "1.0.0";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
-	this.viewParentLookup 	= true;
+	this.viewParentLookup   = true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
 	this.layoutParentLookup = true;
 	// Module Entry Point
-	this.entryPoint			= "api";
+	this.entryPoint         = "api";
 	// Inherit Entry Point
-	this.inheritEntryPoint 	= true;
+	this.inheritEntryPoint  = true;
 	// Model Namespace
-	this.modelNamespace		= "api";
+	this.modelNamespace     = "api";
 	// CF Mapping
-	this.cfmapping			= "api";
+	this.cfmapping          = "api";
 	// Auto-map models
-	this.autoMapModels		= true;
+	this.autoMapModels      = true;
 	// Module Dependencies
-	this.dependencies 		= [];
+	this.dependencies       = [];
 
-	function configure(){
-
+	function configure() {
 		// parent settings
-		parentSettings = {
-
-		};
+		parentSettings = {};
 
 		// module settings - stored in modules.name.settings
-		settings = {
-
-		};
+		settings = {};
 
 		// Layout Settings
-		layoutSettings = {
-			defaultLayout = ""
-		};
+		layoutSettings = { defaultLayout : "" };
 
 		// SES Routes
-		routes = [
-		];
+		routes = [];
 
 		// SES Resources
-		resources = [
-			// { resource = "" }
-		];
+		resources = [];
 
 		// Custom Declared Points
-		interceptorSettings = {
-			customInterceptionPoints = ""
-		};
+		interceptorSettings = { customInterceptionPoints : "" };
 
 		// Custom Declared Interceptors
-		interceptors = [
-		];
+		interceptors = [];
 
 		// Binder Mappings
 		// binder.map("Alias").to("#moduleMapping#.models.MyService");
-
 	}
 
 	/**
-	* Fired when the module is registered and activated.
-	*/
-	function onLoad(){
-
+	 * Fired when the module is registered and activated.
+	 */
+	function onLoad() {
 	}
 
 	/**
-	* Fired when the module is unregistered and unloaded
-	*/
-	function onUnload(){
-
+	 * Fired when the module is unregistered and unloaded
+	 */
+	function onUnload() {
 	}
 
 }

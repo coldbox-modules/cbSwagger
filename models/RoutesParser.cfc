@@ -33,14 +33,14 @@ component accessors="true" threadsafe singleton {
 	/**
 	 * Constructor
 	 */
-	function init(){
+	function init() {
 		return this;
 	}
 
 	/**
 	 * On DI Complete: Load up some services
 	 */
-	function onDIComplete(){
+	function onDIComplete() {
 		if ( listFirst( controller.getColdBoxSettings().version, "." ) gte 5 ) {
 			variables.routingService = variables.controller.getRoutingService();
 		} else {
@@ -55,20 +55,20 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @return swagger-sdk.models.OpenAPI.Document
 	 **/
-	any function createDocFromRoutes(){
+	any function createDocFromRoutes() {
 		var template = getOpenAPIUtil().newTemplate();
 
 		// append our configured settings
 		variables.moduleSettings
-			.filter( function( key, value ){
+			.filter( function( key, value ) {
 				return structKeyExists( template, key );
 			} )
-			.each( function( key, value ){
+			.each( function( key, value ) {
 				template[ key ] = value;
 			} );
 
 		// Incorporate our API routes into the document
-		filterDesignatedRoutes().each( function( key, value ){
+		filterDesignatedRoutes().each( function( key, value ) {
 			template[ "paths" ].putAll( createPathsFromRouteConfig( value ) );
 		} );
 
@@ -79,7 +79,7 @@ component accessors="true" threadsafe singleton {
 	/**
 	 * Filters the designated routes as provided in the cbSwagger configuration
 	 */
-	private any function filterDesignatedRoutes(){
+	private any function filterDesignatedRoutes() {
 		// make a copy of our routes array so we can append it
 		var routingPrefixes  = variables.moduleSettings.routes;
 		var SESRoutes        = duplicate( variables.SESRoutes );
@@ -192,7 +192,7 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @return linked map
 	 **/
-	private any function createPathsFromRouteConfig( required struct route ){
+	private any function createPathsFromRouteConfig( required struct route ) {
 		var paths           = structNew( "ordered" );
 		// first parse our route to see if we have conditionals and create separate all found conditionals
 		var pathArray       = listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
@@ -240,7 +240,7 @@ component accessors="true" threadsafe singleton {
 		required string pathKey,
 		required any routeConfig,
 		any handlerMetadata
-	){
+	) {
 		var path         = structNew( "ordered" );
 		var errorMethods = [
 			"onInvalidHTTPMethod",
@@ -259,7 +259,7 @@ component accessors="true" threadsafe singleton {
 			var targetAction = len( arguments.routeConfig.event ) ? listLast( arguments.routeConfig.event, "." ) : arguments.routeConfig.action;
 			actions          = arguments.routeConfig.verbs
 				.listToArray()
-				.reduce( function( acc, verb ){
+				.reduce( function( acc, verb ) {
 					acc[ verb ] = targetAction;
 					return acc;
 				}, {} );
@@ -340,7 +340,7 @@ component accessors="true" threadsafe singleton {
 	 * @pathKey The path key ( route )
 	 * @method The current path method object
 	 **/
-	private void function appendPathParams( required string pathKey, required struct method ){
+	private void function appendPathParams( required string pathKey, required struct method ) {
 		// Verify parameters array in the method definition
 		if ( !structKeyExists( arguments.method, "parameters" ) ) {
 			arguments.method.put( "parameters", [] );
@@ -348,10 +348,10 @@ component accessors="true" threadsafe singleton {
 
 		// handle any parameters in the url now
 		listToArray( arguments.pathKey, "/" )
-			.filter( function( segment ){
+			.filter( function( segment ) {
 				return left( segment, 1 ) == "{";
 			} )
-			.each( function( urlParam ){
+			.each( function( urlParam ) {
 				// parsing for param types in Coldbox Routes
 				var paramSegments = listToArray(
 					mid(
@@ -383,7 +383,7 @@ component accessors="true" threadsafe singleton {
 	 * Parses the segment type in to a swagger param type
 	 * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#parameterObject
 	 **/
-	private string function parseSegmentType( required array paramSegments ){
+	private string function parseSegmentType( required array paramSegments ) {
 		if ( arrayLen( paramSegments ) == 1 ) return "string";
 
 		switch ( paramSegments[ 2 ] ) {
@@ -408,7 +408,7 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @return struct of handlerMetadata
 	 */
-	private any function getHandlerMetadata( required any route ){
+	private any function getHandlerMetadata( required any route ) {
 		var handlerRoute = ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
 		var module       = ( isNull( arguments.route.module ) ? "" : arguments.route.module );
 		var fullEvent    = ( isNull( arguments.route.event ) ? "" : arguments.route.event );
@@ -460,7 +460,7 @@ component accessors="true" threadsafe singleton {
 		required string functionName,
 		required any handlerMetadata,
 		moduleName
-	){
+	) {
 		var operationPath = "#arguments.methodName#>" & // verb
 		( !isNull( moduleName ) ? moduleName & ":" : "" ) & // Module
 		( !isNull( handlerMetadata.displayName ) ? handlerMetadata.displayName : handlerMetadata.name ); // Name
@@ -477,7 +477,7 @@ component accessors="true" threadsafe singleton {
 
 			functionMetadata
 				.keyArray()
-				.each( function( infoKey ){
+				.each( function( infoKey ) {
 					// is !simple, continue to next key
 					if ( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
 
@@ -510,10 +510,10 @@ component accessors="true" threadsafe singleton {
 						if ( isSimpleValue( infoMetadata ) ) {
 							// expect a list of pre-defined securitySchemes
 							method[ "security" ] = listToArray( infoMetadata )
-								.filter( function( security ){
+								.filter( function( security ) {
 									return structKeyList( moduleSettings.components.securitySchemes ).find( security );
 								} )
-								.map( function( item ){
+								.map( function( item ) {
 									return { "#item#" : [] };
 								} );
 						} else {
@@ -561,7 +561,7 @@ component accessors="true" threadsafe singleton {
 		required any handlerMetadata,
 		required any functionMetadata,
 		moduleName
-	){
+	) {
 		var conventionDirectory = controller.getAppRootPath() & arrayToList(
 			listToArray( moduleSettings.samplesPath, "/" ),
 			"/"
@@ -598,10 +598,10 @@ component accessors="true" threadsafe singleton {
 			}
 
 			availableFiles
-				.filter( function( filePath ){
+				.filter( function( filePath ) {
 					return findNoCase( filterString, replaceNoCase( filePath, conventionDirectory, "" ) );
 				} )
-				.each( function( filePath ){
+				.each( function( filePath ) {
 					var fileContent = fileRead( filePath );
 					if ( isJSON( fileContent ) ) {
 						var sampleData  = parseMetadataValue( fileContent );
@@ -639,20 +639,20 @@ component accessors="true" threadsafe singleton {
 		required any handlerMetadata,
 		required any functionMetadata,
 		moduleName
-	){
+	) {
 		functionMetadata
 			.keyArray()
-			.filter( function( key ){
+			.filter( function( key ) {
 				return left( key, 6 ) == "param-";
 			} )
-			.each( function( infoKey ){
+			.each( function( infoKey ) {
 				// parse values from each key
 				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 				// Get the param name
 				var paramName    = right( infoKey, len( infoKey ) - 6 );
 
 				// See if our parameter was already provided through URL parsing
-				var paramSearch = arrayFilter( method[ "parameters" ], function( item ){
+				var paramSearch = arrayFilter( method[ "parameters" ], function( item ) {
 					return item.name == paramName;
 				} );
 
@@ -695,13 +695,13 @@ component accessors="true" threadsafe singleton {
 		required any handlerMetadata,
 		required any functionMetadata,
 		moduleName
-	){
+	) {
 		functionMetadata
 			.keyArray()
-			.filter( function( key ){
+			.filter( function( key ) {
 				return left( key, 9 ) == "response-";
 			} )
-			.each( function( infoKey ){
+			.each( function( infoKey ) {
 				// parse values from each key
 				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 				// get reponse name
@@ -731,7 +731,7 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @metadataText The text content of the metadata item
 	 */
-	private any function parseMetadataValue( required string metadataText ){
+	private any function parseMetadataValue( required string metadataText ) {
 		arguments.metadataText = trim( arguments.metadataText );
 
 		if ( isJSON( metadataText ) ) {
@@ -750,6 +750,10 @@ component accessors="true" threadsafe singleton {
 			||
 			left( metadataText, 4 ) == "http"
 		) {
+			// Check if we have the root ~ delimiter for the resources convention
+			if ( left( metadataText, 1 ) == "~" ) {
+				metadataText = metadataText.replace( "~", moduleSettings.samplesPath & "/" );
+			}
 			return { "$ref" : replaceNoCase( metadataText, "####", "##", "ALL" ) };
 		} else {
 			return metadataText;
@@ -764,7 +768,7 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @return struct|null
 	 */
-	private any function getFunctionMetadata( required string functionName, required any handlerMetadata ){
+	private any function getFunctionMetadata( required string functionName, required any handlerMetadata ) {
 		// exit out if we have no functions defined
 		if ( !structKeyExists( arguments.handlerMetadata, "functions" ) ) return;
 

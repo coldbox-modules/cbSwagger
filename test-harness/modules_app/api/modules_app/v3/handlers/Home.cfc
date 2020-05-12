@@ -1,12 +1,12 @@
 /**
  * A ColdBox Event Handler
  */
-component{
+component {
 
 	/**
 	 * Echo land
 	 */
-	function index( event, rc, prc ){
+	function index( event, rc, prc ) {
 		return "Hello From v3 land";
 	}
 
