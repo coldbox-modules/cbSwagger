@@ -19,7 +19,7 @@ component extends="coldbox.system.EventHandler" {
 		prc,
 		action,
 		eventArguments
-	){
+	) {
 		// No layout, just in case
 		event.noLayout();
 		// Determine output format
@@ -31,7 +31,7 @@ component extends="coldbox.system.EventHandler" {
 	/**
 	 * CBSwagger Core Handler Method
 	 */
-	any function index( event, rc, prc ){
+	any function index( event, rc, prc ) {
 		// json
 		if ( rc.format eq "json" ) {
 			return json( argumentCollection = arguments );
@@ -43,7 +43,7 @@ component extends="coldbox.system.EventHandler" {
 	/**
 	 * json output
 	 */
-	function json( event, rc, prc ){
+	function json( event, rc, prc ) {
 		event.renderData(
 			type          = "JSON",
 			data          = prc.apiDocument.getNormalizedDocument(),
@@ -55,7 +55,7 @@ component extends="coldbox.system.EventHandler" {
 	/**
 	 * yml output
 	 */
-	function yml( event, rc, prc ){
+	function yml( event, rc, prc ) {
 		var fileName = getInstance( "HTMLHelper@coldbox" ).slugify( variables.settings.info.title ) & ".yml";
 		event
 			.renderData(
