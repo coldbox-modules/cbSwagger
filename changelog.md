@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [2.2.1] => 2020-MAY-12
+
+### Fixed
+
+* On lucee the `displayName` defaults to `Component`, skipping this default to select the correct `operationId` for the resource
+* The `moduleName` hint for the `appendFunctionInfo` was mispelled
+
+----
+
 ## [2.2.0] => 2020-MAY-12
 
 ### Added

@@ -451,7 +451,7 @@ component accessors="true" threadsafe singleton {
 	 * @method The method hashmap to append to
 	 * @functionName The name of the function to look up in the handler metadata
 	 * @handlerMetadata The metadata of the handler to reference
-	 * @module The module name if any
+	 * @moduleName The module name if any
 	 *
 	 */
 	private void function appendFunctionInfo(
@@ -462,12 +462,16 @@ component accessors="true" threadsafe singleton {
 		moduleName
 	) {
 		var operationPath = "#arguments.methodName#>" & // verb
-		( !isNull( moduleName ) ? moduleName & ":" : "" ) & // Module
-		( !isNull( handlerMetadata.displayName ) ? handlerMetadata.displayName : handlerMetadata.name ); // Name
+		( !isNull( arguments.moduleName ) ? moduleName & ":" : "" ) & // Module
+		(
+			!isNull( handlerMetadata.displayName ) && handlerMetadata.displayName != "Component" ? handlerMetadata.displayName : listLast(
+				handlerMetadata.name,
+				"."
+			)
+		); // Name
 
 		arguments.method[ "operationId" ] = operationPath & "." & arguments.functionName;
-
-		arguments.functionMetaData = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
+		arguments.functionMetaData        = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 		// Process function metadata
 		if ( !isNull( arguments.functionMetadata ) ) {
 			var defaultKeys = arguments.method.keyArray();
