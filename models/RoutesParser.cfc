@@ -737,6 +737,7 @@ component accessors="true" threadsafe singleton {
 	 */
 	private any function parseMetadataValue( required string metadataText ) {
 		arguments.metadataText = trim( arguments.metadataText );
+		var supportedExtensions = [ 'json', 'yaml', 'yml' ];
 
 		if ( isJSON( metadataText ) ) {
 			var parsedMetadata = deserializeJSON( metadataText );
@@ -750,7 +751,7 @@ component accessors="true" threadsafe singleton {
 			}
 			return parsedMetadata;
 		} else if (
-			right( listFirst( metadataText, "##" ), 5 ) == ".json"
+			supportedExtensions.contains( lcase( listLast( listFirst( metadataText, "##" ), '.' ) ) )
 			||
 			left( metadataText, 4 ) == "http"
 		) {
