@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [2.3.0] => 2020-SEP-08
+
+### Added
+
+* Add CORS support for cbswagger endpoint #25 
+
+----
+
 ## [2.2.1] => 2020-MAY-12
 
 ### Fixed
