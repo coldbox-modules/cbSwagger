@@ -26,6 +26,32 @@ component extends="coldbox.system.EventHandler" {
 		param name     ="rc.format" default="#variables.settings.defaultFormat#";
 		// Build out document
 		prc.apiDocument = routesParser.createDocFromRoutes();
+
+		// Shared CORS headers
+		event.setHTTPHeader(
+			name = "Access-Control-Allow-Origin",
+			value = event.getHTTPHeader( "Origin", "*" )
+		);
+		event.setHTTPHeader(
+			name = "Access-Control-Allow-Credentials",
+			value = true
+		);
+	}
+
+	function options( event, rc, prc ) {
+		event.setHTTPHeader(
+			name = "Access-Control-Allow-Headers",
+			value = event.getHTTPHeader( "Access-Control-Request-Headers", "" )
+		);
+		event.setHTTPHeader(
+			name = "Access-Control-Allow-Methods",
+			value = event.getHTTPHeader( "Access-Control-Request-Method", event.getHTTPMethod() )
+		);
+		event.setHTTPHeader(
+			name = "Access-Control-Max-Age",
+			value = 60 * 60 * 24 // 1 day
+		);
+		event.renderData( "plain", "Preflight OK" );
 	}
 
 	/**
