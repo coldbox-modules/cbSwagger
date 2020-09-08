@@ -85,10 +85,17 @@ component {
 		};
 
 		// SES Routes
-		router
-			.route( "/", "main.index" )
-			.route( "/json", "main.json" )
-			.route( "/yml", "main.yml" );
+		router.route( "/" )
+			.withHandler( "Main" )
+			.toAction( { "GET": "index", "OPTIONS": "options" } );
+
+		router.route( "/json" )
+			.withHandler( "Main" )
+			.toAction( { "GET": "json", "OPTIONS": "options" } );
+
+		router.route( "/yml" )
+			.withHandler( "Main" )
+			.toAction( { "GET": "yml", "OPTIONS": "options" } );
 	}
 
 	/**
