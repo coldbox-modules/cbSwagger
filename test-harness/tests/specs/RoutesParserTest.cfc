@@ -77,8 +77,7 @@ component
 					.toHaveKey( "paths" )
 					.toHaveKey( "components" )
 					.toHaveKey( "security" )
-					.toHaveKey( "tags" )
-					.toHaveKey( "externalDocs" );
+					.toHaveKey( "tags" );
 
 				expect( isJSON( APIDoc.asJSON() ) ).toBeTrue();
 
