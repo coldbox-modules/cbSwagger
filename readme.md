@@ -73,7 +73,13 @@ cbswagger = {
 			"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
 		},
 		//The version of your API
-		"version":"1.0.0"
+		"version":"1.0.0",
+
+		// https://swagger.io/specification/#externalDocumentationObject
+		"externalDocs" : {
+			"description": "Find more info here",
+			"url": "https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/"
+		}
 	},
 
 	// Tags
@@ -83,12 +89,6 @@ cbswagger = {
 			"description": "Pets operations"
 		}
 	],
-
-	// https://swagger.io/specification/#externalDocumentationObject
-	"externalDocs" : {
-		"description": "Find more info here",
-		"url": "https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/"
-	},
 
 	// https://swagger.io/specification/#serverObject
 	"servers" : [
