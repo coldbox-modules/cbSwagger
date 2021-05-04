@@ -18,9 +18,8 @@ branches:
   - development
   - master
 
-dist: trusty
-
 sudo: required
+dist: focal
 
 before_install:
   # CommandBox Keys

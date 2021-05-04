@@ -10,20 +10,12 @@ component {
 	this.title              = "cbswagger";
 	this.author             = "Jon Clausen <jon_clausen@silowebworks.com>";
 	this.webURL             = "https://github.com/coldbox-modules/cbSwagger";
+	this.version            = "@version.number@+@build.number@";
 	this.description        = "A coldbox module to auto-generate Swagger API documentation from your configured routes";
-	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
-	this.viewParentLookup   = true;
-	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
-	this.layoutParentLookup = true;
-	// Module Entry Point
 	this.entryPoint         = "cbswagger";
-	// Model Namespace
 	this.modelNamespace     = "cbswagger";
-	// CF Mapping
 	this.cfmapping          = "cbswagger";
-	// Auto-map models
 	this.autoMapModels      = true;
-	// Module Dependencies That Must Be Loaded First, use internal names or aliases
 	this.dependencies       = [ "swagger-sdk" ];
 
 	/**

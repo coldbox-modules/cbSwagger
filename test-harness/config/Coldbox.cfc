@@ -26,7 +26,7 @@
 			//Error/Exception Handling
 			exceptionHandler		= "",
 			onInvalidEvent			= "",
-			customErrorTemplate 	= "/coldbox/system/includes/BugReport.cfm",
+			customErrorTemplate 	= "/coldbox/system/exceptions/Whoops.cfm",
 
 			//Application Aspects
 			handlerCaching 			= false,
@@ -50,8 +50,6 @@
 
 		//Register interceptors as an array, we need order
 		interceptors = [
-			 //SES
-			 { class="coldbox.system.interceptors.SES" }
 		];
 
 		//LogBox DSL
@@ -96,13 +94,7 @@
 						"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
 					},
 					//The version of your API
-					"version":"1.0.0",
-
-					// https://swagger.io/specification/#externalDocumentationObject
-					"externalDocs" : {
-						"description": "Find more info here",
-						"url": "https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/"
-					}
+					"version":"1.0.0"
 				},
 
 				// Tags
