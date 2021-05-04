@@ -1,6 +1,6 @@
 {
     "name":"cbSwagger",
-    "version":"2.3.0",
+    "version":"2.4.0",
     "location":"https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbSwagger/@build.version@/cbSwagger-@build.version@.zip",
     "author":"Ortus Solutions, Corp",
     "slug":"cbSwagger",
@@ -34,8 +34,8 @@
     ],
     "scripts":{
         "release":"recipe build/release.boxr",
-        "format":"cfformat run handlers/,models/,test-harness/tests/,test-harness/handlers/,test-harness/modules_app/ --overwrite",
-        "format:watch":"cfformat watch handlers/,models/,test-harness/tests/,test-harness/handlers/,test-harness/modules_app/",
-        "format:check":"cfformat check handlers/,models/,test-harness/tests/,test-harness/handlers/,test-harness/modules_app/"
+        "format":"cfformat run handlers/,models/,test-harness/tests/**/*.cfc,ModuleConfig.cfc --overwrite",
+        "format:watch":"cfformat watch handlers/,models/,test-harness/tests/**/*.cfc,ModuleConfig.cfc ./.cfformat.json",
+        "format:check":"cfformat check handlers/,models/,test-harness/tests/**/*.cfc,ModuleConfig.cfc ./.cfformat.json"
     }
 }
