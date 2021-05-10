@@ -155,7 +155,15 @@ http://localhost/cbSwagger/yml
 
 ## Handler Introspection & Documentation attributes
 
-`cbSwagger` will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes, which will be picked up and included in your documentation.  The content body of these attributes may be provided as JSON, plain text, or may provided a file pointer which will be included as a `$ref` attribute.  Some notes on function attributes:
+`cbSwagger` will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes (**metadata**), which will be picked up and included in your documentation.  
+
+The content body of these function metadata/attributes may be provided as:
+
+- JSON
+- plain text
+- `$ref` file pointer
+
+Here are some additional pointers for you:
 
 - Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/resources/apidocs/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
 - Metadata attributes prefixed with `param-` will be included as paramters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
@@ -165,13 +173,17 @@ http://localhost/cbSwagger/yml
 - Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://swagger.io/specification/#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
 - `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treaded as the description for the method
 - `description` due to variances in parsing comment annotations, `description` annotations must be provided as attributes of the function body.  For example, you would use `function update( event, rc, prc ) description="Updates a user"{}` rather than `@description Updates a user`
+- `tags` : A list of tags to include in the operation metadata: `@tags Authentication,Authors`.
 
 *Basic Example:*
 
 ```js
-//(POST) /api/v1/users
+/**
+ * Add a new user into the system
+ * 
+ * @tags Users,Authentication
+ */
 function add( event, rc, prc )
-	description="Adds a new user"
 	parameters="~users.add.parameters.json"
 	responses="~users.add.responses.json"
 	security="APIKey"
