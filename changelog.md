@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [2.5.0] => 2021-MAY-10
+
+### Added
+
+* Added the ability to add `@tags` to annotations so they can show up on the operations metadata as array of `tags`
+
+
+----
+
 ## [2.4.0] => 2021-MAY-04
 
 ### Removed

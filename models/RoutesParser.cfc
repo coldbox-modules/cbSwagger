@@ -532,6 +532,12 @@ component accessors="true" threadsafe singleton {
 						continue;
 					}
 
+					// Operation Tags
+					if ( infoKey == "tags" ) {
+						method.put( "tags", infoMetadata.listToArray() );
+						continue;
+					}
+
 					// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
 					if ( left( infoKey, 12 ) == "requestBody" ) {
 						method.put(
