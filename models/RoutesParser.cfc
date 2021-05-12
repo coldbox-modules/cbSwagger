@@ -534,7 +534,7 @@ component accessors="true" threadsafe singleton {
 
 					// Operation Tags
 					if ( infoKey == "tags" ) {
-						method.put( "tags", infoMetadata.listToArray() );
+						method.put( "tags", ( isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata ) );
 						continue;
 					}
 

@@ -30,6 +30,7 @@ component displayname="API.v1.Users" {
 
 	/**
 	 * @hint Adds a new user
+	 * @tags Simple,List
 	 * @parameters /includes/resources/users.add.parameters.json##user
 	 * @responses /includes/resources/users.add.responses.json
 	 * @x-SomeAdditionalInfo Here is some additional information on this path
@@ -48,6 +49,7 @@ component displayname="API.v1.Users" {
 
 
 	/**
+	 * @tags [ "json", "list" ]
 	 * @param-firstname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
 	 * @param-lastname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
 	 * @param-email { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
