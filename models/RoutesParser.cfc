@@ -47,6 +47,7 @@ component accessors="true" threadsafe singleton {
 		}
 		variables.SESRoutes = variables.routingService.getRoutes();
 		variables.util      = new coldbox.system.core.util.Util();
+		variables.appMapping = getAppMapping();
 	}
 
 	/**
@@ -119,10 +120,10 @@ component accessors="true" threadsafe singleton {
 				// and it has an entry point
 				len( modulesSettings[ route.module ].entryPoint )
 			) {
-				var moduleEntryPoint = modulesSettings[ route.module ].entryPoint;
+				var moduleEntryPoint = variables.appMapping & modulesSettings[ route.module ].entryPoint;
 				// Check if ColdBox 5 inherited entry points are available.
 				if ( modulesSettings[ route.module ].keyExists( "inheritedEntryPoint" ) ) {
-					moduleEntryPoint = modulesSettings[ route.module ].inheritedEntryPoint;
+					moduleEntryPoint = variables.appMapping & modulesSettings[ route.module ].inheritedEntryPoint;
 				}
 				// TODO: not sure why Jon is doing this, ask him.
 				var moduleEntryPoint = arrayToList(
@@ -849,4 +850,10 @@ component accessors="true" threadsafe singleton {
 		return;
 	}
 
+	private string function getAppMapping() {
+		var appMapping = variables.controller.getSetting("appMapping");
+		if(!len(trim(appMapping))) return "";
+
+		return appMapping & "/";
+	}
 }
