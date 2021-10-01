@@ -158,6 +158,17 @@ component accessors="true" threadsafe singleton {
 			}
 		}
 
+		// Remove any route excludes by prefix
+		if ( arrayLen( moduleSettings.excludeRoutesPrefix ) ) {
+			for ( var excludePrefix in moduleSettings.excludeRoutesPrefix ) {
+				for ( var currentRoute in structKeyArray( designatedRoutes ) ) {
+					if ( left( designatedRoutes[ currentRoute ].pattern, len( excludePrefix ) ) == excludePrefix ) {
+						structDelete( designatedRoutes, currentRoute );
+					}
+				}
+			}
+		}
+
 		// Remove any route excludes
 		if ( !!arrayLen( moduleSettings.excludeRoutes ) ) {
 			for ( var route in structKeyArray( designatedRoutes ) ) {
