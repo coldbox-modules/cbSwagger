@@ -162,7 +162,12 @@ component accessors="true" threadsafe singleton {
 		if ( arrayLen( moduleSettings.excludeRoutesPrefix ) ) {
 			for ( var excludePrefix in moduleSettings.excludeRoutesPrefix ) {
 				for ( var currentRoute in structKeyArray( designatedRoutes ) ) {
-					if ( left( designatedRoutes[ currentRoute ].pattern, len( excludePrefix ) ) == excludePrefix ) {
+					if (
+						left(
+							designatedRoutes[ currentRoute ].pattern,
+							len( excludePrefix )
+						) == excludePrefix
+					) {
 						structDelete( designatedRoutes, currentRoute );
 					}
 				}

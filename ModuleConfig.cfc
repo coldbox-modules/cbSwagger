@@ -7,16 +7,16 @@
 component {
 
 	// Module Properties
-	this.title              = "cbswagger";
-	this.author             = "Jon Clausen <jon_clausen@silowebworks.com>";
-	this.webURL             = "https://github.com/coldbox-modules/cbSwagger";
-	this.version            = "@version.number@+@build.number@";
-	this.description        = "A coldbox module to auto-generate Swagger API documentation from your configured routes";
-	this.entryPoint         = "cbswagger";
-	this.modelNamespace     = "cbswagger";
-	this.cfmapping          = "cbswagger";
-	this.autoMapModels      = true;
-	this.dependencies       = [ "swagger-sdk" ];
+	this.title          = "cbswagger";
+	this.author         = "Jon Clausen <jon_clausen@silowebworks.com>";
+	this.webURL         = "https://github.com/coldbox-modules/cbSwagger";
+	this.version        = "@version.number@+@build.number@";
+	this.description    = "A coldbox module to auto-generate Swagger API documentation from your configured routes";
+	this.entryPoint     = "cbswagger";
+	this.modelNamespace = "cbswagger";
+	this.cfmapping      = "cbswagger";
+	this.autoMapModels  = true;
+	this.dependencies   = [ "swagger-sdk" ];
 
 	/**
 	 * Configure module
@@ -24,18 +24,18 @@ component {
 	function configure(){
 		settings = {
 			// The route prefix to search.  Routes beginning with this prefix will be determined to be api routes
-			"routes"        : [ "api" ],
+			"routes"              : [ "api" ],
 			// Routes to exclude by prefix.  Routes beginning with this prefix will be excluded
 			"excludeRoutesPrefix" : [],
 			// Routes to exclude from the generated spec
-			"excludeRoutes" : [],
+			"excludeRoutes"       : [],
 			// The default output format, either json or yml
-			"defaultFormat" : "json",
+			"defaultFormat"       : "json",
 			// A convention route, relative to your app root, where request/response samples are stored ( e.g. resources/apidocs/responses/[module].[handler].[action].[HTTP Status Code].json )
-			"samplesPath"   : "resources/apidocs",
+			"samplesPath"         : "resources/apidocs",
 			// Information about your API
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#infoObject
-			"info"          : {
+			"info"                : {
 				// REQUIRED A title for your API
 				"title"          : "My Awesome API",
 				// A short description of the application. CommonMark syntax MAY be used for rich text representation.
@@ -63,30 +63,39 @@ component {
 			},
 			// An array of Server Objects, which provide connectivity information to a target server. If the servers property is not provided, or is an empty array, the default value would be a Server Object with a url value of /.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#serverObject
-			"servers"      : [],
+			"servers"    : [],
 			// An element to hold various schemas for the specification.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#componentsObject
-			"components"   : {},
+			"components" : {},
 			// A declaration of which security mechanisms can be used across the API.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securityRequirementObject
-			"security"     : [],
+			"security"   : [],
 			// A list of tags used by the specification with additional metadata.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject
-			"tags"         : []
+			"tags"       : []
 		};
 
 		// SES Routes
-		router.route( "/" )
+		router
+			.route( "/" )
 			.withHandler( "Main" )
-			.toAction( { "GET": "index", "OPTIONS": "options" } );
+			.toAction( {
+				"GET"     : "index",
+				"OPTIONS" : "options"
+			} );
 
-		router.route( "/json" )
+		router
+			.route( "/json" )
 			.withHandler( "Main" )
-			.toAction( { "GET": "json", "OPTIONS": "options" } );
+			.toAction( {
+				"GET"     : "json",
+				"OPTIONS" : "options"
+			} );
 
-		router.route( "/yml" )
+		router
+			.route( "/yml" )
 			.withHandler( "Main" )
-			.toAction( { "GET": "yml", "OPTIONS": "options" } );
+			.toAction( { "GET" : "yml", "OPTIONS" : "options" } );
 	}
 
 	/**
