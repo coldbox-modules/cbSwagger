@@ -516,6 +516,7 @@ component accessors="true" threadsafe singleton {
 		); // Name
 
 		arguments.method[ "x-coldbox-operation" ] = operationPath & "." & arguments.functionName;
+		arguments.method[ "operationId" ]         = arguments.method[ "x-coldbox-operation" ];
 		arguments.functionMetaData                = getFunctionMetaData(
 			arguments.functionName,
 			arguments.handlerMetadata
