@@ -241,7 +241,6 @@ component
 				expect( firstNameSearch[ 1 ].required ).toBe( false );
 			} );
 
-
 			it( "Tests the ability to parse response metadata definitions", function(){
 				expect( variables ).toHaveKey(
 					"APIDoc",
@@ -266,6 +265,52 @@ component
 				expect( path[ "put" ][ "responses" ][ "default" ][ "description" ] ).toBe( "User successfully updated" );
 
 				expect( path[ "put" ][ "responses" ][ "default" ][ "content" ] ).toBeStruct();
+			} );
+
+			it( "Tests the ability to parse summary and description metadata definitions", function(){
+				expect( variables ).toHaveKey(
+					"APIDoc",
+					"No APIDoc was found to test.  Could not continue."
+				);
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users/{id}/roles" );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users/{id}/roles" ];
+
+				expect( path ).toHaveKey( "get" );
+
+				expect( path[ "get" ] ).toHaveKey( "summary" );
+				expect( path[ "get" ][ "summary" ] ).toBe( "Retrieves the roles for a user." );
+
+				expect( path[ "get" ] ).toHaveKey( "description" );
+				expect( path[ "get" ][ "description" ] ).toBe(
+					"A longer description here for retrieving the roles for a user."
+				);
+			} );
+
+			it( "Tests the ability to parse operationId metadata definitions", function(){
+				expect( variables ).toHaveKey(
+					"APIDoc",
+					"No APIDoc was found to test.  Could not continue."
+				);
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users/{id}/roles" );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users/{id}/roles" ];
+
+				expect( path ).toHaveKey( "get" );
+
+				expect( path[ "get" ] ).toHaveKey( "operationId" );
+				expect( path[ "get" ][ "operationId" ] ).toBe( "API.v1.Users.roles" );
+
+				expect( path[ "get" ] ).toHaveKey( "x-coldbox-operation" );
+				expect( path[ "get" ][ "x-coldbox-operation" ] ).toBe( "API.v1.Users.roles" );
 			} );
 
 			it( "Verifies that path typing parameters are removed and that the key omits the type", function(){
