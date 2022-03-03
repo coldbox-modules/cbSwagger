@@ -65,7 +65,7 @@ component displayname="API.v1.Users" {
 	/**
 	 * @route /api/v1/users/:id/roles
 	 * @summary Retrieves the roles for a user.
-	 * A longer description here for retrieving the roles for a user.
+	 * @hint A longer description here for retrieving the roles for a user.
 	 */
 	function roles( event, rc, prc ) {
 	}
