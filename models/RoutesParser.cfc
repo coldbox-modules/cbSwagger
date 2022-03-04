@@ -162,7 +162,12 @@ component accessors="true" threadsafe singleton {
 		if ( arrayLen( moduleSettings.excludeRoutesPrefix ) ) {
 			for ( var excludePrefix in moduleSettings.excludeRoutesPrefix ) {
 				for ( var currentRoute in structKeyArray( designatedRoutes ) ) {
-					if ( left( designatedRoutes[ currentRoute ].pattern, len( excludePrefix ) ) == excludePrefix ) {
+					if (
+						left(
+							designatedRoutes[ currentRoute ].pattern,
+							len( excludePrefix )
+						) == excludePrefix
+					) {
 						structDelete( designatedRoutes, currentRoute );
 					}
 				}
@@ -516,6 +521,7 @@ component accessors="true" threadsafe singleton {
 		); // Name
 
 		arguments.method[ "x-coldbox-operation" ] = operationPath & "." & arguments.functionName;
+		arguments.method[ "operationId" ]         = arguments.method[ "x-coldbox-operation" ];
 		arguments.functionMetaData                = getFunctionMetaData(
 			arguments.functionName,
 			arguments.handlerMetadata
@@ -536,16 +542,33 @@ component accessors="true" threadsafe singleton {
 					// parse values from each key
 					var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
 
-					// hint/description/summary
+					// hint/description
 					if ( infoKey == "hint" ) {
+						if ( !method.containsKey( "description" ) || method[ "description" ] == "" ) {
+							method.put( "description", infoMetadata );
+						}
+						if ( !functionMetadata.containsKey( "summary" ) ) {
+							method.put( "summary", infoMetadata );
+						}
+						continue;
+					}
+
+					if ( infoKey == "description" && infoMetadata != "" ) {
 						method.put( "description", infoMetadata );
+						continue;
+					}
+
+					if ( infoKey == "summary" ) {
 						method.put( "summary", infoMetadata );
 						continue;
 					}
 
 					// Operation Tags
 					if ( infoKey == "tags" ) {
-						method.put( "tags", ( isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata ) );
+						method.put(
+							"tags",
+							( isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata )
+						);
 						continue;
 					}
 

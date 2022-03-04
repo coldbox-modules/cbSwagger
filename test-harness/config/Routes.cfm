@@ -44,6 +44,12 @@
 	);
 
 	addRoute(
+		pattern='/api/v1/users/:id/roles',
+		handler='api.v1.Users',
+		action={"GET":"roles"}
+	);
+
+	addRoute(
 		pattern='/api/v1/users/:id',
 		handler='api.v1.Users',
 		action=defaultEntityActions
