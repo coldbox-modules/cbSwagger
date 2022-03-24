@@ -220,7 +220,8 @@ _Note: Because CFML has its own `parameters` key within the function metadata, w
 
 ```js
 /**
- * @hint Adds a new user
+ * @summary Adds a new user
+ * @hint Adds a new user with a longer description.
  * @x-parameters ~users.add.parameters.json
  * @responses ~users.add.responses.json
  * @x-SomeAdditionalInfo Here is some additional information on this path
