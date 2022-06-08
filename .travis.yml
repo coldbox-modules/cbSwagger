@@ -29,7 +29,7 @@ before_install:
 
 install:
   # Install Commandbox
-  - sudo apt-get update && sudo apt-get --assume-yes install rsync jq commandbox
+  - sudo apt-get update && sudo apt-get --assume-yes install openjdk-11-jdk rsync jq commandbox
   - java --version
   - box version
   # Install CommandBox Supporting Librarires
