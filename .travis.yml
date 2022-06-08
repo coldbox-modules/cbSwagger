@@ -30,6 +30,7 @@ before_install:
 install:
   # Install Commandbox
   - sudo apt-get update && sudo apt-get --assume-yes install rsync jq commandbox
+  - box version
   # Install CommandBox Supporting Librarires
   - box install commandbox-cfconfig,commandbox-dotenv,commandbox-docbox
   # If using auto-publish, you will need to provide your API token with this line:
