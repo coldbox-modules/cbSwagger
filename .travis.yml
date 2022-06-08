@@ -30,6 +30,7 @@ before_install:
 install:
   # Install Commandbox
   - sudo apt-get update && sudo apt-get --assume-yes install rsync jq commandbox
+  - java --version
   - box version
   # Install CommandBox Supporting Librarires
   - box install commandbox-cfconfig,commandbox-dotenv,commandbox-docbox
