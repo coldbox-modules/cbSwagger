@@ -183,7 +183,7 @@ component accessors="true" threadsafe singleton {
 				} else {
 					return item;
 				}
-			})
+			});
 			for ( var route in structKeyArray( designatedRoutes ) ) {
 				if ( !!arrayFindNoCase( cleanedExcludes, route ) ) {
 					structDelete( designatedRoutes, route );
