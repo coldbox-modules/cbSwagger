@@ -176,8 +176,16 @@ component accessors="true" threadsafe singleton {
 
 		// Remove any route excludes
 		if ( !!arrayLen( moduleSettings.excludeRoutes ) ) {
+			// all route pattterns have trailing / internatlly so same for excludeRoutes
+			var cleanedExcludes = moduleSettings.excludeRoutes.map (function(item){
+				if (right( item, 1 ) IS NOT "/") {
+					return item&"/";
+				} else {
+					return item;
+				}
+			});
 			for ( var route in structKeyArray( designatedRoutes ) ) {
-				if ( !!arrayFindNoCase( moduleSettings.excludeRoutes, route ) ) {
+				if ( !!arrayFindNoCase( cleanedExcludes, route ) ) {
 					structDelete( designatedRoutes, route );
 				}
 			}
