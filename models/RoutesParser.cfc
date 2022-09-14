@@ -181,7 +181,7 @@ component accessors="true" threadsafe singleton {
 				if (right( item, 1 ) IS NOT "/") {
 					return item&"/";
 				} else {
-					return item
+					return item;
 				}
 			})
 			for ( var route in structKeyArray( designatedRoutes ) ) {
