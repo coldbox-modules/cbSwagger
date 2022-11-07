@@ -541,6 +541,11 @@ component accessors="true" threadsafe singleton {
 			appendFunctionParams( argumentCollection = arguments );
 			appendFunctionResponses( argumentCollection = arguments );
 
+            // Default Operation Id
+            if ( !functionMetadata.keyExists( "operationId" ) ) {
+                functionMetadata[ "operationId" ] = functionMetadata.name;
+            }
+
 			functionMetadata
 				.keyArray()
 				.each( function( infoKey ){
