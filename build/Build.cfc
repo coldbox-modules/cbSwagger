@@ -65,9 +65,6 @@ component {
 		// Create project mapping
 		fileSystemUtil.createMapping( arguments.projectName, variables.cwd );
 
-		// Run the tests
-		runTests();
-
 		// Build the source
 		buildSource( argumentCollection = arguments );
 
@@ -86,27 +83,6 @@ component {
 			.line()
 			.boldMagentaLine( "Build Process is done! Enjoy your build!" )
 			.toConsole();
-	}
-
-	/**
-	 * Run the test suites
-	 */
-	function runTests(){
-		// Tests First, if they fail then exit
-		print.blueLine( "Testing the package, please wait..." ).toConsole();
-
-		command( "testbox run" )
-			.params(
-				runner     = variables.testRunner,
-				verbose    = true,
-				outputFile = "build/results.json"
-			)
-			.run();
-
-		// Check Exit Code?
-		if ( shell.getExitCode() ) {
-			return error( "Cannot continue building, tests failed!" );
-		}
 	}
 
 	/**
