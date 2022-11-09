@@ -97,6 +97,7 @@
 					"version":"1.0.0"
 				},
 				"samplesPath"         : "/includes/resources",
+				"excludeRoutes"       : [ "**/secret" ],
 				// Tags
 				"tags" : [
 					{

@@ -50,7 +50,7 @@ cbswagger = {
 	// The default output format: json or yml
 	// Routes to exclude by prefix.  Routes beginning with this prefix will be excluded
 	"excludeRoutesPrefix" : [ "cbswagger", "relax" ],
-	// Any routes to exclude e.g `api/v1/mysecret` (no initial `/`, trailing `/` optional for routes) 
+	// Any routes to exclude - may use exact matches or globbing patterns e.g `[ "api/v1/mysecret" ]` or `[ "**/secret", "**/undocumented" ]` (no initial `/`, trailing `/` optional for routes) 
 	"excludeRoutes"	: [],
 	"defaultFormat" : "json",
 	// A convention route, relative to your app root, where request/response samples are stored ( e.g. resources/apidocs/responses/[module].[handler].[action].[HTTP Status Code].json )

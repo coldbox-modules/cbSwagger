@@ -6,6 +6,7 @@
     "description":"",
     "dependencies":{
         "swagger-sdk":"be",
+        "globber":"^3.1.4",
         "coldbox":"^6"
     },
     "devDependencies":{
@@ -14,14 +15,15 @@
     "installPaths":{
         "swagger-sdk":"modules/swagger-sdk/",
         "coldbox":"coldbox/",
-        "testbox":"testbox/"
+        "testbox":"testbox/",
+        "globber":"modules/globber/"
     },
     "testbox":{
         "runner":"http://localhost:60299/tests/runner.cfm"
     },
-	"scripts":{
-		"cfpm":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\"' | run",
+    "scripts":{
+        "cfpm":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\"' | run",
         "cfpm:install":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\" install ${1}' | run",
         "install:2021":"run-script cfpm:install zip"
-	}
+    }
 }

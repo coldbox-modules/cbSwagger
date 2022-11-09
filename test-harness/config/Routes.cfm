@@ -61,6 +61,13 @@
 		action=defaultAPIActions
 	);
 
+	// A secret route which is excluded in the config
+	addRoute(
+		pattern='/api/v1/secret',
+		handler='api.v1.Users',
+		action=defaultAPIActions
+	);
+
 
 	// Your Application Routes
 	addRoute(pattern=":handler/:action?");

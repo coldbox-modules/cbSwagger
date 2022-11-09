@@ -15,6 +15,7 @@ component accessors="true" threadsafe singleton {
 	property name="handlerService"               inject="coldbox:handlerService";
 	property name="interceptorService"           inject="coldbox:interceptorService";
 	property name="moduleService"                inject="coldbox:moduleService";
+	property name="patternMatcher"               inject="PathPatternMatcher@globber";
 
 	// API Tools
 	property name="openAPIUtil"   inject="OpenAPIUtil@SwaggerSDK";
@@ -178,14 +179,18 @@ component accessors="true" threadsafe singleton {
 		if ( !!arrayLen( moduleSettings.excludeRoutes ) ) {
 			// all route pattterns have trailing / internatlly so same for excludeRoutes
 			var cleanedExcludes = moduleSettings.excludeRoutes.map (function(item){
-				if (right( item, 1 ) IS NOT "/") {
+				if ( !findNoCase( "*", item ) && right( item, 1 ) != "/") {
 					return item&"/";
 				} else {
 					return item;
 				}
 			});
 			for ( var route in structKeyArray( designatedRoutes ) ) {
-				if ( !!arrayFindNoCase( cleanedExcludes, route ) ) {
+				if (
+					!!arrayFindNoCase( cleanedExcludes, route )
+					||
+					patternMatcher.matchPatterns( cleanedExcludes, route )
+				) {
 					structDelete( designatedRoutes, route );
 				}
 			}

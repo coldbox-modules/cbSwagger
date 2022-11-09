@@ -128,7 +128,7 @@ component
 				var apiPrefixes = cbSwaggerSettings.routes;
 				expect( apiPrefixes ).toBeArray();
 
-				var CBRoutes = getController().getRoutingService().getRoutes();
+				var CBRoutes = getController().getRoutingService().getRoutes().filter( function( route ){ return !findNoCase( "secret", route.pattern ) } );
 				expect( CBRoutes ).toBeArray();
 
 				expect( arrayLen( CBRoutes ) ).toBeGT( 0 );
