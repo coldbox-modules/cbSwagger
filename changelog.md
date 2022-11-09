@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * Removed support for Adobe Coldfusion 2016
+* Removes `default` key from response object if empty and other status code keys are present [Issue #28](https://github.com/coldbox-modules/cbSwagger/issues/28)
 
 ## [2.7.0] => 2021-OCT-1
 
