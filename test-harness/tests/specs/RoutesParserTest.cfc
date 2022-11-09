@@ -20,7 +20,8 @@ component
 		variables.testHandlerMetadata = getMetadata( createObject( "component", "handlers.api.v1.Users" ) );
 		variables.cbSwaggerSettings   = controller.getSetting( "modules" ).cbSwagger.settings;
 
-		variables.model       = prepareMock( Wirebox.getInstance( "RoutesParser@cbSwagger" ) );
+		variables.model       = prepareMock( new cbswagger.models.RoutesParser() );
+		application.wirebox.autowire( variables.model );
 		variables.samplesPath = controller.getAppRootPath() & variables.model.getModuleSettings().samplesPath;
 
 		// make all of our private model methods public
@@ -267,6 +268,27 @@ component
 				expect( path[ "put" ][ "responses" ][ "default" ][ "content" ] ).toBeStruct();
 			} );
 
+			it( "Tests that an empty default response will be removed if status code responses are present", function(){
+				expect( variables ).toHaveKey(
+					"APIDoc",
+					"No APIDoc was found to test.  Could not continue."
+				);
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users" );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users" ];
+
+				debug( path );
+
+				expect( path ).toHaveKey( "post" );
+
+				expect( path[ "post" ] ).toHaveKey( "responses" );
+				expect( path[ "post" ][ "responses" ] ).notToHaveKey( "default" );
+			} );
+
 			it( "Tests the ability to parse summary and description metadata definitions", function(){
 				expect( variables ).toHaveKey(
 					"APIDoc",
@@ -351,8 +373,8 @@ component
 				var path = normalizedDoc[ "paths" ][ "/api/v1/users" ];
 				expect( path ).toHaveKey( "post" );
 				expect( path.post ).toHaveKey( "responses" );
-				// expect( path.post.responses ).toHaveKey( "201" );
-				expect( path.post.responses ).toHaveKey( "default" );
+				expect( path.post.responses ).toHaveKey( "201" );
+				expect( path.post.responses ).toHaveKey( "500" );
 
 				if ( !directoryExists( variables.samplesPath ) ) {
 					directoryCreate( variables.samplesPath );

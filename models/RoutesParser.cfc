@@ -816,6 +816,19 @@ component accessors="true" threadsafe singleton {
 				}
 			} );
 
+		// Remove our empty default response if other responses were provided
+		if(
+			structKeyArray( method[ "responses" ] ).len() > 1
+			&&
+			structKeyExists( method[ "responses" ], "default" )
+			&&
+			structKeyExists( method[ "responses" ][ "default" ], "description" )
+			&&
+			!len( method[ "responses" ][ "default" ][ "description" ] )
+		){
+			structDelete( method[ "responses" ], "default" );
+		}
+
 		sampleArgs = { "type" : "responses" };
 		sampleArgs.append( arguments );
 		appendConventionSamples( argumentCollection = sampleArgs );

@@ -32,7 +32,8 @@ component displayname="API.v1.Users" {
 	 * @hint Adds a new user
 	 * @tags Simple,List
 	 * @parameters /includes/resources/users.add.parameters.json##user
-	 * @responses /includes/resources/users.add.responses.json
+	 * @response-201 /includes/resources/users.add.responses.json##201
+	 * @response-500 /includes/resources/users.add.responses.json##500
 	 * @x-SomeAdditionalInfo Here is some additional information on this path
 	 * @requestBody {
 	 * 	"description" : "User to add",
@@ -44,6 +45,7 @@ component displayname="API.v1.Users" {
 	 * 	}
 	 * }
 	 */
+	// (POST) /api/v1/users
 	function add( event, rc, prc ) {
 	}
 
