@@ -847,6 +847,10 @@ component accessors="true" threadsafe singleton {
 		var supportedExtensions = [ "json", "yaml", "yml" ];
 
 		if ( isJSON( metadataText ) ) {
+			if( findNocase( '"~', metadataText ) ){
+				metadataText = replace( metadataText, '"~', '"' & moduleSettings.samplesPath & "/" );
+			}
+
 			var parsedMetadata = deserializeJSON( metadataText );
 			// check our metadata for $refs
 			if ( isStruct( parsedMetadata ) ) {

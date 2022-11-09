@@ -31,8 +31,8 @@ component displayname="API.v1.Users" {
 	/**
 	 * @hint Adds a new user
 	 * @tags Simple,List
-	 * @parameters /includes/resources/users.add.parameters.json##user
-	 * @response-201 /includes/resources/users.add.responses.json##201
+	 * @parameters ~users.add.parameters.json##user
+	 * @response-201 ~users.add.responses.json##201
 	 * @response-500 /includes/resources/users.add.responses.json##500
 	 * @x-SomeAdditionalInfo Here is some additional information on this path
 	 * @requestBody {
@@ -40,7 +40,7 @@ component displayname="API.v1.Users" {
 	 * 	"required" : true,
 	 * 	"content" : {
 	 * 		"application/json" : {
-	 * 			"schema" : { "$ref" : "/includes/resources/NewUser.json" }
+	 * 			"schema" : { "$ref" : "~NewUser.json" }
 	 * 		}
 	 * 	}
 	 * }

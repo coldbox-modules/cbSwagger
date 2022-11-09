@@ -96,7 +96,7 @@
 					//The version of your API
 					"version":"1.0.0"
 				},
-
+				"samplesPath"         : "/includes/resources",
 				// Tags
 				"tags" : [
 					{
