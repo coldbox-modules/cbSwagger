@@ -18,6 +18,10 @@ component {
 		// Source Excludes Not Added to final binary
 		variables.excludes = [
 			".gitignore",
+			".cfformat.json",
+			".cflintrc",
+			".editorconfig",
+			".markdownlint.json",
 			".travis.yml",
 			".artifacts",
 			".tmp",
