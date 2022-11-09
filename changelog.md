@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * Added support for samples path shortcut annotation (`~`) in annotation JSON `$ref` pointers
+* Added support for using globbing patterns in `excludeRoutes` array. [Issue #37](https://github.com/coldbox-modules/cbSwagger/issues/37)
 
 ## [2.7.0] => 2021-OCT-1
 
