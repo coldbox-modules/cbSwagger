@@ -283,8 +283,6 @@ component
 
 				var path = normalizedDoc[ "paths" ][ "/api/v1/users" ];
 
-				debug( path );
-
 				expect( path ).toHaveKey( "post" );
 
 				expect( path[ "post" ] ).toHaveKey( "responses" );

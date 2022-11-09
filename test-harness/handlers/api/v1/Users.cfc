@@ -28,6 +28,7 @@ component displayname="API.v1.Users" {
 	function get( event, rc, prc ) {
 	}
 
+	// (POST) /api/v1/users
 	/**
 	 * @hint Adds a new user
 	 * @tags Simple,List
@@ -45,7 +46,6 @@ component displayname="API.v1.Users" {
 	 * 	}
 	 * }
 	 */
-	// (POST) /api/v1/users
 	function add( event, rc, prc ) {
 	}
 

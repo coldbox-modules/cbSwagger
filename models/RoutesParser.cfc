@@ -794,6 +794,7 @@ component accessors="true" threadsafe singleton {
 		required any functionMetadata,
 		moduleName
 	){
+
 		functionMetadata
 			.keyArray()
 			.filter( function( key ){
