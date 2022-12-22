@@ -186,6 +186,15 @@ component accessors="true" threadsafe singleton {
 			}
 		}
 
+        // Remove any event excludes
+		if ( arrayLen( moduleSettings.excludeEvents ) ) {
+			for ( var route in structKeyArray( designatedRoutes ) ) {
+                if ( moduleSettings.excludeEvents.findNoCase( designatedRoutes[ route ].event ) ) {
+					structDelete( designatedRoutes, route );
+				}
+			}
+		}
+
 		// Now custom sort our routes alphabetically
 		var entrySet     = structKeyArray( designatedRoutes );
 		var sortedRoutes = structNew( "ordered" );
