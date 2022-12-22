@@ -29,8 +29,8 @@ component {
 			"excludeRoutesPrefix" : [],
 			// Routes to exclude from the generated spec
 			"excludeRoutes"       : [],
-            // Routes to exclude based on event
-            "excludeEvents"       : [],
+			// Routes to exclude based on event
+			"excludeEvents"       : [],
 			// The default output format, either json or yml
 			"defaultFormat"       : "json",
 			// A convention route, relative to your app root, where request/response samples are stored ( e.g. resources/apidocs/responses/[module].[handler].[action].[HTTP Status Code].json )
