@@ -17,6 +17,10 @@ component extends="coldbox.system.EventHandler" {
 		action,
 		eventArguments
 	){
+		if ( structKeyExists( rc, "requestTimeout" ) && isNumeric( rc.requestTimeout ) ) {
+			setting requestTimeout=rc.requestTimeout;
+		}
+
 		// No layout, just in case
 		event.noLayout();
 		// Determine output format
