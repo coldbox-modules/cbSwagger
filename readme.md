@@ -52,6 +52,8 @@ cbswagger = {
 	"excludeRoutesPrefix" : [ "cbswagger", "relax" ],
 	// Any routes to exclude - may use exact matches or globbing patterns e.g `[ "api/v1/mysecret" ]` or `[ "**/secret", "**/undocumented" ]` (no initial `/`, trailing `/` optional for routes) 
 	"excludeRoutes"	: [],
+    // Routes to exclude based on event
+    "excludeEvents"       : [],
 	"defaultFormat" : "json",
 	// A convention route, relative to your app root, where request/response samples are stored ( e.g. resources/apidocs/responses/[module].[handler].[action].[HTTP Status Code].json )
 	"samplesPath" : "resources/apidocs",

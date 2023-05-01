@@ -178,9 +178,16 @@ component accessors="true" threadsafe singleton {
 		// Remove any route excludes
 		if ( arrayLen( moduleSettings.excludeRoutes ) ) {
 			for ( var route in structKeyArray( designatedRoutes ) ) {
-				if (
-					patternMatcher.matchPatterns( moduleSettings.excludeRoutes, route )
-				) {
+				if ( patternMatcher.matchPatterns( moduleSettings.excludeRoutes, route ) ) {
+					structDelete( designatedRoutes, route );
+				}
+			}
+		}
+
+		// Remove any event excludes
+		if ( arrayLen( moduleSettings.excludeEvents ) ) {
+			for ( var route in structKeyArray( designatedRoutes ) ) {
+				if ( moduleSettings.excludeEvents.findNoCase( designatedRoutes[ route ].event ) ) {
 					structDelete( designatedRoutes, route );
 				}
 			}
@@ -789,7 +796,6 @@ component accessors="true" threadsafe singleton {
 		required any functionMetadata,
 		moduleName
 	){
-
 		functionMetadata
 			.keyArray()
 			.filter( function( key ){
@@ -813,15 +819,18 @@ component accessors="true" threadsafe singleton {
 			} );
 
 		// Remove our empty default response if other responses were provided
-		if(
+		if (
 			structKeyArray( method[ "responses" ] ).len() > 1
 			&&
 			structKeyExists( method[ "responses" ], "default" )
 			&&
-			structKeyExists( method[ "responses" ][ "default" ], "description" )
+			structKeyExists(
+				method[ "responses" ][ "default" ],
+				"description"
+			)
 			&&
 			!len( method[ "responses" ][ "default" ][ "description" ] )
-		){
+		) {
 			structDelete( method[ "responses" ], "default" );
 		}
 
@@ -843,8 +852,12 @@ component accessors="true" threadsafe singleton {
 		var supportedExtensions = [ "json", "yaml", "yml" ];
 
 		if ( isJSON( metadataText ) ) {
-			if( findNocase( '"~', metadataText ) ){
-				metadataText = replace( metadataText, '"~', '"' & moduleSettings.samplesPath & "/" );
+			if ( findNoCase( """~", metadataText ) ) {
+				metadataText = replace(
+					metadataText,
+					"""~",
+					"""" & moduleSettings.samplesPath & "/"
+				);
 			}
 
 			var parsedMetadata = deserializeJSON( metadataText );

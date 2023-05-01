@@ -7,7 +7,7 @@
     "dependencies":{
         "swagger-sdk":"be",
         "globber":"^3.1.4",
-        "coldbox":"^6"
+        "coldbox":"be"
     },
     "devDependencies":{
         "testbox":"^4.0.0"
