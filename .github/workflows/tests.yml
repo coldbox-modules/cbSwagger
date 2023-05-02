@@ -15,9 +15,11 @@ jobs:
       fail-fast: false
       matrix:
         cfengine: [ "lucee@5", "adobe@2018", "adobe@2021" ]
+        coldbox: [ "6", "be" ]
         experimental: [false]
         include:
           - cfengine: "adobe@2023"
+            coldbox: "6"
             experimental: true
     steps:
       - name: Checkout Repository
@@ -45,16 +47,13 @@ jobs:
         working-directory: ./test-harness
         run: |
           box install
+          box install --force coldbox@${{ matrix.coldbox }}
 
       - name: Start ${{ matrix.cfengine }} Server
         working-directory: ./test-harness
         run: |
           echo "matrix.cfengine=${{ matrix.cfengine }}" > ./.env
           box server start serverConfigFile="server-${{ matrix.cfengine }}.json" --noSaveSettings --debug
-          # Install Adobe 2021 cfpm modules
-          if [[ "${{ matrix.cfengine }}" == "adobe@2021" ]] ; then
-            box run-script install:2021
-          fi
           curl http://127.0.0.1:60299
 
       - name: Run Tests
