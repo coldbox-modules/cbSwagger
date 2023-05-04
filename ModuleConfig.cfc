@@ -81,18 +81,12 @@ component {
 		router
 			.route( "/" )
 			.withHandler( "Main" )
-			.toAction( {
-				"GET"     : "index",
-				"OPTIONS" : "options"
-			} );
+			.toAction( { "GET" : "index", "OPTIONS" : "options" } );
 
 		router
 			.route( "/json" )
 			.withHandler( "Main" )
-			.toAction( {
-				"GET"     : "json",
-				"OPTIONS" : "options"
-			} );
+			.toAction( { "GET" : "json", "OPTIONS" : "options" } );
 
 		router
 			.route( "/yml" )
