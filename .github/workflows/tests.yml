@@ -14,7 +14,6 @@ jobs:
     env:
       DB_USER: root
       DB_PASSWORD: root
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
@@ -102,7 +101,6 @@ jobs:
 
       - name: Show Server Log On Failures
         if: ${{ failure() }}
-        working-directory: ./test-harness
         run: |
           box server log serverConfigFile="server-${{ matrix.cfengine }}.json"
 
