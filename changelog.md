@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Virtual application testing
 - Updated github actions
 - Updated module template provisions
 - Added support for samples path shortcut annotation (`~`) in annotation JSON `$ref` pointers
