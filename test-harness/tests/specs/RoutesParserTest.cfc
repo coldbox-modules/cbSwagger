@@ -17,7 +17,7 @@ component
 		variables.testHandlerMetadata = getMetadata( createObject( "component", "handlers.api.v1.Users" ) );
 		variables.cbSwaggerSettings   = controller.getSetting( "modules" ).cbSwagger.settings;
 
-		variables.model = prepareMock( new cbswagger.models.RoutesParser() );
+		variables.model = prepareMock( new cbSwagger.models.RoutesParser() );
 		getWireBox().autowire( variables.model );
 		variables.samplesPath = controller.getAppRootPath() & variables.model.getModuleSettings().samplesPath;
 

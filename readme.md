@@ -64,7 +64,7 @@ cbswagger = {
 	"routes" : [ "api" ],
 	// The default output format: json or yml
 	// Routes to exclude by prefix.  Routes beginning with this prefix will be excluded
-	"excludeRoutesPrefix" : [ "cbswagger", "relax" ],
+	"excludeRoutesPrefix" : [ "cbSwagger", "relax" ],
 	// Any routes to exclude - may use exact matches or globbing patterns e.g `[ "api/v1/mysecret" ]` or `[ "**/secret", "**/undocumented" ]` (no initial `/`, trailing `/` optional for routes)
 	"excludeRoutes"	: [],
     // Routes to exclude based on event

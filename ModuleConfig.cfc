@@ -7,14 +7,14 @@
 component {
 
 	// Module Properties
-	this.title          = "cbswagger";
+	this.title          = "cbSwagger";
 	this.author         = "Jon Clausen <jon_clausen@silowebworks.com>";
 	this.webURL         = "https://github.com/coldbox-modules/cbSwagger";
 	this.version        = "@version.number@+@build.number@";
 	this.description    = "A coldbox module to auto-generate Swagger API documentation from your configured routes";
-	this.entryPoint     = "cbswagger";
-	this.modelNamespace = "cbswagger";
-	this.cfmapping      = "cbswagger";
+	this.entryPoint     = "cbSwagger";
+	this.modelNamespace = "cbSwagger";
+	this.cfmapping      = "cbSwagger";
 	this.autoMapModels  = true;
 	this.dependencies   = [ "swagger-sdk" ];
 
