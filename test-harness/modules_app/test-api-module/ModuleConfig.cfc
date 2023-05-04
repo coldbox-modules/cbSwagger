@@ -76,10 +76,6 @@ component {
 				handler : "Users",
 				action  : defaultAPIActions
 			},
-			{
-				pattern       : "/v1",
-				moduleRouting : "api-v1"
-			},
 			{ pattern : "/:handler/:action?" }
 		];
 	}

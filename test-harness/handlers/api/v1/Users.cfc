@@ -70,6 +70,12 @@ component displayname="API.v1.Users" {
 	 * @hint A longer description here for retrieving the roles for a user.
 	 */
 	function roles( event, rc, prc ) {
+		return {
+			"roles" : [
+				"admin",
+				"editor"
+			]
+		};
 	}
 
 }
