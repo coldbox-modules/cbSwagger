@@ -56,7 +56,9 @@
 		logBox = {
 			// Define Appenders
 			appenders = {
-				files={class="coldbox.system.logging.appenders.RollingFileAppender",
+				myConsole : { class : "ConsoleAppender" },
+				files : {
+					class="RollingFileAppender",
 					properties = {
 						filename = "tester", filePath="/#appMapping#/logs"
 					}
@@ -160,6 +162,7 @@
 	 * Load the Module you are testing
 	 */
 	function afterAspectsLoad( event, interceptData, rc, prc ){
+
 		controller.getModuleService()
 			.registerAndActivateModule(
 				moduleName 		= request.MODULE_NAME,

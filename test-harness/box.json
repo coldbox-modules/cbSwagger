@@ -10,13 +10,15 @@
         "coldbox":"be"
     },
     "devDependencies":{
-        "testbox":"^4.0.0"
+        "testbox":"^4.0.0",
+        "route-visualizer":"^2.0.0+6"
     },
     "installPaths":{
-        "swagger-sdk":"modules/swagger-sdk/",
         "coldbox":"coldbox/",
         "testbox":"testbox/",
-        "globber":"modules/globber/"
+        "swagger-sdk":"modules/swagger-sdk/",
+        "globber":"modules/globber/",
+        "route-visualizer":"modules/route-visualizer/"
     },
     "testbox":{
         "runner":"http://localhost:60299/tests/runner.cfm"
