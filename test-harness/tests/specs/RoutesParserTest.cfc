@@ -10,18 +10,15 @@ component
 	/*********************************** LIFE CYCLE Methods ***********************************/
 
 	function beforeAll(){
-		structDelete( application, "cbController" );
-		structDelete( application, "wirebox" );
-
 		super.beforeAll();
 
 		// Wire up this object
-		application.wirebox.autowire( this );
+		getWireBox().autowire( this );
 		variables.testHandlerMetadata = getMetadata( createObject( "component", "handlers.api.v1.Users" ) );
 		variables.cbSwaggerSettings   = controller.getSetting( "modules" ).cbSwagger.settings;
 
 		variables.model = prepareMock( new cbswagger.models.RoutesParser() );
-		application.wirebox.autowire( variables.model );
+		getWireBox().autowire( variables.model );
 		variables.samplesPath = controller.getAppRootPath() & variables.model.getModuleSettings().samplesPath;
 
 		// make all of our private model methods public
