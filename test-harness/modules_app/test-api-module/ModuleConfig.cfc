@@ -72,6 +72,10 @@ component {
 				action  : defaultEntityActions
 			},
 			{
+				pattern       : "/v1",
+				moduleRouting : "api-v1"
+			},
+			{
 				pattern : "users",
 				handler : "Users",
 				action  : defaultAPIActions
