@@ -36,12 +36,7 @@ component accessors="true" threadsafe singleton {
 	}
 
 	function onDIComplete(){
-		if (
-			listFirst(
-				controller.getColdBoxSettings().version,
-				"."
-			) gte 5
-		) {
+		if ( listFirst( controller.getColdBoxSettings().version, "." ) gte 5 ) {
 			variables.routingService = variables.controller.getRoutingService();
 		} else {
 			variables.routingService = variables.interceptorService.getInterceptor( "ses" );
@@ -126,18 +121,14 @@ component accessors="true" threadsafe singleton {
 					moduleEntryPoint = modulesSettings[ route.module ].inheritedEntryPoint;
 				}
 				// TODO: not sure why Jon is doing this, ask him.
-				var moduleEntryPoint = arrayToList(
-					listToArray( moduleEntryPoint, "/" ),
-					"/"
-				);
+				var moduleEntryPoint = arrayToList( listToArray( moduleEntryPoint, "/" ), "/" );
 				// Prefix the entry point to the patterns
-				route.pattern = moduleEntryPoint & "/" & route.pattern;
+				route.pattern        = moduleEntryPoint & "/" & route.pattern;
 
 				if (
-					structKeyExists(
-						moduleConfigCache[ route.module ],
-						"cfmapping"
-					) && len( moduleConfigCache[ route.module ].cfmapping )
+					structKeyExists( moduleConfigCache[ route.module ], "cfmapping" ) && len(
+						moduleConfigCache[ route.module ].cfmapping
+					)
 				) {
 					route[ "moduleInvocationPath" ] = moduleConfigCache[ route.module ].cfmapping;
 				} else {
@@ -163,12 +154,7 @@ component accessors="true" threadsafe singleton {
 		if ( arrayLen( moduleSettings.excludeRoutesPrefix ) ) {
 			for ( var excludePrefix in moduleSettings.excludeRoutesPrefix ) {
 				for ( var currentRoute in structKeyArray( designatedRoutes ) ) {
-					if (
-						left(
-							designatedRoutes[ currentRoute ].pattern,
-							len( excludePrefix )
-						) == excludePrefix
-					) {
+					if ( left( designatedRoutes[ currentRoute ].pattern, len( excludePrefix ) ) == excludePrefix ) {
 						structDelete( designatedRoutes, currentRoute );
 					}
 				}
@@ -206,10 +192,7 @@ component accessors="true" threadsafe singleton {
 		for ( var pathEntry in entrySet ) {
 			for ( var routeKey in designatedRoutes ) {
 				if ( replaceNoCase( routeKey, "/", "", "ALL" ) == pathEntry ) {
-					sortedRoutes.put(
-						routeKey,
-						designatedRoutes[ routeKey ]
-					);
+					sortedRoutes.put( routeKey, designatedRoutes[ routeKey ] );
 				}
 			}
 		}
@@ -225,12 +208,9 @@ component accessors="true" threadsafe singleton {
 	 * @return linked map
 	 **/
 	private any function createPathsFromRouteConfig( required struct route ){
-		var paths     = structNew( "ordered" );
+		var paths           = structNew( "ordered" );
 		// first parse our route to see if we have conditionals and create separate all found conditionals
-		var pathArray = listToArray(
-			getOpenAPIUtil().translatePath( arguments.route.pattern ),
-			"/"
-		);
+		var pathArray       = listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
 		var assembledRoute  = [];
 		var handlerMetadata = getHandlerMetadata( arguments.route ) ?: false;
 
@@ -245,10 +225,7 @@ component accessors="true" threadsafe singleton {
 				);
 
 				// now append our optional key to construct an extended path
-				arrayAppend(
-					assembledRoute,
-					replace( routeSegment, "?", "" )
-				);
+				arrayAppend( assembledRoute, replace( routeSegment, "?", "" ) );
 			} else {
 				arrayAppend( assembledRoute, routeSegment );
 			}
@@ -268,10 +245,10 @@ component accessors="true" threadsafe singleton {
 	/**
 	 * Creates paths individual paths from our routing configuration
 	 *
-	 * @existingPaths The existing path hashmap
-	 * @pathKey The key of the path to be created
-	 * @routeConfig A coldbox SES Route Configuration
-	 * @handlerMetadata	The handler metadata corresponding to the route
+	 * @existingPaths   The existing path hashmap
+	 * @pathKey         The key of the path to be created
+	 * @routeConfig     A coldbox SES Route Configuration
+	 * @handlerMetadata The handler metadata corresponding to the route
 	 **/
 	private void function addPathFromRouteConfig(
 		required any existingPaths,
@@ -310,15 +287,9 @@ component accessors="true" threadsafe singleton {
 					// method not in error methods
 					if ( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ) {
 						// Create new path template
-						path.put(
-							lCase( methodName ),
-							getOpenAPIUtil().newMethod()
-						);
+						path.put( lCase( methodName ), getOpenAPIUtil().newMethod() );
 						// Append Params
-						appendPathParams(
-							pathKey = arguments.pathKey,
-							method  = path[ lCase( methodName ) ]
-						);
+						appendPathParams( pathKey = arguments.pathKey, method = path[ lCase( methodName ) ] );
 						// Append Function metadata
 						if ( !isNull( arguments.handlerMetadata ) ) {
 							appendFunctionInfo(
@@ -338,15 +309,9 @@ component accessors="true" threadsafe singleton {
 		} else {
 			for ( var methodName in getOpenAPIUtil().defaultMethods() ) {
 				// Insert path template for default method
-				path.put(
-					lCase( methodName ),
-					getOpenAPIUtil().newMethod()
-				);
+				path.put( lCase( methodName ), getOpenAPIUtil().newMethod() );
 				// Append Params
-				appendPathParams(
-					pathKey = arguments.pathKey,
-					method  = path[ lCase( methodName ) ]
-				);
+				appendPathParams( pathKey = arguments.pathKey, method = path[ lCase( methodName ) ] );
 				// Append metadata
 				if ( len( actions ) && !isNull( arguments.handlerMetadata ) ) {
 					appendFunctionInfo(
@@ -381,22 +346,16 @@ component accessors="true" threadsafe singleton {
 			}
 		}
 
-		arguments.existingPaths.put(
-			"/" & arrayToList( pathSegments, "/" ),
-			path
-		);
+		arguments.existingPaths.put( "/" & arrayToList( pathSegments, "/" ), path );
 	}
 
 	/**
 	 * Appends the path-based paramters to a method
 	 *
 	 * @pathKey The path key ( route )
-	 * @method The current path method object
+	 * @method  The current path method object
 	 **/
-	private void function appendPathParams(
-		required string pathKey,
-		required struct method
-	){
+	private void function appendPathParams( required string pathKey, required struct method ){
 		// Verify parameters array in the method definition
 		if ( !structKeyExists( arguments.method, "parameters" ) ) {
 			arguments.method.put( "parameters", [] );
@@ -460,9 +419,9 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @route A ColdBox Route record
 	 *
-	 * @throws cbSwagger.RoutesParse.handlerSyntaxException
-	 *
 	 * @return struct of handlerMetadata
+	 *
+	 * @throws cbSwagger.RoutesParse.handlerSyntaxException
 	 */
 	private any function getHandlerMetadata( required any route ){
 		var handlerRoute = ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
@@ -472,23 +431,14 @@ component accessors="true" threadsafe singleton {
 		// Do event's first, if found, use it for the handler location
 		if ( len( fullEvent ) ) {
 			// remove last part which should be the action
-			handlerRoute = replace(
-				fullEvent,
-				".#listLast( fullEvent, "." )#",
-				""
-			);
+			handlerRoute = replace( fullEvent, ".#listLast( fullEvent, "." )#", "" );
 		}
 
 		// If no handlers, back out nothing to see here folks
 		if ( !len( handlerRoute ) ) return;
 
 		// Discover via module or parent root
-		if (
-			len( module ) && structKeyExists(
-				arguments.route,
-				"moduleInvocationPath"
-			)
-		) {
+		if ( len( module ) && structKeyExists( arguments.route, "moduleInvocationPath" ) ) {
 			var invocationPath = arguments.route[ "moduleInvocationPath" ] & ".handlers." & handlerRoute;
 		} else {
 			var invocationPath = getHandlersInvocationPath() & "." & handlerRoute;
@@ -508,12 +458,11 @@ component accessors="true" threadsafe singleton {
 	/**
 	 * Appends the function info/metadata to the method hashmap
 	 *
-	 * @methodName The method name in use
-	 * @method The method hashmap to append to
-	 * @functionName The name of the function to look up in the handler metadata
+	 * @methodName      The method name in use
+	 * @method          The method hashmap to append to
+	 * @functionName    The name of the function to look up in the handler metadata
 	 * @handlerMetadata The metadata of the handler to reference
-	 * @moduleName The module name if any
-	 *
+	 * @moduleName      The module name if any
 	 */
 	private void function appendFunctionInfo(
 		required any methodName,
@@ -532,10 +481,7 @@ component accessors="true" threadsafe singleton {
 
 		arguments.method[ "x-coldbox-operation" ] = operationPath & "." & arguments.functionName;
 		arguments.method[ "operationId" ]         = arguments.method[ "x-coldbox-operation" ];
-		arguments.functionMetaData                = getFunctionMetaData(
-			arguments.functionName,
-			arguments.handlerMetadata
-		);
+		arguments.functionMetaData                = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 		// Process function metadata
 		if ( !isNull( arguments.functionMetadata ) ) {
 			var defaultKeys = arguments.method.keyArray();
@@ -584,10 +530,7 @@ component accessors="true" threadsafe singleton {
 
 					// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
 					if ( left( infoKey, 12 ) == "requestBody" ) {
-						method.put(
-							"requestBody",
-							structNew( "ordered" )
-						);
+						method.put( "requestBody", structNew( "ordered" ) );
 
 						if ( isSimpleValue( infoMetadata ) ) {
 							method[ "requestBody" ][ "description" ] = infoMetadata;
@@ -605,7 +548,9 @@ component accessors="true" threadsafe singleton {
 							// expect a list of pre-defined securitySchemes
 							method[ "security" ] = listToArray( infoMetadata )
 								.filter( function( security ){
-									return structKeyList( moduleSettings.components.securitySchemes ).find( security );
+									return structKeyList( moduleSettings.components.securitySchemes ).find(
+										security
+									);
 								} )
 								.map( function( item ){
 									return { "#item#" : [] };
@@ -688,18 +633,12 @@ component accessors="true" threadsafe singleton {
 					"."
 				);
 			} else {
-				var filterString = arrayToList(
-					[ handlerMetadata.name, methodName ],
-					"."
-				);
+				var filterString = arrayToList( [ handlerMetadata.name, methodName ], "." );
 			}
 
 			availableFiles
 				.filter( function( filePath ){
-					return findNoCase(
-						filterString,
-						replaceNoCase( filePath, conventionDirectory, "" )
-					);
+					return findNoCase( filterString, replaceNoCase( filePath, conventionDirectory, "" ) );
 				} )
 				.each( function( filePath ){
 					var fileContent = fileRead( filePath );
@@ -824,10 +763,7 @@ component accessors="true" threadsafe singleton {
 			&&
 			structKeyExists( method[ "responses" ], "default" )
 			&&
-			structKeyExists(
-				method[ "responses" ][ "default" ],
-				"description"
-			)
+			structKeyExists( method[ "responses" ][ "default" ], "description" )
 			&&
 			!len( method[ "responses" ][ "default" ][ "description" ] )
 		) {
@@ -877,10 +813,7 @@ component accessors="true" threadsafe singleton {
 		) {
 			// Check if we have the root ~ delimiter for the resources convention
 			if ( left( metadataText, 1 ) == "~" ) {
-				metadataText = metadataText.replace(
-					"~",
-					moduleSettings.samplesPath & "/"
-				);
+				metadataText = metadataText.replace( "~", moduleSettings.samplesPath & "/" );
 			}
 			return { "$ref" : replaceNoCase( metadataText, "####", "##", "ALL" ) };
 		} else {
@@ -891,22 +824,14 @@ component accessors="true" threadsafe singleton {
 	/**
 	 * Retreives the handler metadata, if available
 	 *
-	 * @functionName The name of the function to look up in the handler metadata
+	 * @functionName    The name of the function to look up in the handler metadata
 	 * @handlerMetadata The metadata of the handler to reference
 	 *
 	 * @return struct|null
 	 */
-	private any function getFunctionMetadata(
-		required string functionName,
-		required any handlerMetadata
-	){
+	private any function getFunctionMetadata( required string functionName, required any handlerMetadata ){
 		// exit out if we have no functions defined
-		if (
-			!structKeyExists(
-				arguments.handlerMetadata,
-				"functions"
-			)
-		) return;
+		if ( !structKeyExists( arguments.handlerMetadata, "functions" ) ) return;
 
 		for ( var functionMetadata in arguments.handlerMetadata.functions ) {
 			if ( lCase( functionMetadata.name ) == lCase( arguments.functionName ) ) {

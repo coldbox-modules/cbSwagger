@@ -30,11 +30,7 @@ component
 				return fn.name;
 			} );
 		privateMethods.each( function( methodName ){
-			makePublic(
-				variables.model,
-				methodName,
-				methodName
-			);
+			makePublic( variables.model, methodName, methodName );
 		} );
 	}
 
@@ -88,10 +84,7 @@ component
 			} );
 
 			it( "Tests casting", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var doc = APIDoc.getNormalizedDocument();
 
@@ -115,10 +108,7 @@ component
 
 			it( "Tests the API Document against the routing configuration", function(){
 				var swaggerUtil = wirebox.getInstance( "OpenAPIUtil@SwaggerSDK" );
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 				expect( normalizedDoc ).toHaveKey( "paths" );
@@ -153,10 +143,7 @@ component
 
 			it( "Tests the API Document for module introspection", function(){
 				var swaggerUtil = Wirebox.getInstance( "OpenAPIUtil@SwaggerSDK" );
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 				expect( normalizedDoc ).toHaveKey( "paths" );
@@ -190,10 +177,7 @@ component
 			} );
 
 			it( "Tests that route-based parameters are appended to all method params", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 
@@ -221,10 +205,7 @@ component
 			} );
 
 			it( "Tests the ability to parse parameter metadata definitions", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 
@@ -250,10 +231,7 @@ component
 			} );
 
 			it( "Tests the ability to parse response metadata definitions", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 
@@ -270,16 +248,15 @@ component
 
 				expect( path[ "put" ][ "responses" ][ "default" ] ).toBeStruct().toHaveKey( "description" );
 
-				expect( path[ "put" ][ "responses" ][ "default" ][ "description" ] ).toBe( "User successfully updated" );
+				expect( path[ "put" ][ "responses" ][ "default" ][ "description" ] ).toBe(
+					"User successfully updated"
+				);
 
 				expect( path[ "put" ][ "responses" ][ "default" ][ "content" ] ).toBeStruct();
 			} );
 
 			it( "Tests that an empty default response will be removed if status code responses are present", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 
@@ -295,10 +272,7 @@ component
 			} );
 
 			it( "Tests the ability to parse summary and description metadata definitions", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 
@@ -319,10 +293,7 @@ component
 			} );
 
 			it( "Tests the ability to parse operationId metadata definitions", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 
@@ -341,10 +312,7 @@ component
 			} );
 
 			it( "Verifies that path typing parameters are removed and that the key omits the type", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 				expect( variables ).toHaveKey( "samplesPath" );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
@@ -365,10 +333,7 @@ component
 			} );
 
 			it( "Tests the ability to parse convention path response definition files", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
 
@@ -395,17 +360,10 @@ component
 				);
 				fileWrite(
 					variables.samplesPath & "/responses/handlers.api.v1.Users.add.201.json",
-					serializeJSON( {
-						"id"      : createUUID(),
-						"success" : true
-					} )
+					serializeJSON( { "id" : createUUID(), "success" : true } )
 				);
 
-				var handlerMeta = variables.model.getHandlerMetadata( {
-					"handler" : "api.v1.Users",
-					"module"  : "",
-					"event"   : ""
-				} );
+				var handlerMeta  = variables.model.getHandlerMetadata( { "handler" : "api.v1.Users", "module" : "", "event" : "" } );
 				var functionMeta = variables.model.getFunctionMetadata( "add", handlerMeta );
 				structDelete( functionMeta, "responses" );
 
@@ -435,10 +393,7 @@ component
 			} );
 
 			it( "Tests the ability to parse convention path requestBody files", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				if ( !directoryExists( variables.samplesPath ) ) {
 					directoryCreate( variables.samplesPath );
@@ -451,17 +406,10 @@ component
 
 				fileWrite(
 					variables.samplesPath & "/responseBody/handlers.api.v1.Users.add.json",
-					serializeJSON( {
-						"firstName" : "Luis",
-						"lastName"  : "Majano"
-					} )
+					serializeJSON( { "firstName" : "Luis", "lastName" : "Majano" } )
 				);
 
-				var handlerMeta = variables.model.getHandlerMetadata( {
-					"handler" : "api.v1.Users",
-					"module"  : "",
-					"event"   : ""
-				} );
+				var handlerMeta  = variables.model.getHandlerMetadata( { "handler" : "api.v1.Users", "module" : "", "event" : "" } );
 				var functionMeta = variables.model.getFunctionMetadata( "add", handlerMeta );
 				structDelete( functionMeta, "responseBody" );
 
@@ -482,10 +430,7 @@ component
 			} );
 
 			it( "Tests the ability to parse convention path parameter files", function(){
-				expect( variables ).toHaveKey(
-					"APIDoc",
-					"No APIDoc was found to test.  Could not continue."
-				);
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 
 				if ( !directoryExists( variables.samplesPath ) ) {
 					directoryCreate( variables.samplesPath );
@@ -510,11 +455,7 @@ component
 					serializeJSON( parameters )
 				);
 
-				var handlerMeta = variables.model.getHandlerMetadata( {
-					"handler" : "api.v1.Users",
-					"module"  : "",
-					"event"   : ""
-				} );
+				var handlerMeta  = variables.model.getHandlerMetadata( { "handler" : "api.v1.Users", "module" : "", "event" : "" } );
 				var functionMeta = variables.model.getFunctionMetadata( "add", handlerMeta );
 				structDelete( functionMeta, "parameters" );
 
