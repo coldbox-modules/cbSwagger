@@ -1,12 +1,20 @@
+# Artifacts and temp folders
 .artifacts/**
 .tmp/**
 
-test-harness/.engine/**
+# Engine + Secrets
+.env
+.engine/**
+
+# Dependencies
 test-harness/coldbox/**
 test-harness/docbox/**
 test-harness/testbox/**
 test-harness/logs/**
 test-harness/modules/**
+
+# modules
+modules/**
 
 # log files
 logs/**

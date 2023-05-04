@@ -26,17 +26,36 @@
     ],
     "dependencies":{
         "swagger-sdk":"be",
-		"globber":"^3.1.4"
+        "globber":"^3.1.4"
     },
     "ignore":[
         "**/.*",
         "test-harness",
-        "*/.md"
+        "/server*.json"
     ],
     "scripts":{
+        "build:module":"task run taskFile=build/Build.cfc :projectName=`package show slug` :version=`package show version`",
+        "build:docs":"task run taskFile=build/Build.cfc target=docs :projectName=`package show slug` :version=`package show version`",
+        "install:dependencies":"install && cd test-harness && install",
         "release":"recipe build/release.boxr",
-        "format":"cfformat run handlers/,models/,test-harness/tests/**/*.cfc,ModuleConfig.cfc --overwrite",
-        "format:watch":"cfformat watch handlers/,models/,test-harness/tests/**/*.cfc,ModuleConfig.cfc ./.cfformat.json",
-        "format:check":"cfformat check handlers/,models/,test-harness/tests/**/*.cfc,ModuleConfig.cfc ./.cfformat.json"
+        "format":"cfformat run helpers,models,test-harness/tests/,ModuleConfig.cfc --overwrite",
+        "format:watch":"cfformat watch helpers,models,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
+        "format:check":"cfformat check helpers,models,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
+        "start:lucee":"server start serverConfigFile=server-lucee@5.json",
+        "start:2018":"server start serverConfigFile=server-adobe@2018.json",
+        "start:2021":"server start serverConfigFile=server-adobe@2021.json",
+        "stop:lucee":"server stop serverConfigFile=server-lucee@5.json",
+        "stop:2018":"server stop serverConfigFile=server-adobe@2018.json",
+        "stop:2021":"server stop serverConfigFile=server-adobe@2021.json",
+        "logs:lucee":"server log serverConfigFile=server-lucee@5.json --follow",
+        "logs:2018":"server log serverConfigFile=server-adobe@2018.json --follow",
+        "logs:2021":"server log serverConfigFile=server-adobe@2021.json --follow"
+    },
+    "testbox":{
+        "runner":"http://localhost:60299/tests/runner.cfm"
+    },
+    "installPaths":{
+        "swagger-sdk":"modules/swagger-sdk/",
+        "globber":"modules/globber/"
     }
 }

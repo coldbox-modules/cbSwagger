@@ -6,6 +6,11 @@
 			"isPhysicalDirectoryPath": false
 		},
 		{
+			"logicalPath": "/testbox",
+			"directoryPath": "./test-harness/testbox",
+			"isPhysicalDirectoryPath": false
+		},
+		{
 			"logicalPath": "/cbSwagger",
 			"directoryPath": "./",
 			"isPhysicalDirectoryPath": false

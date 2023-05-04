@@ -1,4 +1,19 @@
-[![Build Status](https://travis-ci.org/coldbox-modules/cbSwagger.svg?branch=development)](https://travis-ci.org/coldbox-modules/cbSwagger)
+<p align="center">
+	<img src="https://www.ortussolutions.com/__media/coldbox-185-logo.png">
+	<br>
+	<img src="https://www.ortussolutions.com/__media/wirebox-185.png" height="125">
+	<img src="https://www.ortussolutions.com/__media/cachebox-185.png" height="125" >
+	<img src="https://www.ortussolutions.com/__media/logbox-185.png"  height="125">
+</p>
+
+<p align="center">
+	Copyright Since 2005 ColdBox Platform by Luis Majano and Ortus Solutions, Corp
+	<br>
+	<a href="https://www.coldbox.org">www.coldbox.org</a> |
+	<a href="https://www.ortussolutions.com">www.ortussolutions.com</a>
+</p>
+
+----
 
 # Welcome to the ColdBox Swagger Module
 
@@ -50,7 +65,7 @@ cbswagger = {
 	// The default output format: json or yml
 	// Routes to exclude by prefix.  Routes beginning with this prefix will be excluded
 	"excludeRoutesPrefix" : [ "cbswagger", "relax" ],
-	// Any routes to exclude - may use exact matches or globbing patterns e.g `[ "api/v1/mysecret" ]` or `[ "**/secret", "**/undocumented" ]` (no initial `/`, trailing `/` optional for routes) 
+	// Any routes to exclude - may use exact matches or globbing patterns e.g `[ "api/v1/mysecret" ]` or `[ "**/secret", "**/undocumented" ]` (no initial `/`, trailing `/` optional for routes)
 	"excludeRoutes"	: [],
     // Routes to exclude based on event
     "excludeEvents"       : [],

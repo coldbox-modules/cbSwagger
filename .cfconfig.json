@@ -1,0 +1,26 @@
+{
+	"adminPassword" : "coldbox",
+    "debuggingEnabled":true,
+    "debuggingReportExecutionTimes":false,
+    "disableInternalCFJavaComponents":false,
+    "inspectTemplate":"always",
+    "requestTimeout":"0,0,0,90",
+    "robustExceptionEnabled":true,
+	"datasources": {
+        "coolblog": {
+            "class":"${DB_CLASS}",
+			"dbdriver": "MySQL",
+			"dsn":"jdbc:mysql://{host}:{port}/{database}",
+            "custom":"useUnicode=true&characterEncoding=UTF8&serverTimezone=UTC&useLegacyDatetimeCode=true&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true",
+            "host":"${DB_HOST:127.0.0.1}",
+            "username": "${DB_USER:root}",
+            "password": "${DB_PASSWORD}",
+            "database": "coolblog",
+			"port": "${DB_PORT:3306}",
+			"storage":"false",
+			"bundleName": "${DB_BUNDLENAME}",
+			"bundleVersion": "${DB_BUNDLEVERSION}",
+			"validate":"false"
+        }
+    }
+}
