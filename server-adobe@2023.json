@@ -2,7 +2,7 @@
     "name":"swagger-sdk-adobe@2023",
     "app":{
         "serverHomeDirectory":".engine/adobe2023",
-        "cfengine":"adobe@2023"
+        "cfengine":"adobe@2023.0.0-beta.1"
     },
     "web":{
         "http":{
@@ -11,16 +11,16 @@
         "rewrites":{
             "enable":true
         },
-		"webroot": "test-harness",
-		"aliases":{
+        "webroot":"test-harness",
+        "aliases":{
             "/moduleroot/cbSwagger":"../"
         }
     },
     "openBrowser":"false",
-	"cfconfig": {
-		"file" : ".cfconfig.json"
-	},
-	"scripts" : {
-		"onServerInstall" : "cfpm install zip"
-	}
+    "cfconfig":{
+        "file":".cfconfig.json"
+    },
+    "scripts":{
+        "onServerInstall":"cfpm install zip"
+    }
 }
