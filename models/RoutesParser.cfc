@@ -18,8 +18,8 @@ component accessors="true" threadsafe singleton {
 	property name="patternMatcher"               inject="PathPatternMatcher@globber";
 
 	// API Tools
-	property name="openAPIUtil"   inject="OpenAPIUtil@SwaggerSDK";
-	property name="openAPIParser" inject="OpenAPIParser@SwaggerSDK";
+	property name="openAPIUtil"   inject="provider:OpenAPIUtil@SwaggerSDK";
+	property name="openAPIParser" inject="provider:OpenAPIParser@SwaggerSDK";
 
 	/**
 	 * Application SES Routes
