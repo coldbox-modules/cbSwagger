@@ -57,7 +57,7 @@ component {
 		// Set a high timeout for long running tests
 		setting requestTimeout   ="9999";
 		// New ColdBox Virtual Application Starter
-		request.coldBoxVirtualApp= new coldbox.system.testing.VirtualApp( appMapping = "/root" );
+		request.coldBoxVirtualApp= new coldbox.system.testing.VirtualApp();
 
 		// If hitting the runner or specs, prep our virtual app
 		if ( getBaseTemplatePath().replace( expandPath( "/tests" ), "" ).reFindNoCase( "(runner|specs)" ) ) {
