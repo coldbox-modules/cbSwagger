@@ -80,6 +80,10 @@ component
 
 				expect( isJSON( APIDoc.asJSON() ) ).toBeTrue();
 
+				expect( NormalizedDoc.paths["/api/v1/noCbSwagger"] ).toHaveKey( "post", "post function NOT marked noCbSwagger" );
+				expect( NormalizedDoc.paths["/api/v1/noCbSwagger"] ).notToHaveKey( "get", "get function was marked noCbSwagger" );
+				expect( NormalizedDoc.paths ).notToHaveKey( "/api/v1/noCbSwagger2", "the lone function handling this was marked noCbSwagger" );
+
 				variables.APIDoc = APIDoc;
 			} );
 
@@ -134,7 +138,14 @@ component
 						if ( left( route.pattern, len( routePrefix ) ) == routePrefix ) {
 							var translatedPath = swaggerUtil.translatePath( route.pattern );
 							if ( !len( route.moduleRouting ) ) {
-								expect( normalizedDoc[ "paths" ] ).toHaveKey( translatedPath );
+								if ( translatedPath == "/api/v1/noCbSwagger2" ) {
+									// nothing
+									// this could handled more programmatically, but what we are saying here,
+									// is that the "magic route configured to be discarded in the swagger docs is indeed discarded"
+								}
+								else {
+									expect( normalizedDoc[ "paths" ] ).toHaveKey( translatedPath );
+								}
 							}
 						}
 					}

@@ -284,6 +284,21 @@ component accessors="true" threadsafe singleton {
 			for ( var methodList in actions ) {
 				// handle any delimited method lists
 				for ( var methodName in listToArray( methodList ) ) {
+					//
+					// If we have handler component metadata (when do we expect it to be null?),
+					// and we have function metadata (when do we expect it to be null?),
+					// and there is an appropriate annotation on the function from that function's metadata,
+					// then do not expose this function to swagger docs.
+					//
+					if ( !isNull( arguments.handlerMetadata ) ) {
+						var maybeNull_metaData = getFunctionMetadata( handlerMetadata = arguments.handlerMetadata, functionName = lCase( actions[ methodName ] ) );
+						if ( !isNull( maybeNull_metaData ) ) {
+							if ( isAnnotatedWithTruthyNoCbSwaggerAttribute( functionMetadata = maybeNull_metaData ) ) {
+								continue;
+							}
+						}
+					}
+
 					// method not in error methods
 					if ( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ) {
 						// Create new path template
@@ -322,6 +337,11 @@ component accessors="true" threadsafe singleton {
 					);
 				}
 			}
+		}
+
+		if ( path.count() == 0 ) {
+			// if we skipped over every possible verb, there's nothing to place into swagger docs for this route
+			return;
 		}
 
 		// Strip out any typing placeholders in routes
@@ -590,6 +610,27 @@ component accessors="true" threadsafe singleton {
 				appendConventionSamples( argumentCollection = sampleArgs );
 			}
 		}
+	}
+
+	/**
+	* return true if the metadata represents a function marked "noCbSwagger"
+	*/
+	private boolean function isAnnotatedWithTruthyNoCbSwaggerAttribute( required struct functionMetadata ) {
+		if ( !structKeyExists( functionMetadata, "noCbSwagger" ) ) {
+			return false;
+		}
+
+		if ( trim( functionMetadata.noCbSwagger ) == "" ) {
+			// e.g. `function handler() noCbSwagger { ... }`
+			return true;
+		}
+
+		if ( isValid( "boolean", functionMetadata.noCbSwagger ) && functionMetadata.noCbSwagger ) {
+			// e.g. `function handler() noCbSwagger=true { ... }`
+			return true;
+		}
+
+		return false;
 	}
 
 	private void function appendConventionSamples(
