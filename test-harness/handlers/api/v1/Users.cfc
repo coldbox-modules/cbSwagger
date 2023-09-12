@@ -78,4 +78,15 @@ component displayname="API.v1.Users" {
 		};
 	}
 
+	/**
+	* @cbSwagger false
+	*/
+	function sharedRouteDifferentHTTPMethods_get_shouldNotBeExposed() {}
+	function sharedRouteDifferentHTTPMethods_post_shouldBeExposed() {}
+
+	/**
+	* @cbSwagger false
+	*/
+	function loneRoute_get_shouldNotBeExposed() {}
+
 }

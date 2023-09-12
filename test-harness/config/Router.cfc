@@ -54,6 +54,24 @@ component{
 			action=defaultAPIActions
 		);
 
+		// Would be included in docs, but function def has @noCbSwagger attribute
+		addRoute(
+			pattern='/api/v1/noCbSwagger',
+			handler='api.v1.Users',
+			action={
+				"GET": "sharedRouteDifferentHTTPMethods_get_shouldNotBeExposed",
+				"POST": "sharedRouteDifferentHTTPMethods_post_shouldBeExposed"
+			}
+		);
+
+		addRoute(
+			pattern='/api/v1/noCbSwagger2',
+			handler='api.v1.Users',
+			action = {
+				"GET": "loneRoute_get_shouldNotBeExposed"
+			}
+		);
+
 		// @app_routes@
 
 		// Conventions-Based Routing
