@@ -291,9 +291,9 @@ component accessors="true" threadsafe singleton {
 					// then do not expose this function to swagger docs.
 					//
 					if ( !isNull( arguments.handlerMetadata ) ) {
-						var maybeNull_metaData = getFunctionMetadata( handlerMetadata = arguments.handlerMetadata, functionName = lCase( actions[ methodName ] ) );
-						if ( !isNull( maybeNull_metaData ) ) {
-							if ( isAnnotatedWithTruthyNoCbSwaggerAttribute( functionMetadata = maybeNull_metaData ) ) {
+						var functionMetadata = getFunctionMetadata( handlerMetadata = arguments.handlerMetadata, functionName = lCase( actions[ methodName ] ) );
+						if ( !isNull( functionMetadata ) ) {
+							if ( !isDocumentationEnabled( functionMetadata = functionMetadata ) ) {
 								continue;
 							}
 						}
@@ -339,7 +339,7 @@ component accessors="true" threadsafe singleton {
 			}
 		}
 
-		if ( path.count() == 0 ) {
+		if ( structIsEmpty( path ) ) {
 			// if we skipped over every possible verb, there's nothing to place into swagger docs for this route
 			return;
 		}
@@ -613,24 +613,20 @@ component accessors="true" threadsafe singleton {
 	}
 
 	/**
-	* return true if the metadata represents a function marked "noCbSwagger"
+	* return true if the supplied metadata represents a function that has NOT been explicitly marked as disabled
 	*/
-	private boolean function isAnnotatedWithTruthyNoCbSwaggerAttribute( required struct functionMetadata ) {
-		if ( !structKeyExists( functionMetadata, "noCbSwagger" ) ) {
-			return false;
-		}
-
-		if ( trim( functionMetadata.noCbSwagger ) == "" ) {
-			// e.g. `function handler() noCbSwagger { ... }`
-			return true;
-		}
-
-		if ( isValid( "boolean", functionMetadata.noCbSwagger ) && functionMetadata.noCbSwagger ) {
-			// e.g. `function handler() noCbSwagger=true { ... }`
-			return true;
-		}
-
-		return false;
+	private boolean function isDocumentationEnabled( required struct functionMetadata ) {
+		//
+		// function foo() {}                 <-- no attr, documentation is enabled (depending on module config)
+		// function foo() cbSwagger {}       <-- has attr with no value, documentation is enabled (depending on module config)
+		// function foo() cbSwagger=true {}  <-- has attr, with truthy value, documentation is enabled (depending on module config)
+		// function foo() cbSwagger=false {} <-- has attr, with falsy value, documentation is disabled (overrides module config)
+		// function foo() cbSwagger=xyz {}   <-- has attr, with non-booleanish value, which we consider falsy, documentation is disabled (overrides module config)
+		//
+		return !structKeyExists( functionMetadata, "cbSwagger" )
+			? true // there is no `cbSwagger` attribute, so the default is to assume true.
+			// booleanish test first, to handle docbloc attrs that have no associated value being assigned `true` values
+			: (isValid("boolean", functionMetadata.cbSwagger) && functionMetadata.cbSwagger) || len( functionMetadata.cbSwagger ) == 0;
 	}
 
 	private void function appendConventionSamples(

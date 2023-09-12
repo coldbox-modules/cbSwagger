@@ -79,13 +79,13 @@ component displayname="API.v1.Users" {
 	}
 
 	/**
-	* @noCbSwagger
+	* @cbSwagger false
 	*/
 	function sharedRouteDifferentHTTPMethods_get_shouldNotBeExposed() {}
 	function sharedRouteDifferentHTTPMethods_post_shouldBeExposed() {}
 
 	/**
-	* @noCbSwagger
+	* @cbSwagger false
 	*/
 	function loneRoute_get_shouldNotBeExposed() {}
 
