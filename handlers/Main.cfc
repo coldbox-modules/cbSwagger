@@ -9,6 +9,8 @@ component extends="coldbox.system.EventHandler" {
 	// DI
 	property name="routesParser" inject="RoutesParser@cbswagger";
 	property name="settings"     inject="coldbox:moduleSettings:cbswagger";
+	property name="environment"     inject="coldbox:setting:environment";
+	property name="templateCache"   inject="cachebox:template";
 
 	function preHandler(
 		event,
@@ -26,7 +28,11 @@ component extends="coldbox.system.EventHandler" {
 		// Determine output format
 		param name     ="rc.format" default="#variables.settings.defaultFormat#";
 		// Build out document
-		prc.apiDocument= routesParser.createDocFromRoutes();
+		if( !rc.keyExists( "flushCache" ) || rc.flushCache != "cbswagger" ){
+			templateCache.clear( "cbswagger_parsed*" );
+		}
+		var cacheKey = "cbswagger_parsed_api_document";
+		prc.apiDocument= templateCache.getOrSet( cacheKey, () => routesParser.createDocFromRoutes(), 60 * 12 );
 
 		// Shared CORS headers
 		event.setHTTPHeader(
@@ -61,22 +67,28 @@ component extends="coldbox.system.EventHandler" {
 	/**
 	 * CBSwagger Core Handler Method
 	 */
-	any function index( event, rc, prc ){
+	function index( event, rc, prc ){
+		var cacheKey = "cbswagger_parsed_api_document";
+		if( rc.keyExists( "flushCache" ) && rc.flushCache == "cbswagger" ){
+			templateCache.clear( cacheKey );
+		}
 		// json
 		if ( rc.format eq "json" ) {
 			return json( argumentCollection = arguments );
 		}
 		// yaml
 		return yml( argumentCollection = arguments );
+
 	}
 
 	/**
 	 * json output
 	 */
 	function json( event, rc, prc ){
+		var cacheKey = "cbswagger_parsed_json_document";
 		event.renderData(
 			type          = "JSON",
-			data          = prc.apiDocument.getNormalizedDocument(),
+			data          = templateCache.getOrSet( cacheKey, () => prc.apiDocument.getNormalizedDocument(), 60 * 12 ),
 			statusCode    = "200",
 			statusMessage = "Success"
 		);
@@ -87,10 +99,11 @@ component extends="coldbox.system.EventHandler" {
 	 */
 	function yml( event, rc, prc ){
 		var fileName = getInstance( "HTMLHelper@coldbox" ).slugify( variables.settings.info.title ) & ".yml";
+		var cacheKey = "cbswagger_parsed_yml_document";
 		event
 			.renderData(
 				contentType   = "application/yaml",
-				data          = prc.apiDocument.asYaml(),
+				data          = templateCache.getOrSet( cacheKey, () => prc.apiDocument.asYaml(), 60 * 12 ),
 				statusCode    = "200",
 				statusMessage = "Success"
 			)
