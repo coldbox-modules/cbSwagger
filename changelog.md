@@ -5,9 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-----
+* * *
 
 ## [Unreleased]
+
+## [3.0.0] - 2024-05-30
 
 ### Changed
 
@@ -37,13 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Regression on `@tags` being json syntax
 
-
 ## [2.5.0] => 2021-MAY-10
 
 ### Added
 
 - Added the ability to add `@tags` to annotations so they can show up on the operations metadata as array of `tags`
-
 
 ## [2.4.0] => 2021-MAY-04
 
@@ -99,16 +99,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] => 2019-SEP-02
 
-- `feature`: Upgraded to swagger-sdk 2.0.0 to support OpenAPI 3.0.x. A great guide on migrating is here: https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/
+- `feature`: Upgraded to swagger-sdk 2.0.0 to support OpenAPI 3.0.x. A great guide on migrating is here: <https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/>
+
 - Migrated `cbSwagger` settings to the `moduleSettings` struct instead of top-level in the `config/ColdBox.cfc`. Make sure you move your settings.
+
 - `feature` : You can now pass a `format` to the `/cbSwagger` endpoint to either get the OpenAPI doc as `json` or `yml`. Eg: `/cbswagger?format=yml`
+
 - `feature` : You have two distinct routes for the json and yml formats: `/cbSwagger/json` and `/cbSwagger/yml`
+
 - You can choose your default output format via the module settings: `defaultFormat` setting. Valid options are `json` and `yml`
+
 - `features` : Support for ColdBox 5 event routing and response routing.
 
 - `improvement` : You can now tag your handlers with a `displayName` that will be used for operation ID building
+
 - `improvement` : Improved the way operation Ids are reported so they can be unique when reusing handler actions.
+
 - `improvement` : Refactored `createLinkedHashMap()` -> `structNew( "ordered" )`
+
 - `improvement`: Removed lucee 4.5, acf11 support.
 
 ## 1.4.1
@@ -173,3 +181,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.0.0
 
 - Initial Module Release
+
+[Unreleased]: https://github.com/coldbox-modules/cbSwagger/compare/v3.0.0...HEAD
+
+[3.0.0]: https://github.com/coldbox-modules/cbSwagger/compare/5be045e7bd456304f3e338fd5e4f5ca94342dad0...v3.0.0
