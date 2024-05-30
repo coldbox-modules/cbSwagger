@@ -1,61 +1,57 @@
 {
-    "name":"cbSwagger",
-    "version":"3.1.0",
-    "location":"https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbSwagger/@build.version@/cbSwagger-@build.version@.zip",
-    "author":"Ortus Solutions, Corp",
-    "slug":"cbSwagger",
-    "type":"modules",
-    "keywords":"Swagger,OpenAPI,API Docs",
-    "homepage":"https://github.com/coldbox-modules/cbSwagger",
-    "documentation":"https://github.com/coldbox-modules/cbSwagger/wiki",
-    "repository":{
-        "type":"git",
-        "url":"https://github.com/coldbox-modules/cbSwagger"
-    },
-    "bugs":"https://github.com/coldbox-modules/cbSwagger/issues",
-    "shortDescription":"A Coldbox Module which automatically generates api documentation from your configured SES routes",
-    "license":[
-        {
-            "type":"Apache2",
-            "url":"http://www.apache.org/licenses/LICENSE-2.0.html"
-        }
-    ],
-    "contributors":[
-        "Jon Clausen <jon_clausen@silowebworks.com>",
-        "Luis Majano <lmajano@ortussolutions.com>"
-    ],
-    "dependencies":{
-        "swagger-sdk":"be",
-        "globber":"^3.1.4"
-    },
-    "ignore":[
-        "**/.*",
-        "test-harness",
-        "/server*.json"
-    ],
-    "scripts":{
-        "build:module":"task run taskFile=build/Build.cfc :projectName=`package show slug` :version=`package show version`",
-        "build:docs":"task run taskFile=build/Build.cfc target=docs :projectName=`package show slug` :version=`package show version`",
-        "install:dependencies":"install --force && cd test-harness && install --force",
-        "release":"recipe build/release.boxr",
-        "format":"cfformat run helpers,models,test-harness/tests/,ModuleConfig.cfc --overwrite",
-        "format:watch":"cfformat watch helpers,models,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
-        "format:check":"cfformat check helpers,models,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
-        "start:lucee":"server start serverConfigFile=server-lucee@5.json",
-        "start:2018":"server start serverConfigFile=server-adobe@2018.json",
-        "start:2021":"server start serverConfigFile=server-adobe@2021.json",
-        "stop:lucee":"server stop serverConfigFile=server-lucee@5.json",
-        "stop:2018":"server stop serverConfigFile=server-adobe@2018.json",
-        "stop:2021":"server stop serverConfigFile=server-adobe@2021.json",
-        "logs:lucee":"server log serverConfigFile=server-lucee@5.json --follow",
-        "logs:2018":"server log serverConfigFile=server-adobe@2018.json --follow",
-        "logs:2021":"server log serverConfigFile=server-adobe@2021.json --follow"
-    },
-    "testbox":{
-        "runner":"http://localhost:60299/tests/runner.cfm"
-    },
-    "installPaths":{
-        "swagger-sdk":"modules/swagger-sdk/",
-        "globber":"modules/globber/"
-    }
+	"name": "cbSwagger",
+	"version": "3.1.0",
+	"location": "https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbSwagger/@build.version@/cbSwagger-@build.version@.zip",
+	"author": "Ortus Solutions, Corp",
+	"slug": "cbSwagger",
+	"type": "modules",
+	"keywords": "Swagger,OpenAPI,API Docs",
+	"homepage": "https://github.com/coldbox-modules/cbSwagger",
+	"documentation": "https://github.com/coldbox-modules/cbSwagger/wiki",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/coldbox-modules/cbSwagger"
+	},
+	"bugs": "https://github.com/coldbox-modules/cbSwagger/issues",
+	"shortDescription": "A Coldbox Module which automatically generates api documentation from your configured SES routes",
+	"license": [
+		{
+			"type": "Apache2",
+			"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+		}
+	],
+	"contributors": [
+		"Jon Clausen <jon_clausen@silowebworks.com>",
+		"Luis Majano <lmajano@ortussolutions.com>"
+	],
+	"dependencies": {
+		"swagger-sdk": "^3.0.0",
+		"globber": "^3.1.4"
+	},
+	"ignore": ["**/.*", "test-harness", "/server*.json"],
+	"scripts": {
+		"build:module": "task run taskFile=build/Build.cfc :projectName=`package show slug` :version=`package show version`",
+		"build:docs": "task run taskFile=build/Build.cfc target=docs :projectName=`package show slug` :version=`package show version`",
+		"install:dependencies": "install --force && cd test-harness && install --force",
+		"release": "recipe build/release.boxr",
+		"format": "cfformat run helpers,models,test-harness/tests/,ModuleConfig.cfc --overwrite",
+		"format:watch": "cfformat watch helpers,models,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
+		"format:check": "cfformat check helpers,models,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
+		"start:lucee": "server start serverConfigFile=server-lucee@5.json",
+		"start:2018": "server start serverConfigFile=server-adobe@2018.json",
+		"start:2021": "server start serverConfigFile=server-adobe@2021.json",
+		"stop:lucee": "server stop serverConfigFile=server-lucee@5.json",
+		"stop:2018": "server stop serverConfigFile=server-adobe@2018.json",
+		"stop:2021": "server stop serverConfigFile=server-adobe@2021.json",
+		"logs:lucee": "server log serverConfigFile=server-lucee@5.json --follow",
+		"logs:2018": "server log serverConfigFile=server-adobe@2018.json --follow",
+		"logs:2021": "server log serverConfigFile=server-adobe@2021.json --follow"
+	},
+	"testbox": {
+		"runner": "http://localhost:60299/tests/runner.cfm"
+	},
+	"installPaths": {
+		"swagger-sdk": "modules/swagger-sdk/",
+		"globber": "modules/globber/"
+	}
 }
