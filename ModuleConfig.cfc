@@ -65,16 +65,16 @@ component {
 			},
 			// An array of Server Objects, which provide connectivity information to a target server. If the servers property is not provided, or is an empty array, the default value would be a Server Object with a url value of /.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#serverObject
-			"servers"    : [],
+			"servers"      : [],
 			// An element to hold various schemas for the specification.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#componentsObject
-			"components" : {},
+			"components"   : {},
 			// A declaration of which security mechanisms can be used across the API.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securityRequirementObject
-			"security"   : [],
+			"security"     : [],
 			// A list of tags used by the specification with additional metadata.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject
-			"tags"       : [],
+			"tags"         : [],
 			// Whether to enable endpoint and parsed doc caching by cbSwagger
 			"cacheEnabled" : true
 		};
