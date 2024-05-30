@@ -195,6 +195,7 @@ component {
 		version   = "1.0.0",
 		outputDir = ".tmp/apidocs"
 	){
+		variables.exportsDir = arguments.outputDir;
 		ensureExportDir( argumentCollection = arguments );
 
 		// Create project mapping
