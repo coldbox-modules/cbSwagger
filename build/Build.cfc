@@ -14,6 +14,7 @@ component {
 		variables.buildDir     = cwd & "/.tmp";
 		variables.apiDocsURL   = "http://localhost:60299/apidocs/";
 		variables.testRunner   = "http://localhost:60299/tests/runner.cfm";
+		writeDump( var= "CWD: #variables.cwd#", output="console" );
 
 		// Source Excludes Not Added to final binary
 		variables.excludes = [
@@ -195,7 +196,10 @@ component {
 		version   = "1.0.0",
 		outputDir = ".tmp/apidocs"
 	){
-		variables.exportsDir = arguments.outputDir;
+		if( !directoryExists( arguments.outputDir) ){
+			directoryCreate( arguments.outputDir, true, true );
+		}
+
 		ensureExportDir( argumentCollection = arguments );
 
 		// Create project mapping
