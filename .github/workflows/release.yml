@@ -162,7 +162,7 @@ jobs:
       # Bump to next version
       - name: Bump Version
         run: |
-          box bump --minor --!TagVersion
+          box bump --patch --!TagVersion
 
       # Commit it back to development
       - name: Commit Version Bump
