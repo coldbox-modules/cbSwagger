@@ -74,7 +74,9 @@ component {
 			"security"   : [],
 			// A list of tags used by the specification with additional metadata.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject
-			"tags"       : []
+			"tags"       : [],
+			// Whether to enable endpoint and parsed doc caching by cbSwagger
+			"cacheEnabled" : true
 		};
 
 		// SES Routes

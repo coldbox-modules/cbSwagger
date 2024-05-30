@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
-## [Unreleased]
+## [3.0.0] => 2024-05-30
 
 ### Changed
 
@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated module template provisions
 - Added support for samples path shortcut annotation (`~`) in annotation JSON `$ref` pointers
 - Added support for using globbing patterns in `excludeRoutes` array. [Issue #37](https://github.com/coldbox-modules/cbSwagger/issues/37)
+- Added `cbswagger` endpoint caching ( defaults to `true` ) and `cacheEnabled` setting.
+- Added URL convention for clearing/bypassing endpoint cache ( `swaggerCache=false` )
 
 ## [2.7.0] => 2021-OCT-1
 

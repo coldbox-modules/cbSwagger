@@ -27,12 +27,12 @@ component extends="coldbox.system.EventHandler" {
 		event.noLayout();
 		// Determine output format
 		param name     ="rc.format" default="#variables.settings.defaultFormat#";
-		// Build out document
-		if( !rc.keyExists( "flushCache" ) || rc.flushCache != "cbswagger" ){
-			templateCache.clear( "cbswagger_parsed*" );
-		}
 		var cacheKey = "cbswagger_parsed_api_document";
-		prc.apiDocument= templateCache.getOrSet( cacheKey, () => routesParser.createDocFromRoutes(), 60 * 12 );
+		// Build out document
+		if( ( rc.keyExists( "swaggerCache" ) && !rc.swaggerCache ) ){
+			templateCache.clear( cacheKey );
+		}
+		prc.apiDocument= settings.cacheEnabled ? templateCache.getOrSet( cacheKey, () => routesParser.createDocFromRoutes(), 60 * 12 ) : routesParser.createDocFromRoutes();
 
 		// Shared CORS headers
 		event.setHTTPHeader(
@@ -69,7 +69,7 @@ component extends="coldbox.system.EventHandler" {
 	 */
 	function index( event, rc, prc ){
 		var cacheKey = "cbswagger_parsed_api_document";
-		if( rc.keyExists( "flushCache" ) && rc.flushCache == "cbswagger" ){
+		if( rc.keyExists( "swaggerCache" ) && !rc.swaggerCache ){
 			templateCache.clear( cacheKey );
 		}
 		// json
@@ -86,9 +86,12 @@ component extends="coldbox.system.EventHandler" {
 	 */
 	function json( event, rc, prc ){
 		var cacheKey = "cbswagger_parsed_json_document";
+		if( rc.keyExists( "swaggerCache" ) && !rc.swaggerCache ){
+			templateCache.clear( cacheKey );
+		}
 		event.renderData(
 			type          = "JSON",
-			data          = templateCache.getOrSet( cacheKey, () => prc.apiDocument.getNormalizedDocument(), 60 * 12 ),
+			data          = settings.cacheEnabled ? templateCache.getOrSet( cacheKey, () => prc.apiDocument.getNormalizedDocument(), 60 * 12 ) : prc.apiDocument.getNormalizedDocument(),
 			statusCode    = "200",
 			statusMessage = "Success"
 		);
@@ -100,10 +103,13 @@ component extends="coldbox.system.EventHandler" {
 	function yml( event, rc, prc ){
 		var fileName = getInstance( "HTMLHelper@coldbox" ).slugify( variables.settings.info.title ) & ".yml";
 		var cacheKey = "cbswagger_parsed_yml_document";
+		if( rc.keyExists( "swaggerCache" ) && !rc.swaggerCache ){
+			templateCache.clear( cacheKey );
+		}
 		event
 			.renderData(
 				contentType   = "application/yaml",
-				data          = templateCache.getOrSet( cacheKey, () => prc.apiDocument.asYaml(), 60 * 12 ),
+				data          = settings.cacheEnabled ? templateCache.getOrSet( cacheKey, () => prc.apiDocument.asYaml(), 60 * 12 ) : prc.apiDocument.asYaml(),
 				statusCode    = "200",
 				statusMessage = "Success"
 			)
