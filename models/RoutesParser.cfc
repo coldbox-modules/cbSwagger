@@ -212,7 +212,7 @@ component accessors="true" threadsafe singleton {
 		// first parse our route to see if we have conditionals and create separate all found conditionals
 		var pathArray       = listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
 		var assembledRoute  = [];
-		var handlerMetadata = getHandlerMetadata( arguments.route ) ?: false;
+		var handlerMetadata = getHandlerMetadata( arguments.route );
 
 		for ( var routeSegment in pathArray ) {
 			if ( findNoCase( "?", routeSegment ) ) {
@@ -221,7 +221,7 @@ component accessors="true" threadsafe singleton {
 					existingPaths   = paths,
 					pathKey         = "/" & arrayToList( assembledRoute, "/" ),
 					routeConfig     = arguments.route,
-					handlerMetadata = handlerMetadata
+					handlerMetadata = handlerMetadata ?: javacast( "null", 0 )
 				);
 
 				// now append our optional key to construct an extended path
@@ -236,7 +236,7 @@ component accessors="true" threadsafe singleton {
 			existingPaths   = paths,
 			pathKey         = "/" & arrayToList( assembledRoute, "/" ),
 			routeConfig     = arguments.route,
-			handlerMetadata = handlerMetadata
+			handlerMetadata = handlerMetadata ?: javacast( "null", 0 )
 		);
 
 		return paths;
@@ -295,7 +295,7 @@ component accessors="true" threadsafe singleton {
 							appendFunctionInfo(
 								methodName      = methodName,
 								method          = path[ lCase( methodName ) ],
-								functionName    = actions[ methodList ],
+								functionName    = listLast( actions[ methodList ], "." ),
 								handlerMetadata = arguments.handlerMetadata,
 								moduleName      = len( arguments.routeConfig.module ) ? arguments.routeConfig.module : javacast(
 									"null",
@@ -424,9 +424,13 @@ component accessors="true" threadsafe singleton {
 	 * @throws cbSwagger.RoutesParse.handlerSyntaxException
 	 */
 	private any function getHandlerMetadata( required any route ){
-		var handlerRoute = ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
 		var module       = ( isNull( arguments.route.module ) ? "" : arguments.route.module );
+		var handlerRoute = ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
 		var fullEvent    = ( isNull( arguments.route.event ) ? "" : arguments.route.event );
+
+		if ( !len( handlerRoute ) && isStruct( arguments.route.action ) ) {
+			var fullEvent = arguments.route.action[ arguments.route.action.keyArray().first() ];
+		}
 
 		// Do event's first, if found, use it for the handler location
 		if ( len( fullEvent ) ) {
@@ -480,8 +484,12 @@ component accessors="true" threadsafe singleton {
 		); // Name
 
 		arguments.method[ "x-coldbox-operation" ] = operationPath & "." & arguments.functionName;
-		arguments.method[ "operationId" ]         = arguments.method[ "x-coldbox-operation" ];
-		arguments.functionMetaData                = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
+		if ( findNoCase( "timers.timers", arguments.method[ "x-coldbox-operation" ] ) ) {
+			writeDump( arguments );
+			abort;
+		}
+		arguments.method[ "operationId" ] = arguments.method[ "x-coldbox-operation" ];
+		arguments.functionMetaData        = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 		// Process function metadata
 		if ( !isNull( arguments.functionMetadata ) ) {
 			var defaultKeys = arguments.method.keyArray();
