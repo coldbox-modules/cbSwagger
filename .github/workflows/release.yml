@@ -1,10 +1,9 @@
 name: Build a Release
 
 on:
-  # If you push to master|main this will trigger a stable release
+  # If you push to main this will trigger a stable release
   push:
     branches:
-      - master
       - main
 
   # Reusable workflow : Usually called by a `snapshot` workflow
@@ -41,9 +40,9 @@ jobs:
         run: |
           echo "VERSION=`cat box.json | jq '.version' -r`" >> $GITHUB_ENV
           box package set version=@build.version@+@build.number@
-          # master or snapshot
+          # main or snapshot
           echo "Github Ref is $GITHUB_REF"
-          echo "BRANCH=master" >> $GITHUB_ENV
+          echo "BRANCH=main" >> $GITHUB_ENV
           if [ $GITHUB_REF == 'refs/heads/development' ]
           then
             echo "BRANCH=development" >> $GITHUB_ENV
@@ -64,7 +63,7 @@ jobs:
           mkdir -p .tmp
           box task run taskfile=build/Build target=run :version=${{ env.VERSION }} :projectName=${{ env.MODULE_ID }} :buildID=${{ github.run_number }} :branch=${{ env.BRANCH }}
 
-      - name: Commit Changelog To Master
+      - name: Commit Changelog To Main
         uses: EndBug/add-and-commit@v9.1.1
         if: env.SNAPSHOT == 'false'
         with:
@@ -133,7 +132,7 @@ jobs:
   ##########################################################################################
   prep_next_release:
     name: Prep Next Release
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-20.04
     needs: [build]
     steps:
