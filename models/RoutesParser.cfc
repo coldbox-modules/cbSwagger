@@ -212,7 +212,7 @@ component accessors="true" threadsafe singleton {
 		// first parse our route to see if we have conditionals and create separate all found conditionals
 		var pathArray       = listToArray( getOpenAPIUtil().translatePath( arguments.route.pattern ), "/" );
 		var assembledRoute  = [];
-		var handlerMetadata = getHandlerMetadata( arguments.route ) ?: false;
+		var handlerMetadata = getHandlerMetadata( arguments.route );
 
 		for ( var routeSegment in pathArray ) {
 			if ( findNoCase( "?", routeSegment ) ) {
@@ -221,7 +221,7 @@ component accessors="true" threadsafe singleton {
 					existingPaths   = paths,
 					pathKey         = "/" & arrayToList( assembledRoute, "/" ),
 					routeConfig     = arguments.route,
-					handlerMetadata = handlerMetadata
+					handlerMetadata = handlerMetadata ?: javacast( "null", 0 )
 				);
 
 				// now append our optional key to construct an extended path
@@ -236,7 +236,7 @@ component accessors="true" threadsafe singleton {
 			existingPaths   = paths,
 			pathKey         = "/" & arrayToList( assembledRoute, "/" ),
 			routeConfig     = arguments.route,
-			handlerMetadata = handlerMetadata
+			handlerMetadata = handlerMetadata ?: javacast( "null", 0 )
 		);
 
 		return paths;
