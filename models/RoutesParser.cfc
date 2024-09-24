@@ -428,7 +428,7 @@ component accessors="true" threadsafe singleton {
 		var handlerRoute = ( isNull( arguments.route.handler ) ? "" : arguments.route.handler );
 		var fullEvent    = ( isNull( arguments.route.event ) ? "" : arguments.route.event );
 
-		if( !len( handlerRoute ) && isStruct( arguments.route.action ) ){
+		if ( !len( handlerRoute ) && isStruct( arguments.route.action ) ) {
 			var fullEvent = arguments.route.action[ arguments.route.action.keyArray().first() ];
 		}
 
@@ -484,12 +484,12 @@ component accessors="true" threadsafe singleton {
 		); // Name
 
 		arguments.method[ "x-coldbox-operation" ] = operationPath & "." & arguments.functionName;
-		if( findnoCase( "timers.timers", arguments.method[ "x-coldbox-operation" ] ) ){
-			writeDUmp( arguments );
+		if ( findNoCase( "timers.timers", arguments.method[ "x-coldbox-operation" ] ) ) {
+			writeDump( arguments );
 			abort;
 		}
-		arguments.method[ "operationId" ]         = arguments.method[ "x-coldbox-operation" ];
-		arguments.functionMetaData                = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
+		arguments.method[ "operationId" ] = arguments.method[ "x-coldbox-operation" ];
+		arguments.functionMetaData        = getFunctionMetaData( arguments.functionName, arguments.handlerMetadata );
 		// Process function metadata
 		if ( !isNull( arguments.functionMetadata ) ) {
 			var defaultKeys = arguments.method.keyArray();
