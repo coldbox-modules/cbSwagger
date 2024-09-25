@@ -16,7 +16,7 @@ on:
         type: boolean
 
 env:
-  MODULE_ID: cbSwagger
+  MODULE_ID: cbswagger
   SNAPSHOT: ${{ inputs.snapshot || false }}
 
 jobs:

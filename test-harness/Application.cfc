@@ -7,7 +7,7 @@ www.ortussolutions.com
 component{
 
 	// UPDATE THE NAME OF THE MODULE IN TESTING BELOW
-	request.MODULE_NAME = "cbSwagger";
+	request.MODULE_NAME = "cbswagger";
 
 	// Application properties
 	this.name              = hash( getCurrentTemplatePath() );

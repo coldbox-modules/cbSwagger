@@ -13,7 +13,7 @@
         },
 		"webroot": "test-harness",
 		"aliases":{
-            "/moduleroot/cbSwagger":"../"
+            "/moduleroot/cbswagger":"../"
         }
     },
     "openBrowser":"false",

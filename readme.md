@@ -25,7 +25,7 @@ Apache License, Version 2.0.
 
 ## Important links
 
-- https://github.com/coldbox-modules/cbSwagger
+- https://github.com/coldbox-modules/cbswagger
 
 ## Resources
 
@@ -45,13 +45,13 @@ To operate, the module requires that SES routing be enabled in your application.
 
 ## Install cbSWagger ( via Commandbox )
 
-`box install cbSwagger`
+`box install cbswagger`
 
 > Note:  Omit the `box` from your command, if you are already in the Commandbox interactive shell
 
-## Configure cbSwagger to auto-detect your API Routes
+## Configure cbswagger to auto-detect your API Routes
 
-By default, cbSwagger looks for routes beginning with `/api/*` prefix.  By adding a `cbSwagger` configuration key to your Coldbox configuration, you can add additional metadata to the OpenAPI JSON produced by the module entry point and configure this module for operation.
+By default, cbswagger looks for routes beginning with `/api/*` prefix.  By adding a `cbswagger` configuration key to your Coldbox configuration, you can add additional metadata to the OpenAPI JSON produced by the module entry point and configure this module for operation.
 
 * `routes:array` :  An array of route prefixes to search for and add to the resulting documentation.
 * `defaultFormat:string` : The default output format of the documentation. Valid options are `json` and `yml`.
@@ -64,7 +64,7 @@ cbswagger = {
 	"routes" : [ "api" ],
 	// The default output format: json or yml
 	// Routes to exclude by prefix.  Routes beginning with this prefix will be excluded
-	"excludeRoutesPrefix" : [ "cbSwagger", "relax" ],
+	"excludeRoutesPrefix" : [ "cbswagger", "relax" ],
 	// Any routes to exclude - may use exact matches or globbing patterns e.g `[ "api/v1/mysecret" ]` or `[ "**/secret", "**/undocumented" ]` (no initial `/`, trailing `/` optional for routes)
 	"excludeRoutes"	: [],
     // Routes to exclude based on event
@@ -159,22 +159,22 @@ cbswagger = {
 
 ## Outputting Documentation (json|yml)
 
-You can visit the API documentation by hitting the `/cbSwagger` route.  This will trigger the default format (json) to be sent to the output.
+You can visit the API documentation by hitting the `/cbswagger` route.  This will trigger the default format (json) to be sent to the output.
 
 ### Format Parameter
 
 You can force the format by using the `?format={format}` in the URI.  The valid options are `json` and `yml`
 
 ```
-http://localhost/cbSwagger?format=yml
-http://localhost/cbSwagger?format=json
-http://localhost/cbSwagger/json
-http://localhost/cbSwagger/yml
+http://localhost/cbswagger?format=yml
+http://localhost/cbswagger?format=json
+http://localhost/cbswagger/json
+http://localhost/cbswagger/yml
 ```
 
 ## Handler Introspection & Documentation attributes
 
-`cbSwagger` will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes (**metadata**), which will be picked up and included in your documentation.
+`cbswagger` will automatically introspect your API handlers provided by your routing configuration.  You may provide additional function attributes (**metadata**), which will be picked up and included in your documentation.
 
 The content body of these function metadata/attributes may be provided as:
 
@@ -187,7 +187,7 @@ Here are some additional pointers for you:
 - Metadata attributes using a `response-` prefix in the annotation will be parsed as responses.   For example `@response-200 { "description" : "User successfully updated", "schema" : "/resources/apidocs/schema.json##user" }` would populate the `200` responses node for the given method ( in this case, `PUT /api/v1/users/:id` ). If the annotation text is not valid JSON or a file pointer, this will be provided as the response description.
 - Metadata attributes prefixed with `param-` will be included as parameters to the method/action.  Example: `@param-firstname { "type": "string", "required" : "false", "in" : "query" }` If the annotation text is not valid JSON or a file pointer, this will be provided as the parameter description and the parameter requirement will be set to `false`.
 - Parameters provided via the route ( e.g. the `id` in `/api/v1/users/:id` ) will always be included in the array of parameters as required for the method.  Annotations on those parameters may be used to provide additional documentation.
-- [Security Requirement Objects](https://swagger.io/specification/#securityRequirementObject) defined in the cbSwagger config will be displayed on every API method, except methods that override the default with `@security`. You may use the name of a security scheme, a JSON array of Security Requirement Objects, or a file pointer. Security Requirement Objects must have the same name as a Security Scheme Object defined under components in `cbSwagger` settings.
+- [Security Requirement Objects](https://swagger.io/specification/#securityRequirementObject) defined in the cbswagger config will be displayed on every API method, except methods that override the default with `@security`. You may use the name of a security scheme, a JSON array of Security Requirement Objects, or a file pointer. Security Requirement Objects must have the same name as a Security Scheme Object defined under components in `cbswagger` settings.
 - You may also provide paths to JSON files which describe complex objects which may not be expressed within the attributes themselves.  This is ideal to provide an endpoint for [parameters](https://swagger.io/specification/#parameterObject) and [responses](https://swagger.io/specification/#responsesObject)  If the atttribute ends with `.json`, this will be included in the generated OpenAPI document as a [$ref include](https://swagger.io/specification/#pathItemObject).
 - Attributes which are not part of the swagger path specification should be prefixed with an `x-`, [x-attributes](https://swagger.io/specification/#specificationExtensions) are an official part of the OpenAPI Specification and may be used to provide additional information for your developers and consumers
 - `hint` attributes, provided as either comment `@` annotations or as function body attributes will be treated as the description for the method

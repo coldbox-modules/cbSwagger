@@ -72,7 +72,7 @@ component accessors="true" threadsafe singleton {
 	}
 
 	/**
-	 * Filters the designated routes as provided in the cbSwagger configuration
+	 * Filters the designated routes as provided in the cbswagger configuration
 	 */
 	private any function filterDesignatedRoutes(){
 		// make a copy of our routes array so we can append it
@@ -421,7 +421,7 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @return struct of handlerMetadata
 	 *
-	 * @throws cbSwagger.RoutesParse.handlerSyntaxException
+	 * @throws cbswagger.RoutesParse.handlerSyntaxException
 	 */
 	private any function getHandlerMetadata( required any route ){
 		var module       = ( isNull( arguments.route.module ) ? "" : arguments.route.module );
@@ -452,7 +452,7 @@ component accessors="true" threadsafe singleton {
 			return util.getInheritedMetadata( invocationPath );
 		} catch ( any e ) {
 			throw(
-				type         = "cbSwagger.RoutesParse.handlerSyntaxException",
+				type         = "cbswagger.RoutesParse.handlerSyntaxException",
 				message      = "The handler at #invocationPath# could not be parsed.  The error that occurred: #e.message#",
 				extendedInfo = e.detail
 			);
