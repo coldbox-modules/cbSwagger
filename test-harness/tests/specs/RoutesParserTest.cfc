@@ -80,6 +80,10 @@ component
 
 				expect( isJSON( APIDoc.asJSON() ) ).toBeTrue();
 
+				expect( NormalizedDoc.paths["/api/v1/noCbSwagger"] ).toHaveKey( "post", "post function marked cbSwagger=false" );
+				expect( NormalizedDoc.paths["/api/v1/noCbSwagger"] ).notToHaveKey( "get", "get function was not marked cbSwagger=false" );
+				expect( NormalizedDoc.paths ).notToHaveKey( "/api/v1/noCbSwagger2", "the lone function handling this was marked cbSwagger=false" );
+
 				variables.APIDoc = APIDoc;
 			} );
 
@@ -128,17 +132,30 @@ component
 
 				expect( arrayLen( CBRoutes ) ).toBeGT( 0 );
 
+				// in cases where we are testing that some route does not end up in the docs,
+				// we want to ensure we DO see that the route exists, and consequently that its absence from the docs
+				// is due to an intentional exclusion of a route that positively exists. 
+				var requireTheseRoutesExistWithoutDocs = {"/api/v1/noCbSwagger2": 1}
+
 				// Tests that all of our configured paths exist
 				for ( var routePrefix in apiPrefixes ) {
 					for ( var route in cbRoutes ) {
 						if ( left( route.pattern, len( routePrefix ) ) == routePrefix ) {
 							var translatedPath = swaggerUtil.translatePath( route.pattern );
 							if ( !len( route.moduleRouting ) ) {
-								expect( normalizedDoc[ "paths" ] ).toHaveKey( translatedPath );
+								if ( structKeyExists(requireTheseRoutesExistWithoutDocs, translatedPath) ) {
+									expect( normalizedDoc[ "paths" ] ).notToHaveKey( translatedPath, "expected to have discarded this route from the docs" );
+									structDelete( requireTheseRoutesExistWithoutDocs, translatedPath )
+								}
+								else {
+									expect( normalizedDoc[ "paths" ] ).toHaveKey( translatedPath );
+								}
 							}
 						}
 					}
 				}
+
+				expect( requireTheseRoutesExistWithoutDocs ).toBeEmpty( "all routes expected to not have docs were seen" );
 			} );
 
 			it( "Tests the API Document for module introspection", function(){
