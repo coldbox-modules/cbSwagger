@@ -39,6 +39,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          path: cbswagger
 
       # - name: Setup Database and Fixtures
       #   run: |
