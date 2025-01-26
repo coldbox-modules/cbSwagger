@@ -96,7 +96,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          junit_files: test-harness/tests/results/**/*.xml
+          junit_files: ${{ github.workspace }}/cbswagger/test-harness/tests/results/**/*.xml
           check_name: "${{ matrix.cfengine }} ColdBox ${{ matrix.coldboxVersion }} Test Results"
 
       - name: Upload Test Results to Artifacts
@@ -105,7 +105,7 @@ jobs:
         with:
           name: test-results-${{ matrix.cfengine }}-${{ matrix.coldboxVersion }}
           path: |
-            test-harness/tests/results/**/*
+            ${{ github.workspace }}/cbswagger/test-harness/tests/results/**/*
 
       - name: Show Server Log On Failures
         if: ${{ failure() }}
@@ -118,8 +118,8 @@ jobs:
         with:
           name: Failure Debugging Info - ${{ matrix.cfengine }} - ${{ matrix.coldboxVersion }}
           path: |
-            .engine/**/logs/*
-            .engine/**/WEB-INF/cfusion/logs/*
+            ${{ github.workspace }}/cbswagger/.engine/**/logs/*
+            ${{ github.workspace }}/cbswagger/.engine/**/WEB-INF/cfusion/logs/*
 
       - name: Slack Notifications
         # Only on failures and NOT in pull requests
