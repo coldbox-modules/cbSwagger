@@ -77,6 +77,7 @@ jobs:
 
       - name: Install Test Harness with ColdBox ${{ matrix.coldboxVersion }}
         run: |
+          box install commandbox-boxlang --force
           box install
           cd test-harness
           box package set dependencies.coldbox=${{ matrix.coldboxVersion }}
