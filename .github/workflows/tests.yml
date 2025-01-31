@@ -101,7 +101,7 @@ jobs:
 
       - name: Upload Test Results to Artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.cfengine }}-${{ matrix.coldboxVersion }}
           path: |
@@ -114,7 +114,7 @@ jobs:
 
       - name: Upload Debug Logs To Artifacts
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Failure Debugging Info - ${{ matrix.cfengine }} - ${{ matrix.coldboxVersion }}
           path: |
