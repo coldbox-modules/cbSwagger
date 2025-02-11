@@ -295,6 +295,48 @@ component displayName="API.v1.Users"{
 }
 ```
 
+## Integration with cbValidation
+
+You can utilize your Swagger docs to generate constraints to use with cbValidation.  You can do so by utilizing
+`OpenAPIConstraintsGenerator@cbSwagger` as a delegate. Doing so exposes a `generateConstraintsFromOpenAPISchema` function
+that will generate the constraints.
+
+```
+component delegates="OpenAPIConstraintsGenerator@cbSwagger" {
+
+	/**
+	 * @route (GET) /api/v1/jokes
+	 *
+	 * Returns a random dad joke
+	 *
+	 * @x-parameters ~api/v1/Jokes/index/parameters.json##parameters
+	 * @requestBody  ~api/v1/Jokes/index/requestBody.json
+	 * @response-200 ~api/v1/Jokes/index/responses.200.json
+	 * @response-403 ~api/v1/errors/example.403.json
+	 */
+	function index( event, rc, prc ) {
+		var validated = validateOrFail( target = rc, constraints = generateConstraintsFromOpenAPISchema() );
+		// ...
+	}
+
+}
+```
+
+Using `OpenAPIConstraintsGenerator@cbSwagger` as a delegate allows it to auto discover the parameters and
+request body for the action using the annotations on your action.
+
+If you prefer to manually pass in the parameters and/or requestBody path or use the `OpenAPIConstraintsGenerator@cbSwagger`
+as an injection, you can pass in the paths as arguments to the `generateConstraintsFromOpenAPISchema` function.
+
+```
+public struct function generateConstraintsFromOpenAPISchema(
+	string parametersPath = "",
+	string requestBodyPath = "",
+	boolean discoverPaths = true, // this only discovers paths not explicitly passed in
+	string callingFunctionName // this will look itself up using the current call stack
+)
+```
+
 ********************************************************************************
 Copyright Since 2016 Ortus Solutions, Corp
 www.ortussolutions.com
