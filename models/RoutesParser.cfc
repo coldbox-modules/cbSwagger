@@ -64,7 +64,11 @@ component accessors="true" threadsafe singleton {
 
 		// Incorporate our API routes into the document
 		filterDesignatedRoutes().each( function( key, value ){
-			template[ "paths" ].putAll( createPathsFromRouteConfig( value ) );
+			structAppend(
+				template[ "paths" ],
+				createPathsFromRouteConfig( value ),
+				true
+			);
 		} );
 
 		// Build out the Open API Document object
@@ -192,7 +196,7 @@ component accessors="true" threadsafe singleton {
 		for ( var pathEntry in entrySet ) {
 			for ( var routeKey in designatedRoutes ) {
 				if ( replaceNoCase( routeKey, "/", "", "ALL" ) == pathEntry ) {
-					sortedRoutes.put( routeKey, designatedRoutes[ routeKey ] );
+					sortedRoutes[ routeKey ] = designatedRoutes[ routeKey ];
 				}
 			}
 		}
@@ -287,7 +291,7 @@ component accessors="true" threadsafe singleton {
 					// method not in error methods
 					if ( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ) {
 						// Create new path template
-						path.put( lCase( methodName ), getOpenAPIUtil().newMethod() );
+						path[ lCase( methodName ) ] = getOpenAPIUtil().newMethod();
 						// Append Params
 						appendPathParams( pathKey = arguments.pathKey, method = path[ lCase( methodName ) ] );
 						// Append Function metadata
@@ -309,7 +313,7 @@ component accessors="true" threadsafe singleton {
 		} else {
 			for ( var methodName in getOpenAPIUtil().defaultMethods() ) {
 				// Insert path template for default method
-				path.put( lCase( methodName ), getOpenAPIUtil().newMethod() );
+				path[ lCase( methodName ) ] = getOpenAPIUtil().newMethod();
 				// Append Params
 				appendPathParams( pathKey = arguments.pathKey, method = path[ lCase( methodName ) ] );
 				// Append metadata
@@ -346,7 +350,7 @@ component accessors="true" threadsafe singleton {
 			}
 		}
 
-		arguments.existingPaths.put( "/" & arrayToList( pathSegments, "/" ), path );
+		arguments.existingPaths[ "/" & arrayToList( pathSegments, "/" ) ] = path;
 	}
 
 	/**
@@ -358,7 +362,7 @@ component accessors="true" threadsafe singleton {
 	private void function appendPathParams( required string pathKey, required struct method ){
 		// Verify parameters array in the method definition
 		if ( !structKeyExists( arguments.method, "parameters" ) ) {
-			arguments.method.put( "parameters", [] );
+			arguments.method[ "parameters" ] = [];
 		}
 
 		// handle any parameters in the url now
@@ -508,44 +512,41 @@ component accessors="true" threadsafe singleton {
 
 					// hint/description
 					if ( infoKey == "hint" ) {
-						if ( !method.containsKey( "description" ) || method[ "description" ] == "" ) {
-							method.put( "description", infoMetadata );
+						if ( !structKeyExists( method, "description" ) || method[ "description" ] == "" ) {
+							method[ "description" ] = infoMetadata;
 						}
-						if ( !functionMetadata.containsKey( "summary" ) ) {
-							method.put( "summary", infoMetadata );
+						if ( !structKeyExists( functionMetadata, "summary" ) ) {
+							method[ "summary" ] = infoMetadata;
 						}
 						continue;
 					}
 
 					if ( infoKey == "description" && infoMetadata != "" ) {
-						method.put( "description", infoMetadata );
+						method[ "description" ] = infoMetadata;
 						continue;
 					}
 
 					if ( infoKey == "summary" ) {
-						method.put( "summary", infoMetadata );
+						method[ "summary" ] = infoMetadata;
 						continue;
 					}
 
 					// Operation Tags
 					if ( infoKey == "tags" ) {
-						method.put(
-							"tags",
-							( isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata )
-						);
+						method[ "tags" ] = isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata;
 						continue;
 					}
 
 					// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
 					if ( left( infoKey, 12 ) == "requestBody" ) {
-						method.put( "requestBody", structNew( "ordered" ) );
+						method[ "requestBody" ] = structNew( "ordered" );
 
 						if ( isSimpleValue( infoMetadata ) ) {
 							method[ "requestBody" ][ "description" ] = infoMetadata;
 							method[ "requestBody" ][ "required" ]    = true;
 							method[ "requestBody" ][ "content" ]     = { "#infoMetadata#" : {} };
 						} else {
-							method[ "requestBody" ].putAll( infoMetadata );
+							structAppend( method[ "requestBody" ], infoMetadata, true );
 						}
 						continue;
 					}
@@ -635,13 +636,13 @@ component accessors="true" threadsafe singleton {
 				var filterString = arrayToList(
 					[
 						moduleName,
-						listLast( handlerMetadata.name, "." ),
+						listLast( handlerMetadata.fullname, "." ),
 						methodName
 					],
 					"."
 				);
 			} else {
-				var filterString = arrayToList( [ handlerMetadata.name, methodName ], "." );
+				var filterString = arrayToList( [ handlerMetadata.fullname, methodName ], "." );
 			}
 
 			availableFiles
@@ -754,14 +755,18 @@ component accessors="true" threadsafe singleton {
 				// get reponse name
 				var responseName = right( infoKey, len( infoKey ) - 9 );
 
-				method[ "responses" ].put( responseName, structNew( "ordered" ) );
+				method[ "responses" ][ responseName ] = structNew( "ordered" );
 
 				// Use simple value for description and content type
 				if ( isSimpleValue( infoMetadata ) ) {
 					method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
 					method[ "responses" ][ responseName ][ "content" ]     = { "#infoMetadata#" : {} };
 				} else {
-					method[ "responses" ][ responseName ].putAll( infoMetadata );
+					structAppend(
+						method[ "responses" ][ responseName ],
+						infoMetadata,
+						true
+					);
 				}
 			} );
 

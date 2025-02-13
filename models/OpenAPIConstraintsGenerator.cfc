@@ -18,7 +18,7 @@ component name="OpenAPIConstraintsGenerator" {
 				() => {
 					return deserializeJSON( fileRead( expandPath( paths.parametersPath ) ) );
 				},
-				createTimespan( 1, 0, 0, 0 )
+				1 // 1 day
 			);
 			structAppend( constraints, generateConstraintsFromParameters( parametersJSON[ paths.parametersKey ] ) )
 		}
@@ -29,7 +29,7 @@ component name="OpenAPIConstraintsGenerator" {
 				() => {
 					return deserializeJSON( fileRead( expandPath( paths.requestBodyPath ) ) );
 				},
-				createTimespan( 1, 0, 0, 0 )
+				1 // 1 day
 			);
 			var schema = requestBodyJSON[ "content" ][ "application/json" ][ "schema" ];
 			structAppend(
@@ -67,13 +67,13 @@ component name="OpenAPIConstraintsGenerator" {
 		var constraints           = {};
 		constraints[ "required" ] = arguments.isRequired;
 		addValidationType( constraints, schema );
-		if ( constraints[ "type" ] == "struct" ) {
+		if ( constraints[ "type" ] == "struct" && schema.keyExists( "properties" ) ) {
 			constraints[ "constraints" ] = generateConstraintsFromRequestBodyProperties(
 				schema.properties,
 				schema.required ?: []
 			);
 		}
-		if ( constraints[ "type" ] == "array" ) {
+		if ( constraints[ "type" ] == "array" && schema.keyExists( "items" ) ) {
 			constraints[ "items" ] = generateConstraint( schema.items, arguments.isRequired );
 		}
 		if ( schema.keyExists( "enum" ) ) {
