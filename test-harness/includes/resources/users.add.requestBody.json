@@ -1,0 +1,49 @@
+{
+    "description": "Required parameters for user address",
+    "required": true,
+    "content": {
+        "application/json": {
+            "schema": {
+                "type": "object",
+                "required": [
+					"address1",
+					"city",
+					"state",
+					"zipCode"
+				],
+                "properties": {
+					"address1": {
+						"description": "The first line of the address.",
+						"type": "string"
+					},
+					"address2": {
+						"description": "The second line of the address.",
+						"type": "string"
+					},
+					"city": {
+						"description": "The city of the address.",
+						"type": "string"
+					},
+					"state": {
+						"description": "The state of the address.",
+						"type": "string"
+					},
+					"country": {
+						"description": "The country of the address.",
+						"type": "string"
+					},
+					"zipCode": {
+						"description": "The postal code of the address.",
+						"type": "string"
+					}
+                },
+                "example": {
+					"address1"   : "123 Elm Street",
+					"city"       : "Beverly Hills",
+					"state"      : "CA",
+					"postalCode" : "90210"
+				}
+            }
+        }
+    }
+}

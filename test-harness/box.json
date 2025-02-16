@@ -10,7 +10,7 @@
         "coldbox":"be"
     },
     "devDependencies":{
-        "testbox":"^4.0.0",
+        "testbox":"be",
         "route-visualizer":"^2.0.0+6"
     },
     "installPaths":{
