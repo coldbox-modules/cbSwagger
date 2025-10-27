@@ -1,15 +1,15 @@
 {
-    "name":"swagger-sdk-adobe@2023",
+    "name":"cbswagger-lucee@be",
     "app":{
-        "serverHomeDirectory":".engine/adobe2023",
-        "cfengine":"adobe@2023"
+        "serverHomeDirectory":".engine/luceeBE",
+        "cfengine":"lucee@be"
     },
     "web":{
         "http":{
             "port":"60299"
         },
         "rewrites":{
-            "enable":true
+            "enable":"true"
         },
         "webroot":"test-harness",
         "aliases":{
@@ -19,8 +19,5 @@
     "openBrowser":"false",
     "cfconfig":{
         "file":".cfconfig.json"
-    },
-    "scripts":{
-        "onServerInstall":"cfpm install zip"
     }
 }

@@ -1,8 +1,8 @@
 {
-    "name":"swagger-sdk-adobe@2023",
+    "name":"swagger-sdk-adobe@be",
     "app":{
-        "serverHomeDirectory":".engine/adobe2023",
-        "cfengine":"adobe@2023"
+        "serverHomeDirectory":".engine/adobeBE",
+        "cfengine":"adobe@be"
     },
     "web":{
         "http":{

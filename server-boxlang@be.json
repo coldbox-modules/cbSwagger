@@ -1,9 +1,9 @@
 {
     "app":{
-        "cfengine":"boxlang@^1",
-        "serverHomeDirectory":".engine/boxlang"
+        "cfengine":"boxlang@be",
+        "serverHomeDirectory":".engine/boxlangBE"
     },
-    "name":"cbSwagger-boxlang@1",
+    "name":"cbSwagger-boxlang@be",
     "force":true,
     "openBrowser":false,
     "web":{
