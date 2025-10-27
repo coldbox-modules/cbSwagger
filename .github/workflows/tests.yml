@@ -26,7 +26,7 @@ jobs:
         include:
           - coldboxVersion: "^8.0.0"
             cfengine: "boxlang@1"
-            experimental: false
+            experimental: true
           - coldboxVersion: "be"
             cfengine: "lucee@5"
             experimental: true
