@@ -22,7 +22,7 @@ component
 		variables.samplesPath = controller.getAppRootPath() & variables.model.getModuleSettings().samplesPath;
 
 		// make all of our private model methods public
-		var privateMethods = getMetadata( variables.model ).functions
+		var privateMethods = arraySlice( getMetadata( variables.model ).functions, 1 )
 			.filter( function( fn ){
 				return fn.keyExists( "access" ) && fn.access == "private";
 			} )

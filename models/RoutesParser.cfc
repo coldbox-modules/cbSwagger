@@ -501,96 +501,114 @@ component accessors="true" threadsafe singleton {
 			appendFunctionParams( argumentCollection = arguments );
 			appendFunctionResponses( argumentCollection = arguments );
 
-			functionMetadata
-				.keyArray()
-				.each( function( infoKey ){
-					// is !simple, continue to next key
-					if ( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
+			var parseGenericMetadata = function( md ){
+				arguments.md
+					.keyArray()
+					.each( function( infoKey ){
+						// is !simple, continue to next key
+						if ( !isSimpleValue( md[ infoKey ] ) ) continue;
 
-					// parse values from each key
-					var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
+						// parse values from each key
+						var infoMetadata = parseMetadataValue( md[ infoKey ] );
 
-					// hint/description
-					if ( infoKey == "hint" ) {
-						if ( !structKeyExists( method, "description" ) || method[ "description" ] == "" ) {
+						// hint/description
+						if ( infoKey == "hint" ) {
+							if ( !structKeyExists( method, "description" ) || method[ "description" ] == "" ) {
+								method[ "description" ] = infoMetadata;
+							}
+							if ( !structKeyExists( md, "summary" ) ) {
+								method[ "summary" ] = infoMetadata;
+							}
+							continue;
+						}
+
+						if ( infoKey == "description" && infoMetadata != "" ) {
 							method[ "description" ] = infoMetadata;
+							continue;
 						}
-						if ( !structKeyExists( functionMetadata, "summary" ) ) {
+
+						if ( infoKey == "summary" ) {
 							method[ "summary" ] = infoMetadata;
+							continue;
 						}
-						continue;
-					}
 
-					if ( infoKey == "description" && infoMetadata != "" ) {
-						method[ "description" ] = infoMetadata;
-						continue;
-					}
-
-					if ( infoKey == "summary" ) {
-						method[ "summary" ] = infoMetadata;
-						continue;
-					}
-
-					// Operation Tags
-					if ( infoKey == "tags" ) {
-						method[ "tags" ] = isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata;
-						continue;
-					}
-
-					// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
-					if ( left( infoKey, 12 ) == "requestBody" ) {
-						method[ "requestBody" ] = structNew( "ordered" );
-
-						if ( isSimpleValue( infoMetadata ) ) {
-							method[ "requestBody" ][ "description" ] = infoMetadata;
-							method[ "requestBody" ][ "required" ]    = true;
-							method[ "requestBody" ][ "content" ]     = { "#infoMetadata#" : {} };
-						} else {
-							structAppend( method[ "requestBody" ], infoMetadata, true );
+						// Operation Tags
+						if ( infoKey == "tags" ) {
+							method[ "tags" ] = isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata;
+							continue;
 						}
-						continue;
-					}
 
-					// security
-					if ( infoKey == "security" ) {
-						if ( isSimpleValue( infoMetadata ) ) {
-							// expect a list of pre-defined securitySchemes
-							method[ "security" ] = listToArray( infoMetadata )
-								.filter( function( security ){
-									return structKeyList( moduleSettings.components.securitySchemes ).find(
-										security
-									);
-								} )
-								.map( function( item ){
-									return { "#item#" : [] };
-								} );
-						} else {
-							method[ "security" ] = infoMetadata;
-						}
-						continue;
-					}
+						// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
+						if ( left( infoKey, 12 ) == "requestBody" ) {
+							method[ "requestBody" ] = structNew( "ordered" );
 
-					// Spec Extensions x-{name}, must be in lowercase
-					if ( left( infoKey, 2 ) == "x-" ) {
-						var normalizedKey = replaceNoCase( infoKey, "x-", "" ).lcase();
-						// evaluate whether we have an x- replacement or a standard x-attribute
-						if ( arrayContainsNoCase( defaultKeys, normalizedKey ) ) {
-							method[ normalizedKey ] = infoMetadata;
-						} else {
-							method[ infoKey.lcase() ] = infoMetadata;
+							if ( isSimpleValue( infoMetadata ) ) {
+								method[ "requestBody" ][ "description" ] = infoMetadata;
+								method[ "requestBody" ][ "required" ]    = true;
+								method[ "requestBody" ][ "content" ]     = { "#infoMetadata#" : {} };
+							} else {
+								structAppend( method[ "requestBody" ], infoMetadata, true );
+							}
+							continue;
 						}
-						continue;
-					}
 
-					if ( arrayContainsNoCase( defaultKeys, infoKey ) ) {
-						// don't override any previously set convention assignments
-						if ( isSimpleValue( infoMetadata ) && len( infoMetadata ) ) {
-							method[ infoKey ] = infoMetadata;
-						} else if ( !isSimpleValue( infoMetadata ) ) {
-							method[ infoKey ] = infoMetadata;
+						// security
+						if ( infoKey == "security" ) {
+							if ( isSimpleValue( infoMetadata ) ) {
+								// expect a list of pre-defined securitySchemes
+								method[ "security" ] = listToArray( infoMetadata )
+									.filter( function( security ){
+										return structKeyList( moduleSettings.components.securitySchemes ).find(
+											security
+										);
+									} )
+									.map( function( item ){
+										return { "#item#" : [] };
+									} );
+							} else {
+								method[ "security" ] = infoMetadata;
+							}
+							continue;
 						}
-					}
-				} );
+
+						// Spec Extensions x-{name}, must be in lowercase
+						if ( left( infoKey, 2 ) == "x-" ) {
+							var normalizedKey = replaceNoCase( infoKey, "x-", "" ).lcase();
+							// evaluate whether we have an x- replacement or a standard x-attribute
+							if ( arrayContainsNoCase( defaultKeys, normalizedKey ) ) {
+								method[ normalizedKey ] = infoMetadata;
+							} else {
+								method[ infoKey.lcase() ] = infoMetadata;
+							}
+							continue;
+						}
+
+						if ( arrayContainsNoCase( defaultKeys, infoKey ) ) {
+							// don't override any previously set convention assignments
+							if ( isSimpleValue( infoMetadata ) && len( infoMetadata ) ) {
+								method[ infoKey ] = infoMetadata;
+							} else if ( !isSimpleValue( infoMetadata ) ) {
+								method[ infoKey ] = infoMetadata;
+							}
+						}
+					} );
+			};
+
+			parseGenericMetadata( arguments.functionMetadata );
+			if (
+				functionMetadata.keyExists( "annotations" ) && !isNull( functionMetadata.annotations ) && isStruct(
+					functionMetadata.annotations
+				)
+			) {
+				parseGenericMetadata( functionMetadata.annotations );
+			}
+			if (
+				functionMetadata.keyExists( "documentation" ) && !isNull( functionMetadata.documentation ) && isStruct(
+					functionMetadata.documentation
+				)
+			) {
+				parseGenericMetadata( functionMetadata.documentation );
+			}
 
 			// check for a request body convention file
 			if ( !method.keyExists( "requestBody" ) || structIsEmpty( method[ "requestBody" ] ) ) {
@@ -688,48 +706,59 @@ component accessors="true" threadsafe singleton {
 		required any functionMetadata,
 		moduleName
 	){
-		functionMetadata
-			.keyArray()
-			.filter( function( key ){
-				return left( key, 6 ) == "param-";
-			} )
-			.each( function( infoKey ){
-				// parse values from each key
-				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
-				// Get the param name
-				var paramName    = right( infoKey, len( infoKey ) - 6 );
+		var parseParamsFromStruct = function( md ){
+			arguments.md
+				.keyArray()
+				.filter( function( key ){
+					return left( key, 6 ) == "param-";
+				} )
+				.each( function( infoKey ){
+					// parse values from each key
+					var infoMetadata = parseMetadataValue( md[ infoKey ] );
+					// Get the param name
+					var paramName    = right( infoKey, len( infoKey ) - 6 );
 
-				// See if our parameter was already provided through URL parsing
-				var paramSearch = arrayFilter( method[ "parameters" ], function( item ){
-					return item.name == paramName;
+					// See if our parameter was already provided through URL parsing
+					var paramSearch = arrayFilter( method[ "parameters" ], function( item ){
+						return item.name == paramName;
+					} );
+
+					if ( arrayLen( paramSearch ) ) {
+						var parameter = paramSearch[ 1 ];
+						if ( isSimpleValue( infoMetadata ) ) {
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}
+					} else {
+						// Default Params
+						var parameter = {
+							"name"        : paramName,
+							"description" : "",
+							"in"          : "query",
+							"required"    : false,
+							"schema"      : { "type" : "string", "default" : "" }
+						};
+
+						if ( isSimpleValue( infoMetadata ) ) {
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}
+
+						arrayAppend( method[ "parameters" ], parameter );
+					}
 				} );
+		};
 
-				if ( arrayLen( paramSearch ) ) {
-					var parameter = paramSearch[ 1 ];
-					if ( isSimpleValue( infoMetadata ) ) {
-						parameter[ "description" ] = infoMetadata;
-					} else {
-						structAppend( parameter, infoMetadata );
-					}
-				} else {
-					// Default Params
-					var parameter = {
-						"name"        : paramName,
-						"description" : "",
-						"in"          : "query",
-						"required"    : false,
-						"schema"      : { "type" : "string", "default" : "" }
-					};
-
-					if ( isSimpleValue( infoMetadata ) ) {
-						parameter[ "description" ] = infoMetadata;
-					} else {
-						structAppend( parameter, infoMetadata );
-					}
-
-					arrayAppend( method[ "parameters" ], parameter );
-				}
-			} );
+		parseParamsFromStruct( functionMetadata );
+		if (
+			functionMetadata.keyExists( "annotations" ) && !isNull( functionMetadata.annotations ) && isStruct(
+				functionMetadata.annotations
+			)
+		) {
+			parseParamsFromStruct( functionMetadata.annotations );
+		}
 
 		sampleArgs = { "type" : "parameters" };
 		sampleArgs.append( arguments );
@@ -744,31 +773,42 @@ component accessors="true" threadsafe singleton {
 		required any functionMetadata,
 		moduleName
 	){
-		functionMetadata
-			.keyArray()
-			.filter( function( key ){
-				return left( key, 9 ) == "response-";
-			} )
-			.each( function( infoKey ){
-				// parse values from each key
-				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
-				// get reponse name
-				var responseName = right( infoKey, len( infoKey ) - 9 );
+		var parseResponsesFromStruct = function( md ){
+			arguments.md
+				.keyArray()
+				.filter( function( key ){
+					return left( key, 9 ) == "response-";
+				} )
+				.each( function( infoKey ){
+					// parse values from each key
+					var infoMetadata = parseMetadataValue( md[ infoKey ] );
+					// get response name
+					var responseName = right( infoKey, len( infoKey ) - 9 );
 
-				method[ "responses" ][ responseName ] = structNew( "ordered" );
+					method[ "responses" ][ responseName ] = structNew( "ordered" );
 
-				// Use simple value for description and content type
-				if ( isSimpleValue( infoMetadata ) ) {
-					method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
-					method[ "responses" ][ responseName ][ "content" ]     = { "#infoMetadata#" : {} };
-				} else {
-					structAppend(
-						method[ "responses" ][ responseName ],
-						infoMetadata,
-						true
-					);
-				}
-			} );
+					// Use simple value for description and content type
+					if ( isSimpleValue( infoMetadata ) ) {
+						method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
+						method[ "responses" ][ responseName ][ "content" ]     = { "#infoMetadata#" : {} };
+					} else {
+						structAppend(
+							method[ "responses" ][ responseName ],
+							infoMetadata,
+							true
+						);
+					}
+				} );
+		};
+
+		parseResponsesFromStruct( functionMetadata );
+		if (
+			functionMetadata.keyExists( "annotations" ) && !isNull( functionMetadata.annotations ) && isStruct(
+				functionMetadata.annotations
+			)
+		) {
+			parseResponsesFromStruct( functionMetadata.annotations );
+		}
 
 		// Remove our empty default response if other responses were provided
 		if (
