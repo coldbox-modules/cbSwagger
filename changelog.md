@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.3] - 2025-10-29
+
 ## [3.1.2] - 2024-09-24
 
 ### Fixed
@@ -25,19 +27,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Interaction to WireBox via base test case and not application scope
-* Removed support for Adobe Coldfusion 2016
-* Removes `default` key from response object if empty and other status code keys are present [Issue #28](https://github.com/coldbox-modules/cbswagger/issues/28)
+- Interaction to WireBox via base test case and not application scope
+- Removed support for Adobe Coldfusion 2016
+- Removes `default` key from response object if empty and other status code keys are present [Issue #28](https://github.com/coldbox-modules/cbswagger/issues/28)
 
 ### Added
 
-* Virtual application testing
-* Updated github actions
-* Updated module template provisions
-* Added support for samples path shortcut annotation (`~`) in annotation JSON `$ref` pointers
-* Added support for using globbing patterns in `excludeRoutes` array. [Issue #37](https://github.com/coldbox-modules/cbswagger/issues/37)
-* Added `cbswagger` endpoint caching ( defaults to `true` ) and `cacheEnabled` setting.
-* Added URL convention for clearing/bypassing endpoint cache ( `swaggerCache=false` )
+- Virtual application testing
+- Updated github actions
+- Updated module template provisions
+- Added support for samples path shortcut annotation (`~`) in annotation JSON `$ref` pointers
+- Added support for using globbing patterns in `excludeRoutes` array. [Issue #37](https://github.com/coldbox-modules/cbswagger/issues/37)
+- Added `cbswagger` endpoint caching ( defaults to `true` ) and `cacheEnabled` setting.
+- Added URL convention for clearing/bypassing endpoint cache ( `swaggerCache=false` )
 
 ## [2.7.0] => 2021-OCT-1
 
@@ -195,7 +197,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial Module Release
 
-[Unreleased]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.2...HEAD
+[Unreleased]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.3...HEAD
+
+[3.1.3]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.2...v3.1.3
 
 [3.1.2]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.1...v3.1.2
 
