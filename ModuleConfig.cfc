@@ -7,14 +7,14 @@
 component {
 
 	// Module Properties
-	this.title          = "cbSwagger";
+	this.title          = "cbswagger";
 	this.author         = "Jon Clausen <jon_clausen@silowebworks.com>";
-	this.webURL         = "https://github.com/coldbox-modules/cbSwagger";
+	this.webURL         = "https://github.com/coldbox-modules/cbswagger";
 	this.version        = "@version.number@+@build.number@";
 	this.description    = "A coldbox module to auto-generate Swagger API documentation from your configured routes";
-	this.entryPoint     = "cbSwagger";
-	this.modelNamespace = "cbSwagger";
-	this.cfmapping      = "cbSwagger";
+	this.entryPoint     = "cbswagger";
+	this.modelNamespace = "cbswagger";
+	this.cfmapping      = "cbswagger";
 	this.autoMapModels  = true;
 	this.dependencies   = [ "swagger-sdk" ];
 
@@ -75,7 +75,7 @@ component {
 			// A list of tags used by the specification with additional metadata.
 			// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject
 			"tags"         : [],
-			// Whether to enable endpoint and parsed doc caching by cbSwagger
+			// Whether to enable endpoint and parsed doc caching by cbswagger
 			"cacheEnabled" : true
 		};
 

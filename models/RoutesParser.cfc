@@ -64,7 +64,11 @@ component accessors="true" threadsafe singleton {
 
 		// Incorporate our API routes into the document
 		filterDesignatedRoutes().each( function( key, value ){
-			template[ "paths" ].putAll( createPathsFromRouteConfig( value ) );
+			structAppend(
+				template[ "paths" ],
+				createPathsFromRouteConfig( value ),
+				true
+			);
 		} );
 
 		// Build out the Open API Document object
@@ -72,7 +76,7 @@ component accessors="true" threadsafe singleton {
 	}
 
 	/**
-	 * Filters the designated routes as provided in the cbSwagger configuration
+	 * Filters the designated routes as provided in the cbswagger configuration
 	 */
 	private any function filterDesignatedRoutes(){
 		// make a copy of our routes array so we can append it
@@ -192,7 +196,7 @@ component accessors="true" threadsafe singleton {
 		for ( var pathEntry in entrySet ) {
 			for ( var routeKey in designatedRoutes ) {
 				if ( replaceNoCase( routeKey, "/", "", "ALL" ) == pathEntry ) {
-					sortedRoutes.put( routeKey, designatedRoutes[ routeKey ] );
+					sortedRoutes[ routeKey ] = designatedRoutes[ routeKey ];
 				}
 			}
 		}
@@ -287,7 +291,7 @@ component accessors="true" threadsafe singleton {
 					// method not in error methods
 					if ( !arrayFindNoCase( errorMethods, actions[ methodList ] ) ) {
 						// Create new path template
-						path.put( lCase( methodName ), getOpenAPIUtil().newMethod() );
+						path[ lCase( methodName ) ] = getOpenAPIUtil().newMethod();
 						// Append Params
 						appendPathParams( pathKey = arguments.pathKey, method = path[ lCase( methodName ) ] );
 						// Append Function metadata
@@ -309,7 +313,7 @@ component accessors="true" threadsafe singleton {
 		} else {
 			for ( var methodName in getOpenAPIUtil().defaultMethods() ) {
 				// Insert path template for default method
-				path.put( lCase( methodName ), getOpenAPIUtil().newMethod() );
+				path[ lCase( methodName ) ] = getOpenAPIUtil().newMethod();
 				// Append Params
 				appendPathParams( pathKey = arguments.pathKey, method = path[ lCase( methodName ) ] );
 				// Append metadata
@@ -346,7 +350,7 @@ component accessors="true" threadsafe singleton {
 			}
 		}
 
-		arguments.existingPaths.put( "/" & arrayToList( pathSegments, "/" ), path );
+		arguments.existingPaths[ "/" & arrayToList( pathSegments, "/" ) ] = path;
 	}
 
 	/**
@@ -358,7 +362,7 @@ component accessors="true" threadsafe singleton {
 	private void function appendPathParams( required string pathKey, required struct method ){
 		// Verify parameters array in the method definition
 		if ( !structKeyExists( arguments.method, "parameters" ) ) {
-			arguments.method.put( "parameters", [] );
+			arguments.method[ "parameters" ] = [];
 		}
 
 		// handle any parameters in the url now
@@ -421,7 +425,7 @@ component accessors="true" threadsafe singleton {
 	 *
 	 * @return struct of handlerMetadata
 	 *
-	 * @throws cbSwagger.RoutesParse.handlerSyntaxException
+	 * @throws cbswagger.RoutesParse.handlerSyntaxException
 	 */
 	private any function getHandlerMetadata( required any route ){
 		var module       = ( isNull( arguments.route.module ) ? "" : arguments.route.module );
@@ -452,7 +456,7 @@ component accessors="true" threadsafe singleton {
 			return util.getInheritedMetadata( invocationPath );
 		} catch ( any e ) {
 			throw(
-				type         = "cbSwagger.RoutesParse.handlerSyntaxException",
+				type         = "cbswagger.RoutesParse.handlerSyntaxException",
 				message      = "The handler at #invocationPath# could not be parsed.  The error that occurred: #e.message#",
 				extendedInfo = e.detail
 			);
@@ -497,99 +501,114 @@ component accessors="true" threadsafe singleton {
 			appendFunctionParams( argumentCollection = arguments );
 			appendFunctionResponses( argumentCollection = arguments );
 
-			functionMetadata
-				.keyArray()
-				.each( function( infoKey ){
-					// is !simple, continue to next key
-					if ( !isSimpleValue( functionMetaData[ infoKey ] ) ) continue;
+			var parseGenericMetadata = function( md ){
+				arguments.md
+					.keyArray()
+					.each( function( infoKey ){
+						// is !simple, continue to next key
+						if ( !isSimpleValue( md[ infoKey ] ) ) continue;
 
-					// parse values from each key
-					var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
+						// parse values from each key
+						var infoMetadata = parseMetadataValue( md[ infoKey ] );
 
-					// hint/description
-					if ( infoKey == "hint" ) {
-						if ( !method.containsKey( "description" ) || method[ "description" ] == "" ) {
-							method.put( "description", infoMetadata );
+						// hint/description
+						if ( infoKey == "hint" ) {
+							if ( !structKeyExists( method, "description" ) || method[ "description" ] == "" ) {
+								method[ "description" ] = infoMetadata;
+							}
+							if ( !structKeyExists( md, "summary" ) ) {
+								method[ "summary" ] = infoMetadata;
+							}
+							continue;
 						}
-						if ( !functionMetadata.containsKey( "summary" ) ) {
-							method.put( "summary", infoMetadata );
+
+						if ( infoKey == "description" && infoMetadata != "" ) {
+							method[ "description" ] = infoMetadata;
+							continue;
 						}
-						continue;
-					}
 
-					if ( infoKey == "description" && infoMetadata != "" ) {
-						method.put( "description", infoMetadata );
-						continue;
-					}
-
-					if ( infoKey == "summary" ) {
-						method.put( "summary", infoMetadata );
-						continue;
-					}
-
-					// Operation Tags
-					if ( infoKey == "tags" ) {
-						method.put(
-							"tags",
-							( isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata )
-						);
-						continue;
-					}
-
-					// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
-					if ( left( infoKey, 12 ) == "requestBody" ) {
-						method.put( "requestBody", structNew( "ordered" ) );
-
-						if ( isSimpleValue( infoMetadata ) ) {
-							method[ "requestBody" ][ "description" ] = infoMetadata;
-							method[ "requestBody" ][ "required" ]    = true;
-							method[ "requestBody" ][ "content" ]     = { "#infoMetadata#" : {} };
-						} else {
-							method[ "requestBody" ].putAll( infoMetadata );
+						if ( infoKey == "summary" ) {
+							method[ "summary" ] = infoMetadata;
+							continue;
 						}
-						continue;
-					}
 
-					// security
-					if ( infoKey == "security" ) {
-						if ( isSimpleValue( infoMetadata ) ) {
-							// expect a list of pre-defined securitySchemes
-							method[ "security" ] = listToArray( infoMetadata )
-								.filter( function( security ){
-									return structKeyList( moduleSettings.components.securitySchemes ).find(
-										security
-									);
-								} )
-								.map( function( item ){
-									return { "#item#" : [] };
-								} );
-						} else {
-							method[ "security" ] = infoMetadata;
+						// Operation Tags
+						if ( infoKey == "tags" ) {
+							method[ "tags" ] = isSimpleValue( infoMetadata ) ? listToArray( infoMetadata ) : infoMetadata;
+							continue;
 						}
-						continue;
-					}
 
-					// Spec Extensions x-{name}, must be in lowercase
-					if ( left( infoKey, 2 ) == "x-" ) {
-						var normalizedKey = replaceNoCase( infoKey, "x-", "" ).lcase();
-						// evaluate whether we have an x- replacement or a standard x-attribute
-						if ( arrayContainsNoCase( defaultKeys, normalizedKey ) ) {
-							method[ normalizedKey ] = infoMetadata;
-						} else {
-							method[ infoKey.lcase() ] = infoMetadata;
-						}
-						continue;
-					}
+						// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
+						if ( left( infoKey, 12 ) == "requestBody" ) {
+							method[ "requestBody" ] = structNew( "ordered" );
 
-					if ( arrayContainsNoCase( defaultKeys, infoKey ) ) {
-						// don't override any previously set convention assignments
-						if ( isSimpleValue( infoMetadata ) && len( infoMetadata ) ) {
-							method[ infoKey ] = infoMetadata;
-						} else if ( !isSimpleValue( infoMetadata ) ) {
-							method[ infoKey ] = infoMetadata;
+							if ( isSimpleValue( infoMetadata ) ) {
+								method[ "requestBody" ][ "description" ] = infoMetadata;
+								method[ "requestBody" ][ "required" ]    = true;
+								method[ "requestBody" ][ "content" ]     = { "#infoMetadata#" : {} };
+							} else {
+								structAppend( method[ "requestBody" ], infoMetadata, true );
+							}
+							continue;
 						}
-					}
-				} );
+
+						// security
+						if ( infoKey == "security" ) {
+							if ( isSimpleValue( infoMetadata ) ) {
+								// expect a list of pre-defined securitySchemes
+								method[ "security" ] = listToArray( infoMetadata )
+									.filter( function( security ){
+										return structKeyList( moduleSettings.components.securitySchemes ).find(
+											security
+										);
+									} )
+									.map( function( item ){
+										return { "#item#" : [] };
+									} );
+							} else {
+								method[ "security" ] = infoMetadata;
+							}
+							continue;
+						}
+
+						// Spec Extensions x-{name}, must be in lowercase
+						if ( left( infoKey, 2 ) == "x-" ) {
+							var normalizedKey = replaceNoCase( infoKey, "x-", "" ).lcase();
+							// evaluate whether we have an x- replacement or a standard x-attribute
+							if ( arrayContainsNoCase( defaultKeys, normalizedKey ) ) {
+								method[ normalizedKey ] = infoMetadata;
+							} else {
+								method[ infoKey.lcase() ] = infoMetadata;
+							}
+							continue;
+						}
+
+						if ( arrayContainsNoCase( defaultKeys, infoKey ) ) {
+							// don't override any previously set convention assignments
+							if ( isSimpleValue( infoMetadata ) && len( infoMetadata ) ) {
+								method[ infoKey ] = infoMetadata;
+							} else if ( !isSimpleValue( infoMetadata ) ) {
+								method[ infoKey ] = infoMetadata;
+							}
+						}
+					} );
+			};
+
+			parseGenericMetadata( arguments.functionMetadata );
+			if (
+				functionMetadata.keyExists( "annotations" ) && !isNull( functionMetadata.annotations ) && isStruct(
+					functionMetadata.annotations
+				)
+			) {
+				parseGenericMetadata( functionMetadata.annotations );
+			}
+			if (
+				functionMetadata.keyExists( "documentation" ) && !isNull( functionMetadata.documentation ) && isStruct(
+					functionMetadata.documentation
+				)
+			) {
+				parseGenericMetadata( functionMetadata.documentation );
+			}
 
 			// check for a request body convention file
 			if ( !method.keyExists( "requestBody" ) || structIsEmpty( method[ "requestBody" ] ) ) {
@@ -635,13 +654,13 @@ component accessors="true" threadsafe singleton {
 				var filterString = arrayToList(
 					[
 						moduleName,
-						listLast( handlerMetadata.name, "." ),
+						listLast( handlerMetadata.fullname, "." ),
 						methodName
 					],
 					"."
 				);
 			} else {
-				var filterString = arrayToList( [ handlerMetadata.name, methodName ], "." );
+				var filterString = arrayToList( [ handlerMetadata.fullname, methodName ], "." );
 			}
 
 			availableFiles
@@ -687,48 +706,59 @@ component accessors="true" threadsafe singleton {
 		required any functionMetadata,
 		moduleName
 	){
-		functionMetadata
-			.keyArray()
-			.filter( function( key ){
-				return left( key, 6 ) == "param-";
-			} )
-			.each( function( infoKey ){
-				// parse values from each key
-				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
-				// Get the param name
-				var paramName    = right( infoKey, len( infoKey ) - 6 );
+		var parseParamsFromStruct = function( md ){
+			arguments.md
+				.keyArray()
+				.filter( function( key ){
+					return left( key, 6 ) == "param-";
+				} )
+				.each( function( infoKey ){
+					// parse values from each key
+					var infoMetadata = parseMetadataValue( md[ infoKey ] );
+					// Get the param name
+					var paramName    = right( infoKey, len( infoKey ) - 6 );
 
-				// See if our parameter was already provided through URL parsing
-				var paramSearch = arrayFilter( method[ "parameters" ], function( item ){
-					return item.name == paramName;
+					// See if our parameter was already provided through URL parsing
+					var paramSearch = arrayFilter( method[ "parameters" ], function( item ){
+						return item.name == paramName;
+					} );
+
+					if ( arrayLen( paramSearch ) ) {
+						var parameter = paramSearch[ 1 ];
+						if ( isSimpleValue( infoMetadata ) ) {
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}
+					} else {
+						// Default Params
+						var parameter = {
+							"name"        : paramName,
+							"description" : "",
+							"in"          : "query",
+							"required"    : false,
+							"schema"      : { "type" : "string", "default" : "" }
+						};
+
+						if ( isSimpleValue( infoMetadata ) ) {
+							parameter[ "description" ] = infoMetadata;
+						} else {
+							structAppend( parameter, infoMetadata );
+						}
+
+						arrayAppend( method[ "parameters" ], parameter );
+					}
 				} );
+		};
 
-				if ( arrayLen( paramSearch ) ) {
-					var parameter = paramSearch[ 1 ];
-					if ( isSimpleValue( infoMetadata ) ) {
-						parameter[ "description" ] = infoMetadata;
-					} else {
-						structAppend( parameter, infoMetadata );
-					}
-				} else {
-					// Default Params
-					var parameter = {
-						"name"        : paramName,
-						"description" : "",
-						"in"          : "query",
-						"required"    : false,
-						"schema"      : { "type" : "string", "default" : "" }
-					};
-
-					if ( isSimpleValue( infoMetadata ) ) {
-						parameter[ "description" ] = infoMetadata;
-					} else {
-						structAppend( parameter, infoMetadata );
-					}
-
-					arrayAppend( method[ "parameters" ], parameter );
-				}
-			} );
+		parseParamsFromStruct( functionMetadata );
+		if (
+			functionMetadata.keyExists( "annotations" ) && !isNull( functionMetadata.annotations ) && isStruct(
+				functionMetadata.annotations
+			)
+		) {
+			parseParamsFromStruct( functionMetadata.annotations );
+		}
 
 		sampleArgs = { "type" : "parameters" };
 		sampleArgs.append( arguments );
@@ -743,27 +773,42 @@ component accessors="true" threadsafe singleton {
 		required any functionMetadata,
 		moduleName
 	){
-		functionMetadata
-			.keyArray()
-			.filter( function( key ){
-				return left( key, 9 ) == "response-";
-			} )
-			.each( function( infoKey ){
-				// parse values from each key
-				var infoMetadata = parseMetadataValue( functionMetaData[ infoKey ] );
-				// get reponse name
-				var responseName = right( infoKey, len( infoKey ) - 9 );
+		var parseResponsesFromStruct = function( md ){
+			arguments.md
+				.keyArray()
+				.filter( function( key ){
+					return left( key, 9 ) == "response-";
+				} )
+				.each( function( infoKey ){
+					// parse values from each key
+					var infoMetadata = parseMetadataValue( md[ infoKey ] );
+					// get response name
+					var responseName = right( infoKey, len( infoKey ) - 9 );
 
-				method[ "responses" ].put( responseName, structNew( "ordered" ) );
+					method[ "responses" ][ responseName ] = structNew( "ordered" );
 
-				// Use simple value for description and content type
-				if ( isSimpleValue( infoMetadata ) ) {
-					method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
-					method[ "responses" ][ responseName ][ "content" ]     = { "#infoMetadata#" : {} };
-				} else {
-					method[ "responses" ][ responseName ].putAll( infoMetadata );
-				}
-			} );
+					// Use simple value for description and content type
+					if ( isSimpleValue( infoMetadata ) ) {
+						method[ "responses" ][ responseName ][ "description" ] = infoMetadata;
+						method[ "responses" ][ responseName ][ "content" ]     = { "#infoMetadata#" : {} };
+					} else {
+						structAppend(
+							method[ "responses" ][ responseName ],
+							infoMetadata,
+							true
+						);
+					}
+				} );
+		};
+
+		parseResponsesFromStruct( functionMetadata );
+		if (
+			functionMetadata.keyExists( "annotations" ) && !isNull( functionMetadata.annotations ) && isStruct(
+				functionMetadata.annotations
+			)
+		) {
+			parseResponsesFromStruct( functionMetadata.annotations );
+		}
 
 		// Remove our empty default response if other responses were provided
 		if (

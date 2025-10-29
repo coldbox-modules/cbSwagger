@@ -1,0 +1,35 @@
+{
+    "app":{
+        "cfengine":"boxlang@be",
+        "serverHomeDirectory":".engine/boxlangBE"
+    },
+    "name":"cbSwagger-boxlang@be",
+    "force":true,
+    "openBrowser":false,
+    "web":{
+        "directoryBrowsing":true,
+        "http":{
+            "port":"60299"
+        },
+        "rewrites":{
+            "enable":"true"
+        },
+        "webroot":"test-harness",
+        "aliases":{
+            "/moduleroot/cbSwagger":"./"
+        }
+    },
+    "JVM":{
+        "heapSize":"1024",
+        "javaVersion":"openjdk21_jdk"
+    },
+    "cfconfig":{
+        "file":".cfconfig.json"
+    },
+    "env":{
+        "BOXLANG_DEBUG":true
+    },
+    "scripts":{
+        "onServerInitialInstall":"install bx-mail,bx-mysql,bx-derby,bx-unsafe-evaluate,bx-esapi --noSave"
+    }
+}

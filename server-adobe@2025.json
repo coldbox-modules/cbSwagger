@@ -1,15 +1,15 @@
 {
-    "name":"cbswagger-adobe@2018",
+    "name":"swagger-sdk-adobe@2025",
     "app":{
-        "serverHomeDirectory":".engine/adobe2018",
-        "cfengine":"adobe@2018"
+        "serverHomeDirectory":".engine/adobe2025",
+        "cfengine":"adobe@2025"
     },
     "web":{
         "http":{
             "port":"60299"
         },
         "rewrites":{
-            "enable":"true"
+            "enable":true
         },
         "webroot":"test-harness",
         "aliases":{
@@ -18,10 +18,13 @@
     },
 	"jvm":{
         "heapSize":"1024",
-        "javaVersion":"openjdk8_jre"
+        "javaVersion":"openjdk21_jre"
     },
     "openBrowser":"false",
     "cfconfig":{
         "file":".cfconfig.json"
+    },
+    "scripts":{
+        "onServerInstall":"cfpm install zip"
     }
 }

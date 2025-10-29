@@ -25,19 +25,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Interaction to WireBox via base test case and not application scope
-- Removed support for Adobe Coldfusion 2016
-- Removes `default` key from response object if empty and other status code keys are present [Issue #28](https://github.com/coldbox-modules/cbSwagger/issues/28)
+* Interaction to WireBox via base test case and not application scope
+* Removed support for Adobe Coldfusion 2016
+* Removes `default` key from response object if empty and other status code keys are present [Issue #28](https://github.com/coldbox-modules/cbswagger/issues/28)
 
 ### Added
 
-- Virtual application testing
-- Updated github actions
-- Updated module template provisions
-- Added support for samples path shortcut annotation (`~`) in annotation JSON `$ref` pointers
-- Added support for using globbing patterns in `excludeRoutes` array. [Issue #37](https://github.com/coldbox-modules/cbSwagger/issues/37)
-- Added `cbswagger` endpoint caching ( defaults to `true` ) and `cacheEnabled` setting.
-- Added URL convention for clearing/bypassing endpoint cache ( `swaggerCache=false` )
+* Virtual application testing
+* Updated github actions
+* Updated module template provisions
+* Added support for samples path shortcut annotation (`~`) in annotation JSON `$ref` pointers
+* Added support for using globbing patterns in `excludeRoutes` array. [Issue #37](https://github.com/coldbox-modules/cbswagger/issues/37)
+* Added `cbswagger` endpoint caching ( defaults to `true` ) and `cacheEnabled` setting.
+* Added URL convention for clearing/bypassing endpoint cache ( `swaggerCache=false` )
 
 ## [2.7.0] => 2021-OCT-1
 
@@ -112,6 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] => 2019-SEP-02
 
 - `feature`: Upgraded to swagger-sdk 2.0.0 to support OpenAPI 3.0.x. A great guide on migrating is here: <https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/>
+
 
 - Migrated `cbSwagger` settings to the `moduleSettings` struct instead of top-level in the `config/ColdBox.cfc`. Make sure you move your settings.
 
@@ -200,4 +201,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [3.1.1]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.0...v3.1.1
 
-[3.0.0]: https://github.com/coldbox-modules/cbSwagger/compare/5be045e7bd456304f3e338fd5e4f5ca94342dad0...v3.0.0
+[3.0.0]: https://github.com/coldbox-modules/cbswagger/compare/5be045e7bd456304f3e338fd5e4f5ca94342dad0...v3.0.0

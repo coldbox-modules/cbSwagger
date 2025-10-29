@@ -1,8 +1,8 @@
 {
-    "name":"cbswagger-adobe@2018",
+    "name":"cbswagger-lucee@6",
     "app":{
-        "serverHomeDirectory":".engine/adobe2018",
-        "cfengine":"adobe@2018"
+        "serverHomeDirectory":".engine/lucee5",
+        "cfengine":"lucee@6"
     },
     "web":{
         "http":{
@@ -15,10 +15,6 @@
         "aliases":{
             "/moduleroot/cbswagger":"../"
         }
-    },
-	"jvm":{
-        "heapSize":"1024",
-        "javaVersion":"openjdk8_jre"
     },
     "openBrowser":"false",
     "cfconfig":{

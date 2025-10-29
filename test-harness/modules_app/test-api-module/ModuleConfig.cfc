@@ -9,7 +9,7 @@ component {
 	this.title              = "test-api-module";
 	this.author             = "Jon Clausen <jon_clausen@silowebworks.com>";
 	this.webURL             = "N/A";
-	this.description        = "A test api module for cbSwagger";
+	this.description        = "A test api module for cbswagger";
 	this.version            = "0.0.1";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
 	this.viewParentLookup   = true;

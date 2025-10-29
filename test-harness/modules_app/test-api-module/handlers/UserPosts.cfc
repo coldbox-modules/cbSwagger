@@ -1,7 +1,7 @@
 /**
  *
  * @name User API Controller
- * @package cbSwagger-shell
+ * @package cbswagger-shell
  * @description This is the User Posts API Controller
  * @author Jon Clausen <jon_clausen@silowebworks.com>
  *

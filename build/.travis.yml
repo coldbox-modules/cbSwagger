@@ -5,7 +5,7 @@ notifications:
 env:
   # Fill out these global variables for build process
   global:
-    - MODULE_ID=cbSwagger
+    - MODULE_ID=cbswagger
   matrix:
     - ENGINE=lucee@5
     - ENGINE=adobe@2016

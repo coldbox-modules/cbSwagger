@@ -13,8 +13,12 @@
         },
 		"webroot": "test-harness",
 		"aliases":{
-            "/moduleroot/cbSwagger":"../"
+            "/moduleroot/cbswagger":"../"
         }
+    },
+	"jvm":{
+        "heapSize":"1024",
+        "javaVersion":"openjdk11_jre"
     },
     "openBrowser":"false",
 	"cfconfig": {

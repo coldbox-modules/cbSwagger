@@ -15,14 +15,14 @@ component
 		// Wire up this object
 		getWireBox().autowire( this );
 		variables.testHandlerMetadata = getMetadata( createObject( "component", "handlers.api.v1.Users" ) );
-		variables.cbSwaggerSettings   = controller.getSetting( "modules" ).cbSwagger.settings;
+		variables.cbswaggerSettings   = controller.getSetting( "modules" ).cbswagger.settings;
 
-		variables.model = prepareMock( new cbSwagger.models.RoutesParser() );
+		variables.model = prepareMock( new cbswagger.models.RoutesParser() );
 		getWireBox().autowire( variables.model );
 		variables.samplesPath = controller.getAppRootPath() & variables.model.getModuleSettings().samplesPath;
 
 		// make all of our private model methods public
-		var privateMethods = getMetadata( variables.model ).functions
+		var privateMethods = arraySlice( getMetadata( variables.model ).functions, 1 )
 			.filter( function( fn ){
 				return fn.keyExists( "access" ) && fn.access == "private";
 			} )
@@ -115,7 +115,7 @@ component
 
 				var APIPaths    = normalizedDoc[ "paths" ];
 				// pull our routing configuration
-				var apiPrefixes = cbSwaggerSettings.routes;
+				var apiPrefixes = cbswaggerSettings.routes;
 				expect( apiPrefixes ).toBeArray();
 
 				var CBRoutes = getController()
@@ -150,7 +150,7 @@ component
 
 				var APIPaths    = normalizedDoc[ "paths" ];
 				// pull our routing configuration
-				var apiPrefixes = cbSwaggerSettings.routes;
+				var apiPrefixes = cbswaggerSettings.routes;
 				expect( apiPrefixes ).toBeArray();
 
 				var TLRoutes = getController().getRoutingService().getRoutes();

@@ -1,4 +1,4 @@
 <cfoutput>
-	<h1>cbSwagger is Up and Running!</h1>
-	<p>Go visit it at <a href="/cbSwagger">/cbSwagger</a></p>
+	<h1>cbswagger is Up and Running!</h1>
+	<p>Go visit it at <a href="/cbswagger">/cbswagger</a></p>
 </cfoutput>
