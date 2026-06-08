@@ -52,6 +52,7 @@ component displayname="API.v1.Users" {
 
 	/**
 	 * @tags [ "json", "list" ]
+	 * @deprecated true
 	 * @param-firstname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
 	 * @param-lastname { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
 	 * @param-email { "schema" : { "type": "string" }, "required" : "false", "in" : "query" }
