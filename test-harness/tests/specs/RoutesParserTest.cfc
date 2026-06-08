@@ -255,6 +255,40 @@ component
 				expect( path[ "put" ][ "responses" ][ "default" ][ "content" ] ).toBeStruct();
 			} );
 
+			it( "Tests that the deprecated annotation is parsed as an operation-level boolean", function(){
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users/{id}" );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users/{id}" ];
+
+				// update() is annotated with @deprecated true
+				expect( path ).toHaveKey( "put" );
+				expect( path[ "put" ] ).toHaveKey( "deprecated" );
+				expect( path[ "put" ][ "deprecated" ] ).toBeBoolean();
+				expect( path[ "put" ][ "deprecated" ] ).toBeTrue();
+			} );
+
+			it( "Tests that operations without a deprecated annotation default to false", function(){
+				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
+
+				var normalizedDoc = variables.APIDoc.getNormalizedDocument();
+
+				expect( normalizedDoc ).toHaveKey( "paths" );
+				expect( normalizedDoc[ "paths" ] ).toHaveKey( "/api/v1/users" );
+
+				var path = normalizedDoc[ "paths" ][ "/api/v1/users" ];
+
+				// add() carries no deprecated annotation — newMethod() default applies
+				expect( path ).toHaveKey( "post" );
+				expect( path[ "post" ] ).toHaveKey( "deprecated" );
+				expect( path[ "post" ][ "deprecated" ] ).toBeBoolean();
+				expect( path[ "post" ][ "deprecated" ] ).toBeFalse();
+			} );
+
 			it( "Tests that an empty default response will be removed if status code responses are present", function(){
 				expect( variables ).toHaveKey( "APIDoc", "No APIDoc was found to test.  Could not continue." );
 

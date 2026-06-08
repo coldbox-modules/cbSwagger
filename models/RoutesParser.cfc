@@ -538,6 +538,15 @@ component accessors="true" threadsafe singleton {
 							continue;
 						}
 
+						// Operation deprecation flag — coerce the annotation value to a real
+						// JSON boolean. Function attributes arrive as strings ( deprecated="true" ),
+						// which would otherwise serialise as the string "true" rather than the
+						// boolean the OpenAPI spec requires.
+						if ( infoKey == "deprecated" ) {
+							method[ "deprecated" ] = isBoolean( infoMetadata ) && infoMetadata;
+							continue;
+						}
+
 						// Request body: { description, required, content : {} } if simple, we just add it as required, with listed as content
 						if ( left( infoKey, 12 ) == "requestBody" ) {
 							method[ "requestBody" ] = structNew( "ordered" );

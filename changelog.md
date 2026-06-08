@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support for an operation-level `deprecated` annotation on handler actions. A
+  `deprecated="true"` function attribute (or `@deprecated true` docblock tag) now emits a
+  standard OpenAPI `deprecated: true` on the operation object, coerced to a real JSON
+  boolean. Requires swagger-sdk's `newMethod()` `deprecated` default.
+
 ## [3.1.3] - 2025-10-29
 
 ## [3.1.2] - 2024-09-24
