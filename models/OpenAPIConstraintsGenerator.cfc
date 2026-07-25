@@ -58,7 +58,8 @@ component name="OpenAPIConstraintsGenerator" {
 		return arguments.properties.map( ( fieldName, schema ) => {
 			return generateConstraint(
 				schema     = schema,
-				isRequired = arrayContainsNoCase( requiredFields, fieldName ) > 0
+				// BoxLang returns boolean; `false > 0` is true there — use truthiness only
+				isRequired = arrayContainsNoCase( requiredFields, fieldName )
 			);
 		} );
 	}
