@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- BoxLang `$ref` parse hangs / bad absolute paths: depend on `swagger-sdk` with cycle-safe walks, absolute path resolution, and no `isStruct(cfc)` on nested parsers (see coldbox-modules/swagger-sdk).
+- BoxLang: treat `arrayContainsNoCase` as boolean in `OpenAPIConstraintsGenerator` (do not compare with `> 0`; BoxLang evaluates `false > 0` as true).
+
 ## [3.1.3] - 2025-10-29
 
 ## [3.1.2] - 2024-09-24
