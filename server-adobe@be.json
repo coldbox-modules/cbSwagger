@@ -1,5 +1,5 @@
 {
-    "name":"swagger-sdk-adobe@be",
+    "name":"cbswagger-adobe@be",
     "app":{
         "serverHomeDirectory":".engine/adobeBE",
         "cfengine":"adobe@be"

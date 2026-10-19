@@ -21,27 +21,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cfengine: [ "lucee@5", "lucee@6" ,"adobe@2018", "adobe@2021", "adobe@2023", "adobe@2025", "boxlang-cfml@1" ]
-        coldboxVersion: [ "^6.0.0", "^7.0.0", "^8.0.0" ]
+        cfengine: [ "lucee@5", "lucee@6", "adobe@2025", "boxlang-cfml@1" ]
+        coldboxVersion: [ "^7.0.0", "^8.0.0" ]
         experimental: [ false ]
         include:
           - coldboxVersion: "^8.0.0"
             cfengine: "boxlang@1"
             experimental: true
-          - coldboxVersion: "be"
-            cfengine: "lucee@5"
+          - coldboxVersion: "^8.0.0"
+            cfengine: "adobe@2023"
             experimental: true
           - coldboxVersion: "be"
             cfengine: "lucee@6"
             experimental: true
           - coldboxVersion: "be"
+            cfengine: "lucee@7"
+            experimental: true
+          - coldboxVersion: "be"
             cfengine: "lucee@be"
-            experimental: true
-          - coldboxVersion: "be"
-            cfengine: "adobe@2018"
-            experimental: true
-          - coldboxVersion: "be"
-            cfengine: "adobe@2021"
             experimental: true
           - coldboxVersion: "be"
             cfengine: "adobe@2023"
@@ -57,9 +54,6 @@ jobs:
             experimental: true
           - coldboxVersion: "be"
             cfengine: "boxlang@be"
-            experimental: true
-          - coldboxVersion: "be"
-            cfengine: "boxlang-cfml@1"
             experimental: true
           - coldboxVersion: "be"
             cfengine: "boxlang-cfml@be"
