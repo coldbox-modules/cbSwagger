@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.4] - 2026-10-19
+
 ## [3.1.3] - 2025-10-29
 
 ## [3.1.2] - 2024-09-24
@@ -197,7 +199,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial Module Release
 
-[Unreleased]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.3...HEAD
+[Unreleased]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.4...HEAD
+
+[3.1.4]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.3...v3.1.4
 
 [3.1.3]: https://github.com/coldbox-modules/cbSwagger/compare/v3.1.2...v3.1.3
 
