@@ -32,7 +32,22 @@ component extends="coldbox.system.EventHandler" {
 		if( ( rc.keyExists( "swaggerCache" ) && !rc.swaggerCache ) ){
 			templateCache.clear( cacheKey );
 		}
-		prc.apiDocument= settings.cacheEnabled ? templateCache.getOrSet( cacheKey, () => routesParser.createDocFromRoutes(), 60 * 12 ) : routesParser.createDocFromRoutes();
+
+		if( settings.cacheEnabled ) {
+			prc.apiDocuments =  templateCache.getOrSet( cacheKey, () => {
+				var parsedDocs = routesParser.createDocFromRoutes();
+				return {
+					"json" : parsedDocs.asJSON(),
+					"yml"  : parsedDocs.asYaml()
+				};
+			}, 60 * 12 );
+		} else {
+			var parsedDocs = routesParser.createDocFromRoutes();
+			prc.apiDocuments = {
+				"json" : parsedDocs.asJSON(),
+				"yml"  : parsedDocs.asYaml()
+			}
+		}
 
 		// Shared CORS headers
 		event.setHTTPHeader(
@@ -91,7 +106,7 @@ component extends="coldbox.system.EventHandler" {
 		}
 		event.renderData(
 			type          = "JSON",
-			data          = settings.cacheEnabled ? templateCache.getOrSet( cacheKey, () => prc.apiDocument.getNormalizedDocument(), 60 * 12 ) : prc.apiDocument.getNormalizedDocument(),
+			data          = prc.apiDocuments.json,
 			statusCode    = "200",
 			statusMessage = "Success"
 		);
@@ -109,7 +124,7 @@ component extends="coldbox.system.EventHandler" {
 		event
 			.renderData(
 				contentType   = "application/yaml",
-				data          = settings.cacheEnabled ? templateCache.getOrSet( cacheKey, () => prc.apiDocument.asYaml(), 60 * 12 ) : prc.apiDocument.asYaml(),
+				data          = prc.apiDocuments.yml,
 				statusCode    = "200",
 				statusMessage = "Success"
 			)
