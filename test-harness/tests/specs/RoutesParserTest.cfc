@@ -478,6 +478,32 @@ component
 				expect( parseArgs.method.parameters[ 1 ] ).toHaveKey( "description" );
 				expect( parseArgs.method.parameters[ 1 ] ).toHaveKey( "required" );
 			} );
+
+			it( "Tests that parseMetadataValue expands local file paths to absolute paths for FileInputStream compatibility", function(){
+				// BoxLang's fileExists() implicitly calls expandPath(), but Java's FileInputStream does not.
+				// Ensure that local file $ref paths are expanded to absolute paths so FileInputStream can resolve them.
+
+				// Test web-root-relative path is expanded to absolute path
+				var filePath = "/includes/resources/users.add.responses.json";
+				var result   = variables.model.parseMetadataValue( filePath );
+				expect( result ).toBeStruct().toHaveKey( "$ref" );
+				expect( result[ "$ref" ] ).toBe( expandPath( filePath ) );
+
+				// Test tilde-prefixed path is expanded to an absolute path
+				var tildeResult = variables.model.parseMetadataValue( "~NewUser.json" );
+				expect( tildeResult ).toBeStruct().toHaveKey( "$ref" );
+				var samplesPath = variables.model.getModuleSettings().samplesPath;
+				expect( tildeResult[ "$ref" ] ).toBe( expandPath( samplesPath & "/NewUser.json" ) );
+
+				// Test path with fragment (## separator in raw metadata) is expanded correctly.
+				// In CFScript, "####" (four hashes) represents a literal "##" (two hashes) at runtime,
+				// matching the raw annotation format e.g. @response-500 /schema.json##500
+				var filePathWithFragment = "/includes/resources/users.add.responses.json####500";
+				var fragmentResult       = variables.model.parseMetadataValue( filePathWithFragment );
+				expect( fragmentResult ).toBeStruct().toHaveKey( "$ref" );
+				// After expansion, the $ref should use the absolute path with a single "#" separator
+				expect( fragmentResult[ "$ref" ] ).toBe( expandPath( filePath ) & "##500" );
+			} );
 		} );
 	}
 

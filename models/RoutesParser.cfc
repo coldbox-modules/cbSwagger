@@ -868,6 +868,22 @@ component accessors="true" threadsafe singleton {
 			if ( left( metadataText, 1 ) == "~" ) {
 				metadataText = metadataText.replace( "~", moduleSettings.samplesPath & "/" );
 			}
+			// Expand local file paths to absolute paths so Java's FileInputStream can resolve them.
+			// Some CFML engines (e.g. BoxLang) implicitly call expandPath() in file functions like
+			// fileExists(), but Java's FileInputStream does not, causing crashes when the two are
+			// used together in the same code path.
+			if ( left( metadataText, 4 ) != "http" ) {
+				var hashPos = find( "##", metadataText );
+				if ( hashPos > 0 ) {
+					metadataText = expandPath( left( metadataText, hashPos - 1 ) ) & mid(
+						metadataText,
+						hashPos,
+						len( metadataText )
+					);
+				} else {
+					metadataText = expandPath( metadataText );
+				}
+			}
 			return { "$ref" : replaceNoCase( metadataText, "####", "##", "ALL" ) };
 		} else {
 			return metadataText;
