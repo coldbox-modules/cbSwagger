@@ -105,7 +105,7 @@ component extends="coldbox.system.EventHandler" {
 			templateCache.clear( cacheKey );
 		}
 		event.renderData(
-			type          = "JSON",
+			contentType   = "application/json",
 			data          = prc.apiDocuments.json,
 			statusCode    = "200",
 			statusMessage = "Success"
